@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Compos — Monitor Kompos</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0d1117;
+    --bg2:      #161b22;
+    --bg3:      #1c2330;
+    --border:   #2a3441;
+    --green:    #39d353;
+    --green2:   #26a641;
+    --green-dim:#1a4a2a;
+    --amber:    #e3a628;
+    --red:      #e05252;
+    --blue:     #4d9fff;
+    --text:     #c9d1d9;
+    --text2:    #8b949e;
+    --text3:    #484f58;
+    --mono:     'IBM Plex Mono', monospace;
+    --sans:     'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--green);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 26px; height: 26px;
+    background: var(--green-dim);
+    border: 1px solid var(--green2);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--green); }
+    50% { opacity: 0.5; box-shadow: 0 0 2px var(--green); }
+  }
+
+  .conn-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+  }
+
+  .uptime-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  /* Main layout */
+  .main {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Section label */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* Sensor cards row */
+  .cards-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .sensor-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .sensor-card:hover { border-color: #3a4550; }
+
+  .sensor-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .sensor-card.green::before { background: var(--green); }
+  .sensor-card.amber::before { background: var(--amber); }
+  .sensor-card.blue::before  { background: var(--blue); }
+
+  .card-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .card-value {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .card-value.green { color: var(--green); }
+  .card-value.amber { color: var(--amber); }
+  .card-value.blue  { color: var(--blue); }
+
+  .card-unit {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .card-sub {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+  }
+
+  .card-sub span { color: var(--text); }
+
+  /* Chart container */
+  .chart-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .chart-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    letter-spacing: 0.06em;
+  }
+
+  .chart-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .chart-tab {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .chart-tab.active { background: var(--bg3); border-color: #3a4550; color: var(--text); }
+  .chart-tab:hover:not(.active) { border-color: #3a4550; color: var(--text); }
+
+  .chart-wrap { position: relative; height: 180px; }
+
+  /* Control panel */
+  .controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .control-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .control-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .status-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .status-badge.on  { color: var(--green); border-color: var(--green2); background: rgba(57, 211, 83, 0.08); }
+  .status-badge.off { color: var(--text3); border-color: var(--border); }
+  .status-badge.auto { color: var(--blue); border-color: rgba(77,159,255,0.4); background: rgba(77,159,255,0.06); }
+
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .ctrl-btn {
+    flex: 1;
+    padding: 9px 0;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+
+  .ctrl-btn:hover { background: #222c38; border-color: #3a4550; color: var(--text); }
+
+  .ctrl-btn.active-green {
+    background: rgba(57,211,83,0.1);
+    border-color: var(--green2);
+    color: var(--green);
+  }
+
+  .ctrl-btn.active-red {
+    background: rgba(224,82,82,0.1);
+    border-color: rgba(224,82,82,0.4);
+    color: var(--red);
+  }
+
+  .ctrl-btn.active-blue {
+    background: rgba(77,159,255,0.1);
+    border-color: rgba(77,159,255,0.4);
+    color: var(--blue);
+  }
+
+  .ctrl-info {
+    font-size: 11px;
+    color: var(--text2);
+    font-family: var(--mono);
+    line-height: 1.6;
+  }
+
+  .ctrl-info span { color: var(--text); }
+
+  /* Mode toggle */
+  .mode-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .mode-toggle-wrap {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+
+  .mode-btn.selected-auto {
+    background: rgba(77,159,255,0.12);
+    border-color: rgba(77,159,255,0.5);
+    color: var(--blue);
+  }
+
+  .mode-btn.selected-manual {
+    background: rgba(227,166,40,0.1);
+    border-color: rgba(227,166,40,0.4);
+    color: var(--amber);
+  }
+
+  .mode-desc {
+    font-size: 11px;
+    color: var(--text2);
+    font-family: var(--mono);
+    margin-top: 10px;
+    line-height: 1.6;
+    padding: 10px;
+    background: var(--bg3);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  /* Auto rules */
+  .auto-rules {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .rule-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .rule-item .rule-title { color: var(--text); font-weight: 500; font-size: 11px; display: block; margin-bottom: 2px; }
+
+  /* Log feed */
+  .log-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .log-list {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    max-height: 150px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 10px;
+  }
+
+  .log-list::-webkit-scrollbar { width: 3px; }
+  .log-list::-webkit-scrollbar-track { background: transparent; }
+  .log-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .log-entry {
+    display: flex;
+    gap: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: var(--bg3);
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; } }
+
+  .log-time { color: var(--text3); min-width: 55px; }
+  .log-ok   { color: var(--green); }
+  .log-warn { color: var(--amber); }
+  .log-err  { color: var(--red); }
+  .log-info { color: var(--blue); }
+
+  /* Footer */
+  .footer-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 8px;
+  }
+
+  .footer-bar span { color: var(--text2); }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    /* Layout */
+    .main { padding: 10px; gap: 10px; }
+
+    /* Header */
+    header { padding: 0 12px; height: 46px; }
+    .logo { font-size: 13px; }
+    .logo-icon { width: 22px; height: 22px; font-size: 12px; }
+    .uptime-label { display: none; }
+
+    /* Sensor cards — 2 kolom di HP */
+    .cards-row {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    /* Kartu berat cairan full width */
+    .cards-row .sensor-card:last-child {
+      grid-column: 1 / -1;
+    }
+    .card-value { font-size: 28px; }
+    .card-label { font-size: 9px; }
+    .sensor-card { padding: 12px; }
+
+    /* Chart */
+    .chart-card { padding: 12px; }
+    .chart-wrap { height: 150px; }
+    .chart-title { font-size: 9px; }
+    .chart-tab { font-size: 9px; padding: 2px 8px; }
+
+    /* Controls */
+    .controls-grid { grid-template-columns: 1fr; gap: 8px; }
+    .control-card { padding: 12px; }
+    .ctrl-btn { padding: 11px 0; font-size: 12px; }
+
+    /* Mode */
+    .mode-card { padding: 12px; }
+    .mode-btn { padding: 12px; font-size: 12px; }
+    .auto-rules { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .rule-item { padding: 8px 10px; font-size: 9px; }
+    .rule-item .rule-title { font-size: 10px; }
+
+    /* Log */
+    .log-card { padding: 12px; }
+    .log-list { font-size: 10px; max-height: 120px; }
+
+    /* Section label */
+    .section-label { font-size: 9px; }
+
+    /* Footer */
+    .footer-bar { 
+      flex-direction: column; 
+      gap: 2px; 
+      padding: 8px 12px;
+      text-align: center;
+      font-size: 9px;
+    }
+
+    /* Tombol lebih gede buat jari */
+    .ctrl-btn, .mode-btn {
+      min-height: 44px;
+    }
+  }
+
+  /* Ukuran sedang — tablet */
+  @media (min-width: 601px) and (max-width: 768px) {
+    .main { padding: 14px; }
+    .card-value { font-size: 28px; }
+    .chart-wrap { height: 160px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🌱</div>
+    SMART COMPOS
+  </div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <span class="conn-label">ONLINE</span>
+    <span class="uptime-label" id="uptime-display">UP 00:00:00</span>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- SENSOR READINGS -->
+  <div>
+    <div class="section-label">Pembacaan Sensor</div>
+    <div class="cards-row">
+      <div class="sensor-card green">
+        <div class="card-label">SUHU</div>
+        <div>
+          <span class="card-value green" id="temp-val">--</span>
+          <span class="card-unit">°C</span>
+        </div>
+        <div class="card-sub">
+          Min <span id="temp-min">--</span>°C &nbsp;|&nbsp; Max <span id="temp-max">--</span>°C
+        </div>
+      </div>
+      <div class="sensor-card amber">
+        <div class="card-label">KELEMBABAN</div>
+        <div>
+          <span class="card-value amber" id="hum-val">--</span>
+          <span class="card-unit">%</span>
+        </div>
+        <div class="card-sub">
+          Ideal kompos: <span>50–70%</span>
+        </div>
+      </div>
+      <div class="sensor-card blue">
+        <div class="card-label">BERAT CAIRAN</div>
+        <div>
+          <span class="card-value blue" id="weight-val">--</span>
+          <span class="card-unit">g</span>
+        </div>
+        <div class="card-sub">
+          Threshold pompa: <span id="pump-threshold">800</span>g
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">GRAFIK REALTIME — 60 DETIK TERAKHIR</span>
+      <div class="chart-tabs">
+        <button class="chart-tab active" onclick="switchChart('temp', this)">Suhu</button>
+        <button class="chart-tab" onclick="switchChart('hum', this)">Kelembaban</button>
+        <button class="chart-tab" onclick="switchChart('weight', this)">Berat</button>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="mainChart"></canvas>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div>
+    <div class="section-label">Kontrol Aktuator</div>
+    <div class="controls-grid">
+
+      <!-- Motor -->
+      <div class="control-card">
+        <div class="control-header">
+          <span class="control-name">⚙ PENGADUK MOTOR</span>
+          <span class="status-badge off" id="motor-badge">OFF</span>
+        </div>
+        <div class="btn-row">
+          <button class="ctrl-btn" id="motor-on-btn" onclick="setMotor(true)">▶ ON</button>
+          <button class="ctrl-btn" id="motor-off-btn" onclick="setMotor(false)">■ OFF</button>
+        </div>
+        <div class="ctrl-info" id="motor-info">
+          Status: <span>Tidak aktif</span><br>
+          Kecepatan: <span id="motor-speed">--</span> RPM<br>
+          Waktu nyala: <span id="motor-runtime">0</span>s
+        </div>
+      </div>
+
+      <!-- Pompa -->
+      <div class="control-card">
+        <div class="control-header">
+          <span class="control-name">💧 POMPA CAIRAN</span>
+          <span class="status-badge off" id="pump-badge">OFF</span>
+        </div>
+        <div class="btn-row">
+          <button class="ctrl-btn" id="pump-on-btn" onclick="setPump(true)">▶ ON</button>
+          <button class="ctrl-btn" id="pump-off-btn" onclick="setPump(false)">■ OFF</button>
+        </div>
+        <div class="ctrl-info" id="pump-info">
+          Status: <span>Tidak aktif</span><br>
+          Cairan terkuras: <span id="pump-drained">0</span>g<br>
+          Terakhir nyala: <span id="pump-last">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODE -->
+  <div>
+    <div class="section-label">Mode Operasi</div>
+    <div class="mode-card">
+      <div class="control-header">
+        <span class="control-name">MODE SISTEM</span>
+        <span class="status-badge auto" id="mode-badge">AUTO</span>
+      </div>
+      <div class="mode-toggle-wrap">
+        <button class="mode-btn selected-auto" id="btn-auto" onclick="setMode('auto')">⚡ OTOMATIS</button>
+        <button class="mode-btn" id="btn-manual" onclick="setMode('manual')">🖐 MANUAL</button>
+      </div>
+      <div class="mode-desc" id="mode-desc">
+        Mode <span style="color:var(--blue)">OTOMATIS</span> aktif.<br>
+        Motor: ngaduk setiap 2 jam selama 5 menit.<br>
+        Pompa: nyala otomatis jika berat cairan ≥ 800g, mati setelah berat &lt; 200g.
+      </div>
+
+      <!-- Auto rules -->
+      <div class="auto-rules">
+        <div class="rule-item">
+          <span class="rule-title">Aturan Motor</span>
+          Ngaduk tiap 2 jam<br>
+          Durasi: 5 menit<br>
+          Kecepatan: 60 RPM
+        </div>
+        <div class="rule-item">
+          <span class="rule-title">Aturan Pompa</span>
+          Nyala jika ≥ 800g<br>
+          Mati jika &lt; 200g<br>
+          Delay: 30 detik
+        </div>
+        <div class="rule-item">
+          <span class="rule-title">Batas Suhu</span>
+          Ideal: 45–65°C<br>
+          Warning: &gt;70°C<br>
+          Alert ke LCD + log
+        </div>
+        <div class="rule-item">
+          <span class="rule-title">Batas Kelembaban</span>
+          Ideal: 50–70%<br>
+          Kering: &lt;40% → notif<br>
+          Basah: &gt;80% → notif
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div>
+    <div class="section-label">Log Sistem</div>
+    <div class="log-card">
+      <div class="chart-header" style="margin-bottom:0">
+        <span class="chart-title">EVENT LOG — REALTIME</span>
+        <button class="ctrl-btn" style="flex:none;padding:3px 12px;font-size:10px" onclick="clearLog()">Clear</button>
+      </div>
+      <div class="log-list" id="log-list">
+        <div class="log-entry"><span class="log-time">00:00:00</span><span class="log-info">[INFO] Sistem dimulai. Mode: AUTO</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-bar">
+  <span>SMART COMPOS v1.0</span>
+  <span>ESP32 · DHT22 · L298N · WebSocket</span>
+  <span id="last-update">Last update: --</span>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const state = {
+  mode: 'auto',
+  motor: false,
+  pump: false,
+  temp: 0,
+  hum: 0,
+  weight: 0,
+  tempMin: 999,
+  tempMax: -999,
+  motorRuntime: 0,
+  pumpDrained: 0,
+  uptimeSeconds: 0,
+  activeChart: 'temp',
+  nextMotorIn: 120,   // detik
+  nextPumpCheck: 30,
+};
+
+const history = {
+  temp:   Array(60).fill(null),
+  hum:    Array(60).fill(null),
+  weight: Array(60).fill(null),
+  labels: Array(60).fill(''),
+};
+
+// ============================================================
+// CHART SETUP
+// ============================================================
+const chartColors = {
+  temp:   { line: '#39d353', fill: 'rgba(57,211,83,0.08)' },
+  hum:    { line: '#e3a628', fill: 'rgba(227,166,40,0.08)' },
+  weight: { line: '#4d9fff', fill: 'rgba(77,159,255,0.08)' },
+};
+
+const ctx = document.getElementById('mainChart').getContext('2d');
+const chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: history.labels,
+    datasets: [{
+      data: history.temp,
+      borderColor: chartColors.temp.line,
+      backgroundColor: chartColors.temp.fill,
+      borderWidth: 1.5,
+      pointRadius: 0,
+      tension: 0.4,
+      fill: true,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 300 },
+    plugins: { legend: { display: false }, tooltip: {
+      backgroundColor: '#1c2330',
+      borderColor: '#2a3441',
+      borderWidth: 1,
+      titleColor: '#8b949e',
+      bodyColor: '#c9d1d9',
+      titleFont: { family: 'IBM Plex Mono', size: 10 },
+      bodyFont: { family: 'IBM Plex Mono', size: 11 },
+      callbacks: {
+        title: items => items[0].label,
+        label: item => {
+          const units = { temp: '°C', hum: '%', weight: 'g' };
+          return ` ${item.raw?.toFixed(1)} ${units[state.activeChart]}`;
+        }
+      }
+    }},
+    scales: {
+      x: {
+        grid: { color: '#1c2330', lineWidth: 0.5 },
+        ticks: { color: '#484f58', font: { family: 'IBM Plex Mono', size: 9 }, maxTicksLimit: 6 },
+      },
+      y: {
+        grid: { color: '#1c2330', lineWidth: 0.5 },
+        ticks: { color: '#8b949e', font: { family: 'IBM Plex Mono', size: 10 } },
+        border: { dash: [3,3] }
+      }
+    }
+  }
+});
+
+function switchChart(type, btn) {
+  state.activeChart = type;
+  document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  chart.data.datasets[0].data = history[type];
+  chart.data.datasets[0].borderColor = chartColors[type].line;
+  chart.data.datasets[0].backgroundColor = chartColors[type].fill;
+  chart.update('none');
+}
+
+
+
+// ============================================================
+// UPDATE UI
+// ============================================================
+function updateUI() {
+
+  // Cards
+  document.getElementById('temp-val').textContent    = state.temp.toFixed(1);
+  document.getElementById('hum-val').textContent     = state.hum.toFixed(1);
+  document.getElementById('weight-val').textContent  = Math.max(0, state.weight).toFixed(0);
+  document.getElementById('temp-min').textContent    = state.tempMin.toFixed(1);
+  document.getElementById('temp-max').textContent    = state.tempMax.toFixed(1);
+
+  // History push
+  const now = new Date();
+  const label = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  history.temp.push(state.temp); history.temp.shift();
+  history.hum.push(state.hum); history.hum.shift();
+  history.weight.push(Math.max(0, state.weight)); history.weight.shift();
+  history.labels.push(label); history.labels.shift();
+
+  chart.data.datasets[0].data = history[state.activeChart];
+  chart.update('none');
+
+  // Motor info
+  document.getElementById('motor-speed').textContent = state.motor ? '60' : '--';
+  document.getElementById('motor-runtime').textContent = state.motorRuntime;
+
+  // Pump info
+  document.getElementById('pump-drained').textContent = state.pumpDrained.toFixed(0);
+
+  // Last update
+  document.getElementById('last-update').textContent = `Last update: ${label}`;
+}
+
+// ============================================================
+// CONTROLS
+// ============================================================
+function setMotor(on) {
+  state.motor = on;
+  const badge = document.getElementById('motor-badge');
+  const onBtn = document.getElementById('motor-on-btn');
+  const offBtn = document.getElementById('motor-off-btn');
+  badge.textContent = on ? 'ON' : 'OFF';
+  badge.className = 'status-badge ' + (on ? 'on' : 'off');
+  onBtn.className  = 'ctrl-btn' + (on ? ' active-green' : '');
+  offBtn.className = 'ctrl-btn' + (!on ? ' active-red' : '');
+  if (state.mode === 'manual') addLog(on ? 'ok' : 'info', on ? 'Motor dinyalakan manual.' : 'Motor dimatikan manual.');
+}
+
+function setPump(on) {
+  state.pump = on;
+  const badge = document.getElementById('pump-badge');
+  const onBtn = document.getElementById('pump-on-btn');
+  const offBtn = document.getElementById('pump-off-btn');
+  badge.textContent = on ? 'ON' : 'OFF';
+  badge.className = 'status-badge ' + (on ? 'on' : 'off');
+  onBtn.className  = 'ctrl-btn' + (on ? ' active-green' : '');
+  offBtn.className = 'ctrl-btn' + (!on ? ' active-red' : '');
+  const now = new Date();
+  document.getElementById('pump-last').textContent =
+    `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  if (state.mode === 'manual') addLog(on ? 'ok' : 'info', on ? 'Pompa dinyalakan manual.' : 'Pompa dimatikan manual.');
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  const badge = document.getElementById('mode-badge');
+  const btnAuto   = document.getElementById('btn-auto');
+  const btnManual = document.getElementById('btn-manual');
+  const desc = document.getElementById('mode-desc');
+
+  if (mode === 'auto') {
+    badge.textContent = 'AUTO';
+    badge.className = 'status-badge auto';
+    btnAuto.className   = 'mode-btn selected-auto';
+    btnManual.className = 'mode-btn';
+    desc.innerHTML = `Mode <span style="color:var(--blue)">OTOMATIS</span> aktif.<br>Motor: ngaduk setiap 2 jam selama 5 menit.<br>Pompa: nyala otomatis jika berat cairan ≥ 800g, mati setelah berat &lt; 200g.`;
+    addLog('info', 'Beralih ke mode OTOMATIS.');
+  } else {
+    badge.textContent = 'MANUAL';
+    badge.className = 'status-badge' ;
+    badge.style.color = 'var(--amber)';
+    badge.style.borderColor = 'rgba(227,166,40,0.4)';
+    badge.style.background = 'rgba(227,166,40,0.08)';
+    btnAuto.className   = 'mode-btn';
+    btnManual.className = 'mode-btn selected-manual';
+    desc.innerHTML = `Mode <span style="color:var(--amber)">MANUAL</span> aktif.<br>Semua kontrol motor dan pompa harus dilakukan manual.<br>Auto-trigger dinonaktifkan.`;
+    addLog('warn', 'Beralih ke mode MANUAL.');
+  }
+}
+
+// ============================================================
+// LOG
+// ============================================================
+function addLog(type, msg) {
+  const list = document.getElementById('log-list');
+  const now = new Date();
+  const t = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  const typeMap = { ok:'log-ok', warn:'log-warn', err:'log-err', info:'log-info' };
+  const prefix = { ok:'[OK]  ', warn:'[WARN]', err:'[ERR] ', info:'[INFO]' };
+  entry.innerHTML = `<span class="log-time">${t}</span><span class="${typeMap[type]}">${prefix[type]} ${msg}</span>`;
+  list.insertBefore(entry, list.firstChild);
+  if (list.children.length > 40) list.removeChild(list.lastChild);
+}
+
+function clearLog() {
+  document.getElementById('log-list').innerHTML = '';
+  addLog('info', 'Log dibersihkan.');
+}
+
+// ============================================================
+// UPTIME
+// ============================================================
+setInterval(() => {
+  state.uptimeSeconds++;
+  const h = Math.floor(state.uptimeSeconds / 3600).toString().padStart(2,'0');
+  const m = Math.floor((state.uptimeSeconds % 3600) / 60).toString().padStart(2,'0');
+  const s = (state.uptimeSeconds % 60).toString().padStart(2,'0');
+  document.getElementById('uptime-display').textContent = `UP ${h}:${m}:${s}`;
+}, 1000);
+
+// ============================================================
+// CONFIG — Firebase
+// ============================================================
+const FIREBASE_URL = "https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json";
+
+// ============================================================
+// FETCH DATA DARI FIREBASE
+// ============================================================
+async function fetchSensor() {
+  try {
+    const res = await fetch(FIREBASE_URL);
+    if (!res.ok) throw new Error('HTTP error');
+    const data = await res.json();
+
+    state.temp   = data.suhu ?? state.temp;
+    state.hum    = data.kelembaban ?? state.hum;
+    state.weight = data.berat ?? state.weight;
+
+    if (state.temp < state.tempMin) state.tempMin = state.temp;
+    if (state.temp > state.tempMax) state.tempMax = state.temp;
+    if (state.motor) state.motorRuntime++;
+
+    if (state.mode === 'auto') {
+      if (state.weight >= 800 && !state.pump) {
+        setPump(true);
+        addLog('warn', `Pompa auto-ON. Berat: ${state.weight.toFixed(0)}g`);
+      }
+      if (state.weight < 200 && state.pump) {
+        setPump(false);
+        addLog('ok', 'Pompa auto-OFF. Cairan tuntas.');
+      }
+      if (state.temp > 70) addLog('err', `⚠ Suhu tinggi! ${state.temp.toFixed(1)}°C`);
+    }
+
+    document.querySelector('.status-dot').style.background = 'var(--green)';
+    document.querySelector('.status-dot').style.boxShadow = '0 0 6px var(--green)';
+    document.querySelector('.conn-label').textContent = 'ONLINE';
+
+  } catch (err) {
+    document.querySelector('.status-dot').style.background = 'var(--red)';
+    document.querySelector('.status-dot').style.boxShadow = '0 0 6px var(--red)';
+    document.querySelector('.conn-label').textContent = 'OFFLINE';
+    addLog('err', 'Gagal konek ke Firebase. Cek koneksi internet.');
+  }
+}
+
+// ============================================================
+// MAIN LOOP
+// ============================================================
+async function mainLoop() {
+  await fetchSensor();
+  updateUI();
+}
+
+// Inisialisasi awal
+state.weight = 0;
+addLog('ok', 'Dashboard terhubung.');
+addLog('info', 'Menghubungkan ke ESP32...');
+setInterval(mainLoop, 2000);
+mainLoop();
+</script>
+
+</body>
+</html>
