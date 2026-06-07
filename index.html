@@ -3,988 +3,1132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Compos — Monitor Kompos</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>NutriBin – Smart Compost Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:       #0d1117;
-    --bg2:      #161b22;
-    --bg3:      #1c2330;
-    --border:   #2a3441;
-    --green:    #39d353;
-    --green2:   #26a641;
-    --green-dim:#1a4a2a;
-    --amber:    #e3a628;
-    --red:      #e05252;
-    --blue:     #4d9fff;
-    --text:     #c9d1d9;
-    --text2:    #8b949e;
-    --text3:    #484f58;
-    --mono:     'IBM Plex Mono', monospace;
-    --sans:     'IBM Plex Sans', sans-serif;
+    --vetiver:    #C1D591;
+    --duck-egg:   #B8D5DA;
+    --hydrangea:  #9EC0EB;
+    --strawberry: #F1B8D9;
+    --basil:      #538376;
+    --cream:      #F9F6EF;
+    --soft-white: #FEFCF8;
+    --text-dark:  #2E4A3E;
+    --text-mid:   #5A7A6E;
+    --text-light: #8AADA0;
+    --shadow:     rgba(83,131,118,0.12);
+    --card-bg:    rgba(255,255,255,0.72);
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
 
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
-  /* Header */
-  header {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 0 20px;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+  /* ─── PAGES ─── */
+  .page { display:none; min-height:100vh; }
+  .page.active { display:flex; }
 
-  .logo {
-    font-family: var(--mono);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--green);
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .logo-icon {
-    width: 26px; height: 26px;
-    background: var(--green-dim);
-    border: 1px solid var(--green2);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .status-dot {
-    width: 8px; height: 8px;
-    background: var(--green);
-    border-radius: 50%;
-    box-shadow: 0 0 6px var(--green);
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--green); }
-    50% { opacity: 0.5; box-shadow: 0 0 2px var(--green); }
-  }
-
-  .conn-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
-  }
-
-  .uptime-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text2);
-  }
-
-  /* Main layout */
-  .main {
-    padding: 20px;
-    max-width: 900px;
-    margin: 0 auto;
-    display: flex;
+  /* ═══════════════════════════════════════
+     PAGE 1 – LOGIN
+  ═══════════════════════════════════════ */
+  #page-login {
     flex-direction: column;
-    gap: 16px;
-  }
-
-  /* Section label */
-  .section-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  /* Sensor cards row */
-  .cards-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-  }
-
-  .sensor-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #E8F5D9 0%, #D6EBF0 35%, #C9DEFF 65%, #F5D6EA 100%);
     position: relative;
     overflow: hidden;
-    transition: border-color 0.2s;
   }
 
-  .sensor-card:hover { border-color: #3a4550; }
+  /* Floating blobs */
+  #page-login::before {
+    content:'';
+    position:absolute; top:-120px; right:-80px;
+    width:420px; height:420px; border-radius:50%;
+    background: radial-gradient(circle, rgba(193,213,145,0.45), transparent 70%);
+    animation: blob1 7s ease-in-out infinite;
+  }
+  #page-login::after {
+    content:'';
+    position:absolute; bottom:-100px; left:-80px;
+    width:380px; height:380px; border-radius:50%;
+    background: radial-gradient(circle, rgba(241,184,217,0.45), transparent 70%);
+    animation: blob2 9s ease-in-out infinite;
+  }
+  @keyframes blob1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,20px) scale(1.08)} }
+  @keyframes blob2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(20px,-30px) scale(1.06)} }
 
-  .sensor-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    border-radius: 10px 10px 0 0;
+  .login-card {
+    position: relative; z-index:10;
+    background: rgba(255,255,255,0.68);
+    backdrop-filter: blur(20px);
+    border-radius: 28px;
+    padding: 52px 48px 44px;
+    width: min(480px, 90vw);
+    box-shadow: 0 8px 48px rgba(83,131,118,0.18), 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(255,255,255,0.85);
+    text-align: center;
+    animation: fadeUp 0.7s ease;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+  .login-logo {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--basil), var(--vetiver));
+    border-radius: 20px;
+    display: inline-flex; align-items:center; justify-content:center;
+    font-size: 36px; margin-bottom: 20px;
+    box-shadow: 0 6px 24px rgba(83,131,118,0.3);
   }
 
-  .sensor-card.green::before { background: var(--green); }
-  .sensor-card.amber::before { background: var(--amber); }
-  .sensor-card.blue::before  { background: var(--blue); }
-
-  .card-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text2);
-    letter-spacing: 0.08em;
-    margin-bottom: 10px;
+  .login-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 700;
+    color: var(--basil); letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .login-sub {
+    font-size: 0.88rem; color: var(--text-light);
+    margin-bottom: 36px; letter-spacing: 0.3px;
   }
 
-  .card-value {
-    font-family: var(--mono);
-    font-size: 32px;
-    font-weight: 600;
-    line-height: 1;
-    margin-bottom: 4px;
+  .role-btn-group { display:flex; gap:14px; margin-bottom:28px; }
+
+  .role-btn {
+    flex:1; padding: 18px 10px;
+    border-radius: 18px; border: 2px solid transparent;
+    cursor:pointer; transition: all 0.25s ease;
+    background: rgba(255,255,255,0.5);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 600;
+    color: var(--text-mid);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .role-btn .role-icon { font-size:2rem; }
+  .role-btn.maker { border-color: var(--basil); background: rgba(193,213,145,0.2); }
+  .role-btn.user  { border-color: var(--hydrangea); background: rgba(158,192,235,0.2); }
+  .role-btn:hover { transform: translateY(-3px); box-shadow:0 6px 20px var(--shadow); }
+  .role-btn.selected.maker { background: var(--vetiver); border-color: var(--basil); color: var(--basil); }
+  .role-btn.selected.user  { background: var(--hydrangea); border-color: #6A9FD8; color: #1a4a7a; }
+
+  .pw-group { margin-bottom:22px; text-align:left; }
+  .pw-label { font-size:0.82rem; color:var(--text-mid); font-weight:500; margin-bottom:7px; display:block; }
+  .pw-input {
+    width:100%; padding:13px 16px;
+    border-radius:13px; border:2px solid rgba(184,213,218,0.6);
+    background:rgba(255,255,255,0.7);
+    font-family:'DM Sans',sans-serif; font-size:0.95rem;
+    color:var(--text-dark); outline:none;
+    transition:border-color 0.2s;
+  }
+  .pw-input:focus { border-color:var(--basil); }
+
+  .login-btn {
+    width:100%; padding:15px;
+    background: linear-gradient(135deg, var(--basil), #6aab98);
+    color:#fff; border:none; border-radius:14px;
+    font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600;
+    cursor:pointer; transition:all 0.25s;
+    box-shadow: 0 4px 18px rgba(83,131,118,0.35);
+    letter-spacing:0.3px;
+  }
+  .login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(83,131,118,0.4); }
+  .login-btn:active { transform:translateY(0); }
+
+  .err-msg { color:#c0536a; font-size:0.82rem; margin-top:10px; display:none; }
+
+  /* ═══════════════════════════════════════
+     PAGE 2 – DASHBOARD
+  ═══════════════════════════════════════ */
+  #page-dashboard {
+    flex-direction: column;
+    background: var(--cream);
   }
 
-  .card-value.green { color: var(--green); }
-  .card-value.amber { color: var(--amber); }
-  .card-value.blue  { color: var(--blue); }
+  /* Sidebar */
+  .sidebar {
+    width: 230px; min-height:100vh;
+    background: linear-gradient(180deg, rgba(193,213,145,0.35) 0%, rgba(184,213,218,0.35) 100%);
+    backdrop-filter:blur(10px);
+    border-right: 1px solid rgba(255,255,255,0.7);
+    padding: 28px 16px;
+    display:flex; flex-direction:column;
+    position:fixed; left:0; top:0; bottom:0; z-index:50;
+    box-shadow: 2px 0 20px rgba(83,131,118,0.08);
+  }
+  .sb-logo {
+    display:flex; align-items:center; gap:10px; margin-bottom:36px; padding:0 6px;
+  }
+  .sb-logo-icon {
+    width:38px;height:38px;
+    background:linear-gradient(135deg,var(--basil),var(--vetiver));
+    border-radius:11px; display:flex;align-items:center;justify-content:center;
+    font-size:18px;box-shadow:0 4px 12px rgba(83,131,118,0.3);
+  }
+  .sb-logo-text { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:700; color:var(--basil); }
 
-  .card-unit {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text2);
+  .sb-back-btn {
+    display:flex; align-items:center; gap:8px;
+    padding:10px 14px; border-radius:12px;
+    font-size:0.85rem; font-weight:600; color:var(--text-mid);
+    cursor:pointer; transition:all 0.2s; margin-bottom:12px;
+    background:rgba(255,255,255,0.55);
+    border:1.5px solid rgba(184,213,218,0.5);
+  }
+  .sb-back-btn:hover { background:rgba(241,184,217,0.25); color:#a03060; border-color:rgba(241,184,217,0.6); transform:translateX(-2px); }
+    font-size:0.68rem; font-weight:600; color:var(--text-light);
+    letter-spacing:1.2px; text-transform:uppercase;
+    padding: 0 10px; margin-bottom:6px; margin-top:16px;
+  }
+  .sb-nav-item {
+    display:flex; align-items:center; gap:10px;
+    padding:11px 14px; border-radius:12px;
+    font-size:0.88rem; font-weight:500; color:var(--text-mid);
+    cursor:pointer; transition:all 0.2s; margin-bottom:3px;
+    text-decoration:none;
+  }
+  .sb-nav-item:hover { background:rgba(255,255,255,0.6); color:var(--basil); }
+  .sb-nav-item.active { background:rgba(255,255,255,0.8); color:var(--basil); font-weight:600; box-shadow:0 2px 10px var(--shadow); }
+  .sb-nav-icon { font-size:1.1rem; width:22px; text-align:center; }
+
+  .sb-role-badge {
+    margin-top:auto; padding:12px 14px;
+    background:rgba(255,255,255,0.7);border-radius:14px;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 2px 10px var(--shadow);
+  }
+  .sb-role-dot { width:10px;height:10px;border-radius:50%; }
+  .sb-role-dot.maker { background:var(--basil); }
+  .sb-role-dot.user  { background:var(--hydrangea); box-shadow:0 0 0 3px rgba(241,184,217,0.4); }
+  .sb-role-name { font-size:0.82rem; font-weight:600; color:var(--text-dark); }
+  .sb-logout {
+    margin-top:8px; font-size:0.78rem; color:var(--text-light);
+    cursor:pointer; padding:8px 14px; border-radius:10px;
+    transition:all 0.2s; text-align:center;
+    border:1px solid rgba(200,200,200,0.4);
+  }
+  .sb-logout:hover { background:rgba(241,184,217,0.3); color:#b03060; }
+
+  /* Main content */
+  .main-content { margin-left:230px; padding:32px 32px 80px; flex:1; }
+
+  .page-header { margin-bottom:28px; }
+  .page-header h1 { font-family:'Playfair Display',serif; font-size:1.85rem; font-weight:700; color:var(--basil); margin-bottom:4px; }
+  .page-header p { font-size:0.88rem; color:var(--text-light); }
+
+  /* Stat cards */
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:18px; margin-bottom:24px; }
+
+  .stat-card {
+    background:var(--card-bg);
+    backdrop-filter:blur(12px);
+    border-radius:20px; padding:22px 22px 18px;
+    box-shadow:0 4px 20px var(--shadow);
+    border:1px solid rgba(255,255,255,0.85);
+    transition:transform 0.2s, box-shadow 0.2s;
+    position:relative; overflow:hidden;
+  }
+  .stat-card:hover { transform:translateY(-3px); box-shadow:0 8px 32px var(--shadow); }
+  .stat-card::before {
+    content:''; position:absolute; top:-20px; right:-20px;
+    width:80px;height:80px;border-radius:50%;
+    opacity:0.18;
+  }
+  .stat-card.temp::before   { background:var(--strawberry); }
+  .stat-card.humid::before  { background:var(--hydrangea); }
+  .stat-card.weight::before { background:var(--vetiver); }
+  .stat-card.mixer::before  { background:var(--duck-egg); }
+
+  .stat-icon { font-size:1.6rem; margin-bottom:10px; }
+  .stat-label { font-size:0.78rem; font-weight:500; color:var(--text-light); letter-spacing:0.3px; margin-bottom:5px; }
+  .stat-value { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--text-dark); }
+  .stat-unit  { font-size:0.85rem; color:var(--text-mid); font-family:'DM Sans',sans-serif; }
+  .stat-badge {
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:0.72rem; padding:4px 9px; border-radius:20px;
+    font-weight:600; margin-top:8px;
+  }
+  .badge-on  { background:rgba(193,213,145,0.4); color:#3a6c3a; }
+  .badge-off { background:rgba(220,220,220,0.5); color:#888; }
+
+  /* Chart */
+  .chart-row { display:grid; grid-template-columns:2fr 1fr; gap:18px; margin-bottom:24px; }
+  .card {
+    background:var(--card-bg); backdrop-filter:blur(12px);
+    border-radius:20px; padding:22px;
+    box-shadow:0 4px 20px var(--shadow);
+    border:1px solid rgba(255,255,255,0.85);
+  }
+  .card-title {
+    font-family:'Playfair Display',serif; font-size:1rem; font-weight:600;
+    color:var(--basil); margin-bottom:16px; display:flex; align-items:center; gap:8px;
   }
 
-  .card-sub {
-    font-size: 11px;
-    color: var(--text2);
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--border);
-    font-family: var(--mono);
+  canvas { width:100% !important; }
+
+  /* Donut chart for weight */
+  .donut-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; height:180px; }
+  .donut-ring { position:relative; width:130px;height:130px; }
+  .donut-ring svg { transform:rotate(-90deg); }
+  .donut-center {
+    position:absolute; top:50%;left:50%;transform:translate(-50%,-50%);
+    text-align:center;
   }
+  .donut-center .big-num { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--basil); }
+  .donut-center .small-l { font-size:0.72rem; color:var(--text-light); }
 
-  .card-sub span { color: var(--text); }
-
-  /* Chart container */
-  .chart-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-  }
-
-  .chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-
-  .chart-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text2);
-    letter-spacing: 0.06em;
-  }
-
-  .chart-tabs {
-    display: flex;
-    gap: 4px;
-  }
-
-  .chart-tab {
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 3px 10px;
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .chart-tab.active { background: var(--bg3); border-color: #3a4550; color: var(--text); }
-  .chart-tab:hover:not(.active) { border-color: #3a4550; color: var(--text); }
-
-  .chart-wrap { position: relative; height: 180px; }
-
-  /* Control panel */
-  .controls-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+  /* Maker controls */
+  .controls-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px; }
 
   .control-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
+    background:var(--card-bg); backdrop-filter:blur(12px);
+    border-radius:20px; padding:22px;
+    box-shadow:0 4px 20px var(--shadow);
+    border:1px solid rgba(255,255,255,0.85);
   }
+  .ctrl-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+  .ctrl-title  { font-family:'Playfair Display',serif; font-size:1rem; font-weight:600; color:var(--basil); }
+  .ctrl-status { font-size:0.75rem; padding:4px 10px; border-radius:20px; font-weight:600; }
+  .ctrl-status.on  { background:rgba(193,213,145,0.4);color:#3a6c3a; }
+  .ctrl-status.off { background:rgba(220,220,220,0.5);color:#888; }
 
-  .control-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-
-  .control-name {
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .status-badge {
-    font-family: var(--mono);
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    border: 1px solid;
-  }
-
-  .status-badge.on  { color: var(--green); border-color: var(--green2); background: rgba(57, 211, 83, 0.08); }
-  .status-badge.off { color: var(--text3); border-color: var(--border); }
-  .status-badge.auto { color: var(--blue); border-color: rgba(77,159,255,0.4); background: rgba(77,159,255,0.06); }
-
-  .btn-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .ctrl-btn {
-    flex: 1;
-    padding: 9px 0;
-    border-radius: 7px;
-    border: 1px solid var(--border);
-    background: var(--bg3);
-    color: var(--text2);
-    font-family: var(--mono);
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-weight: 500;
-  }
-
-  .ctrl-btn:hover { background: #222c38; border-color: #3a4550; color: var(--text); }
-
-  .ctrl-btn.active-green {
-    background: rgba(57,211,83,0.1);
-    border-color: var(--green2);
-    color: var(--green);
-  }
-
-  .ctrl-btn.active-red {
-    background: rgba(224,82,82,0.1);
-    border-color: rgba(224,82,82,0.4);
-    color: var(--red);
-  }
-
-  .ctrl-btn.active-blue {
-    background: rgba(77,159,255,0.1);
-    border-color: rgba(77,159,255,0.4);
-    color: var(--blue);
-  }
-
-  .ctrl-info {
-    font-size: 11px;
-    color: var(--text2);
-    font-family: var(--mono);
-    line-height: 1.6;
-  }
-
-  .ctrl-info span { color: var(--text); }
-
-  /* Mode toggle */
-  .mode-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-  }
-
-  .mode-toggle-wrap {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
+  .toggle-row { display:flex; gap:10px; margin-bottom:14px; }
   .mode-btn {
-    flex: 1;
-    padding: 10px;
-    border-radius: 7px;
-    border: 1px solid var(--border);
-    background: var(--bg3);
-    color: var(--text2);
-    font-family: var(--mono);
-    font-size: 11px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.15s;
+    flex:1; padding:11px; border-radius:12px; border:none;
+    font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:600;
+    cursor:pointer; transition:all 0.2s;
+  }
+  .mode-btn.auto { background:rgba(193,213,145,0.35); color:#3a6c3a; }
+  .mode-btn.manual { background:rgba(241,184,217,0.35); color:#a03060; }
+  .mode-btn.active.auto { background:var(--vetiver); }
+  .mode-btn.active.manual { background:var(--strawberry); }
+  .mode-btn:hover { transform:translateY(-1px); box-shadow:0 3px 10px var(--shadow); }
+
+  .action-btn {
+    width:100%; padding:13px; border-radius:13px; border:none;
+    font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:600;
+    cursor:pointer; transition:all 0.25s; margin-top:4px;
+  }
+  .action-btn.start { background:linear-gradient(135deg,var(--basil),#6aab98); color:#fff; box-shadow:0 4px 14px rgba(83,131,118,0.3); }
+  .action-btn.stop  { background:linear-gradient(135deg,#d4709a,#e8a0c0); color:#fff; box-shadow:0 4px 14px rgba(212,112,154,0.3); }
+  .action-btn:hover { transform:translateY(-2px); }
+
+  .slider-wrap { margin-top:12px; }
+  .slider-label { font-size:0.78rem;color:var(--text-mid);margin-bottom:6px;display:flex;justify-content:space-between; }
+  input[type=range] {
+    width:100%; accent-color:var(--basil);
+    height:4px; border-radius:4px;
+    appearance:none; background:linear-gradient(to right, var(--basil) 60%, #ddd 60%);
   }
 
-  .mode-btn.selected-auto {
-    background: rgba(77,159,255,0.12);
-    border-color: rgba(77,159,255,0.5);
-    color: var(--blue);
+  /* Info readout for user view */
+  .info-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+  .info-card { background:var(--card-bg);backdrop-filter:blur(12px);border-radius:18px;padding:20px;box-shadow:0 4px 18px var(--shadow);border:1px solid rgba(255,255,255,0.85); }
+  .info-label { font-size:0.75rem;color:var(--text-light);font-weight:500;margin-bottom:8px;letter-spacing:0.3px; }
+  .info-val { font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--text-dark); }
+  .info-meta { font-size:0.75rem;color:var(--text-mid);margin-top:4px; }
+
+  /* ═══════════════════════════════════════
+     AI CHAT BUBBLE
+  ═══════════════════════════════════════ */
+  .ai-fab {
+    position:fixed; bottom:32px; right:32px; z-index:1000;
+    width:60px; height:60px; border-radius:18px;
+    background: conic-gradient(from 0deg, #C1D591, #9EC0EB, #F1B8D9, #B8D5DA, #C1D591);
+    box-shadow:0 6px 28px rgba(158,192,235,0.5), 0 2px 8px rgba(0,0,0,0.1);
+    cursor:pointer; display:flex;align-items:center;justify-content:center;
+    border:none; padding:0;
+    transform: rotate(0deg);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
+    animation: fabPulse 3s ease-in-out infinite;
+  }
+  .ai-fab.chat-open {
+    transform: rotate(-18deg);
+    box-shadow: 0 12px 40px rgba(241,184,217,0.6), 0 0 0 5px rgba(193,213,145,0.25);
+    animation: none;
+  }
+  @keyframes fabPulse { 0%,100%{box-shadow:0 6px 28px rgba(158,192,235,0.5)} 50%{box-shadow:0 8px 36px rgba(241,184,217,0.6), 0 0 0 6px rgba(193,213,145,0.18)} }
+
+  .ai-fab-inner {
+    width:46px; height:46px; border-radius:13px;
+    background: rgba(255,255,255,0.93);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .ai-fab-svg { width:26px; height:26px; }
+
+  .ai-chat-popup {
+    position:fixed; bottom:104px; right:32px; z-index:1000;
+    width:340px; height:480px;
+    background:rgba(254,252,248,0.95);
+    backdrop-filter:blur(20px);
+    border-radius:24px; box-shadow:0 16px 56px rgba(83,131,118,0.22), 0 4px 16px rgba(0,0,0,0.08);
+    border:1px solid rgba(255,255,255,0.9);
+    display:flex;flex-direction:column;
+    transform: scale(0.7) translateY(40px); transform-origin: bottom right;
+    opacity:0; pointer-events:none;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+  }
+  .ai-chat-popup.open {
+    transform: scale(1) translateY(0);
+    opacity:1; pointer-events:all;
   }
 
-  .mode-btn.selected-manual {
-    background: rgba(227,166,40,0.1);
-    border-color: rgba(227,166,40,0.4);
-    color: var(--amber);
+  .ai-header {
+    padding:16px 18px 14px;
+    border-bottom:1px solid rgba(184,213,218,0.4);
+    display:flex;align-items:center;gap:10px;
+  }
+  .ai-avatar {
+    width:38px;height:38px;border-radius:12px;
+    background:linear-gradient(135deg,var(--hydrangea),var(--strawberry));
+    display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+    box-shadow:0 3px 10px rgba(158,192,235,0.4);
+  }
+  .ai-name { font-weight:700;font-size:0.9rem;color:var(--basil); }
+  .ai-sub  { font-size:0.72rem;color:var(--text-light); }
+  .ai-close { margin-left:auto;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--text-light);padding:4px;border-radius:8px;transition:background 0.2s; }
+  .ai-close:hover { background:rgba(241,184,217,0.3); }
+
+  .ai-msgs {
+    flex:1;overflow-y:auto;padding:14px 14px 8px;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .ai-msgs::-webkit-scrollbar { width:4px; }
+  .ai-msgs::-webkit-scrollbar-thumb { background:rgba(184,213,218,0.5);border-radius:4px; }
+
+  .msg { max-width:82%;padding:10px 14px;border-radius:16px;font-size:0.84rem;line-height:1.6; }
+  .msg.bot { align-self:flex-start; background:rgba(184,213,218,0.35); color:var(--text-dark); border-bottom-left-radius:4px; }
+  .msg.bot span { line-height:1.6; }
+  .msg.user-msg { align-self:flex-end; background:linear-gradient(135deg,var(--basil),#6aab98); color:#fff; border-bottom-right-radius:4px; }
+  .msg.loading { align-self:flex-start; background:rgba(184,213,218,0.25); color:var(--text-light); font-style:italic; }
+
+  .ai-input-row {
+    padding:12px 14px;
+    border-top:1px solid rgba(184,213,218,0.35);
+    display:flex;gap:8px;align-items:center;
+  }
+  .ai-input {
+    flex:1;padding:10px 14px;border-radius:12px;
+    border:1.5px solid rgba(184,213,218,0.5);
+    background:rgba(255,255,255,0.7);
+    font-family:'DM Sans',sans-serif;font-size:0.84rem;
+    color:var(--text-dark);outline:none;
+    transition:border-color 0.2s;
+  }
+  .ai-input:focus { border-color:var(--basil); }
+  .ai-send {
+    width:38px;height:38px;border-radius:11px;
+    background:linear-gradient(135deg,var(--basil),#6aab98);
+    border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:1rem;
+    transition:all 0.2s;box-shadow:0 3px 10px rgba(83,131,118,0.3);
+  }
+  .ai-send:hover { transform:scale(1.08); }
+
+  /* Quick suggestions */
+  .ai-suggestions {
+    padding:0 14px 10px;
+    display:flex;gap:6px;flex-wrap:wrap;
+  }
+  .ai-chip {
+    font-size:0.72rem;padding:5px 10px;border-radius:20px;
+    background:rgba(193,213,145,0.3);color:var(--basil);
+    border:1px solid rgba(193,213,145,0.5);
+    cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;
+    transition:all 0.15s;white-space:nowrap;
+  }
+  .ai-chip:hover { background:var(--vetiver);transform:translateY(-1px); }
+
+  /* Toast */
+  .toast {
+    position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-80px);
+    background:rgba(83,131,118,0.9);color:#fff;
+    padding:12px 24px;border-radius:12px;font-size:0.88rem;font-weight:500;
+    transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);z-index:9999;
+    box-shadow:0 6px 24px rgba(83,131,118,0.3);
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  /* ─── HAMBURGER MENU ─── */
+  .hamburger-btn {
+    position: fixed; top: 18px; right: 20px; z-index: 3000;
+    width: 44px; height: 44px; border-radius: 13px;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(184,213,218,0.7);
+    cursor: pointer; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 5px;
+    box-shadow: 0 4px 20px rgba(83,131,118,0.2), 0 1px 4px rgba(0,0,0,0.08);
+    transition: all 0.22s ease;
+  }
+  .hamburger-btn:hover { transform: scale(1.07); box-shadow: 0 6px 24px rgba(83,131,118,0.28); }
+  .hamburger-btn .bar {
+    width: 20px; height: 2.5px; border-radius: 3px;
+    background: var(--basil); transition: all 0.25s ease;
+    display: block;
+  }
+  .hamburger-btn.open .bar:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+  .hamburger-btn.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger-btn.open .bar:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+  .hamburger-menu {
+    position: fixed; top: 72px; right: 20px; z-index: 2999;
+    background: rgba(255,255,255,0.97); backdrop-filter: blur(20px);
+    border-radius: 18px; padding: 8px;
+    box-shadow: 0 16px 48px rgba(83,131,118,0.22), 0 4px 14px rgba(0,0,0,0.1);
+    border: 1px solid rgba(184,213,218,0.45);
+    min-width: 190px;
+    transform: scale(0.85) translateY(-12px); transform-origin: top right;
+    opacity: 0; pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .hamburger-menu.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+
+  .hmenu-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 12px;
+    font-size: 0.9rem; font-weight: 500; color: var(--text-dark);
+    cursor: pointer; transition: all 0.18s;
+  }
+  .hmenu-item:hover { background: rgba(193,213,145,0.3); color: var(--basil); transform: translateX(3px); }
+  .hmenu-item .hmenu-icon {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.05rem; flex-shrink:0;
+  }
+  .hmenu-item.home .hmenu-icon { background: rgba(193,213,145,0.4); }
+  .hmenu-item.data .hmenu-icon { background: rgba(158,192,235,0.4); }
+  .hmenu-divider { height: 1px; background: rgba(184,213,218,0.45); margin: 4px 6px; }
+  .hmenu-label {
+    font-size: 0.68rem; color: var(--text-light);
+    padding: 6px 14px 4px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
   }
 
-  .mode-desc {
-    font-size: 11px;
-    color: var(--text2);
-    font-family: var(--mono);
-    margin-top: 10px;
-    line-height: 1.6;
-    padding: 10px;
-    background: var(--bg3);
-    border-radius: 6px;
-    border: 1px solid var(--border);
-  }
-
-  /* Auto rules */
-  .auto-rules {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .rule-item {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px 12px;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text2);
-    line-height: 1.7;
-  }
-
-  .rule-item .rule-title { color: var(--text); font-weight: 500; font-size: 11px; display: block; margin-bottom: 2px; }
-
-  /* Log feed */
-  .log-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-  }
-
-  .log-list {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text2);
-    max-height: 150px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-top: 10px;
-  }
-
-  .log-list::-webkit-scrollbar { width: 3px; }
-  .log-list::-webkit-scrollbar-track { background: transparent; }
-  .log-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  .log-entry {
-    display: flex;
-    gap: 10px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    background: var(--bg3);
-    animation: fadeIn 0.3s ease;
-  }
-
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; } }
-
-  .log-time { color: var(--text3); min-width: 55px; }
-  .log-ok   { color: var(--green); }
-  .log-warn { color: var(--amber); }
-  .log-err  { color: var(--red); }
-  .log-info { color: var(--blue); }
-
-  /* Footer */
-  .footer-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background: var(--bg2);
-    border-top: 1px solid var(--border);
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text3);
-    margin-top: 8px;
-  }
-
-  .footer-bar span { color: var(--text2); }
-
-  /* Responsive */
-  @media (max-width: 600px) {
-    /* Layout */
-    .main { padding: 10px; gap: 10px; }
-
-    /* Header */
-    header { padding: 0 12px; height: 46px; }
-    .logo { font-size: 13px; }
-    .logo-icon { width: 22px; height: 22px; font-size: 12px; }
-    .uptime-label { display: none; }
-
-    /* Sensor cards — 2 kolom di HP */
-    .cards-row {
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    /* Kartu berat cairan full width */
-    .cards-row .sensor-card:last-child {
-      grid-column: 1 / -1;
-    }
-    .card-value { font-size: 28px; }
-    .card-label { font-size: 9px; }
-    .sensor-card { padding: 12px; }
-
-    /* Chart */
-    .chart-card { padding: 12px; }
-    .chart-wrap { height: 150px; }
-    .chart-title { font-size: 9px; }
-    .chart-tab { font-size: 9px; padding: 2px 8px; }
-
-    /* Controls */
-    .controls-grid { grid-template-columns: 1fr; gap: 8px; }
-    .control-card { padding: 12px; }
-    .ctrl-btn { padding: 11px 0; font-size: 12px; }
-
-    /* Mode */
-    .mode-card { padding: 12px; }
-    .mode-btn { padding: 12px; font-size: 12px; }
-    .auto-rules { grid-template-columns: 1fr 1fr; gap: 6px; }
-    .rule-item { padding: 8px 10px; font-size: 9px; }
-    .rule-item .rule-title { font-size: 10px; }
-
-    /* Log */
-    .log-card { padding: 12px; }
-    .log-list { font-size: 10px; max-height: 120px; }
-
-    /* Section label */
-    .section-label { font-size: 9px; }
-
-    /* Footer */
-    .footer-bar { 
-      flex-direction: column; 
-      gap: 2px; 
-      padding: 8px 12px;
-      text-align: center;
-      font-size: 9px;
-    }
-
-    /* Tombol lebih gede buat jari */
-    .ctrl-btn, .mode-btn {
-      min-height: 44px;
-    }
-  }
-
-  /* Ukuran sedang — tablet */
-  @media (min-width: 601px) and (max-width: 768px) {
-    .main { padding: 14px; }
-    .card-value { font-size: 28px; }
-    .chart-wrap { height: 160px; }
+  @media(max-width:700px){
+    .sidebar{transform:translateX(-230px);}
+    .main-content{margin-left:0;padding:20px 16px 80px;}
+    .chart-row,.controls-row,.info-row{grid-template-columns:1fr;}
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">🌱</div>
-    SMART COMPOS
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HAMBURGER BUTTON (always visible) -->
+<button class="hamburger-btn" id="hamburger-btn" onclick="toggleHamburger()">
+  <span class="bar"></span>
+  <span class="bar"></span>
+  <span class="bar"></span>
+</button>
+
+<!-- HAMBURGER DROPDOWN MENU -->
+<div class="hamburger-menu" id="hamburger-menu">
+  <div class="hmenu-label">Navigasi</div>
+  <div class="hmenu-item home" onclick="hamburgerGoHome()">
+    <div class="hmenu-icon">🏠</div>
+    <span>Home</span>
   </div>
-  <div class="header-right">
-    <div class="status-dot"></div>
-    <span class="conn-label">ONLINE</span>
-    <span class="uptime-label" id="uptime-display">UP 00:00:00</span>
+  <div class="hmenu-divider"></div>
+  <div class="hmenu-item data" id="hmenu-data" onclick="hamburgerGoData()">
+    <div class="hmenu-icon">📊</div>
+    <span>Data</span>
   </div>
-</header>
-
-<div class="main">
-
-  <!-- SENSOR READINGS -->
-  <div>
-    <div class="section-label">Pembacaan Sensor</div>
-    <div class="cards-row">
-      <div class="sensor-card green">
-        <div class="card-label">SUHU</div>
-        <div>
-          <span class="card-value green" id="temp-val">--</span>
-          <span class="card-unit">°C</span>
-        </div>
-        <div class="card-sub">
-          Min <span id="temp-min">--</span>°C &nbsp;|&nbsp; Max <span id="temp-max">--</span>°C
-        </div>
-      </div>
-      <div class="sensor-card amber">
-        <div class="card-label">KELEMBABAN</div>
-        <div>
-          <span class="card-value amber" id="hum-val">--</span>
-          <span class="card-unit">%</span>
-        </div>
-        <div class="card-sub">
-          Ideal kompos: <span>50–70%</span>
-        </div>
-      </div>
-      <div class="sensor-card blue">
-        <div class="card-label">BERAT CAIRAN</div>
-        <div>
-          <span class="card-value blue" id="weight-val">--</span>
-          <span class="card-unit">g</span>
-        </div>
-        <div class="card-sub">
-          Threshold pompa: <span id="pump-threshold">800</span>g
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CHART -->
-  <div class="chart-card">
-    <div class="chart-header">
-      <span class="chart-title">GRAFIK REALTIME — 60 DETIK TERAKHIR</span>
-      <div class="chart-tabs">
-        <button class="chart-tab active" onclick="switchChart('temp', this)">Suhu</button>
-        <button class="chart-tab" onclick="switchChart('hum', this)">Kelembaban</button>
-        <button class="chart-tab" onclick="switchChart('weight', this)">Berat</button>
-      </div>
-    </div>
-    <div class="chart-wrap">
-      <canvas id="mainChart"></canvas>
-    </div>
-  </div>
-
-  <!-- CONTROLS -->
-  <div>
-    <div class="section-label">Kontrol Aktuator</div>
-    <div class="controls-grid">
-
-      <!-- Motor -->
-      <div class="control-card">
-        <div class="control-header">
-          <span class="control-name">⚙ PENGADUK MOTOR</span>
-          <span class="status-badge off" id="motor-badge">OFF</span>
-        </div>
-        <div class="btn-row">
-          <button class="ctrl-btn" id="motor-on-btn" onclick="setMotor(true)">▶ ON</button>
-          <button class="ctrl-btn" id="motor-off-btn" onclick="setMotor(false)">■ OFF</button>
-        </div>
-        <div class="ctrl-info" id="motor-info">
-          Status: <span>Tidak aktif</span><br>
-          Kecepatan: <span id="motor-speed">--</span> RPM<br>
-          Waktu nyala: <span id="motor-runtime">0</span>s
-        </div>
-      </div>
-
-      <!-- Pompa -->
-      <div class="control-card">
-        <div class="control-header">
-          <span class="control-name">💧 POMPA CAIRAN</span>
-          <span class="status-badge off" id="pump-badge">OFF</span>
-        </div>
-        <div class="btn-row">
-          <button class="ctrl-btn" id="pump-on-btn" onclick="setPump(true)">▶ ON</button>
-          <button class="ctrl-btn" id="pump-off-btn" onclick="setPump(false)">■ OFF</button>
-        </div>
-        <div class="ctrl-info" id="pump-info">
-          Status: <span>Tidak aktif</span><br>
-          Cairan terkuras: <span id="pump-drained">0</span>g<br>
-          Terakhir nyala: <span id="pump-last">--</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODE -->
-  <div>
-    <div class="section-label">Mode Operasi</div>
-    <div class="mode-card">
-      <div class="control-header">
-        <span class="control-name">MODE SISTEM</span>
-        <span class="status-badge auto" id="mode-badge">AUTO</span>
-      </div>
-      <div class="mode-toggle-wrap">
-        <button class="mode-btn selected-auto" id="btn-auto" onclick="setMode('auto')">⚡ OTOMATIS</button>
-        <button class="mode-btn" id="btn-manual" onclick="setMode('manual')">🖐 MANUAL</button>
-      </div>
-      <div class="mode-desc" id="mode-desc">
-        Mode <span style="color:var(--blue)">OTOMATIS</span> aktif.<br>
-        Motor: ngaduk setiap 2 jam selama 5 menit.<br>
-        Pompa: nyala otomatis jika berat cairan ≥ 800g, mati setelah berat &lt; 200g.
-      </div>
-
-      <!-- Auto rules -->
-      <div class="auto-rules">
-        <div class="rule-item">
-          <span class="rule-title">Aturan Motor</span>
-          Ngaduk tiap 2 jam<br>
-          Durasi: 5 menit<br>
-          Kecepatan: 60 RPM
-        </div>
-        <div class="rule-item">
-          <span class="rule-title">Aturan Pompa</span>
-          Nyala jika ≥ 800g<br>
-          Mati jika &lt; 200g<br>
-          Delay: 30 detik
-        </div>
-        <div class="rule-item">
-          <span class="rule-title">Batas Suhu</span>
-          Ideal: 45–65°C<br>
-          Warning: &gt;70°C<br>
-          Alert ke LCD + log
-        </div>
-        <div class="rule-item">
-          <span class="rule-title">Batas Kelembaban</span>
-          Ideal: 50–70%<br>
-          Kering: &lt;40% → notif<br>
-          Basah: &gt;80% → notif
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- LOG -->
-  <div>
-    <div class="section-label">Log Sistem</div>
-    <div class="log-card">
-      <div class="chart-header" style="margin-bottom:0">
-        <span class="chart-title">EVENT LOG — REALTIME</span>
-        <button class="ctrl-btn" style="flex:none;padding:3px 12px;font-size:10px" onclick="clearLog()">Clear</button>
-      </div>
-      <div class="log-list" id="log-list">
-        <div class="log-entry"><span class="log-time">00:00:00</span><span class="log-info">[INFO] Sistem dimulai. Mode: AUTO</span></div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
-<div class="footer-bar">
-  <span>SMART COMPOS v1.0</span>
-  <span>ESP32 · DHT22 · L298N · WebSocket</span>
-  <span id="last-update">Last update: --</span>
+<!-- ═══ PAGE 1: LOGIN ═══ -->
+<div class="page active" id="page-login">
+  <div class="login-card">
+    <div class="login-logo">🌱</div>
+    <h1 class="login-title">NutriBin</h1>
+    <p class="login-sub">Smart Compost Monitoring System</p>
+
+    <div class="role-btn-group">
+      <button class="role-btn maker" id="btn-maker" onclick="selectRole('maker')">
+        <span class="role-icon">🔧</span>
+        <span>Maker</span>
+      </button>
+      <button class="role-btn user" id="btn-user" onclick="selectRole('user')">
+        <span class="role-icon">👤</span>
+        <span>User</span>
+      </button>
+    </div>
+
+    <div class="pw-group" id="pw-group" style="display:none">
+      <label class="pw-label">🔒 Password Maker</label>
+      <input type="password" class="pw-input" id="pw-input" placeholder="Masukan password..." onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="err-msg" id="err-msg">⚠️ Password salah. Coba lagi.</div>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">Masuk Dashboard →</button>
+  </div>
 </div>
+
+<!-- ═══ PAGE 2: DASHBOARD ═══ -->
+<div class="page" id="page-dashboard" style="flex-direction:row">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">🌱</div>
+      <span class="sb-logo-text">NutriBin</span>
+    </div>
+
+    <div class="sb-back-btn" onclick="logout()">‹ Ganti Akun</div>
+
+    <span class="sb-section-label">Monitor</span>
+    <a class="sb-nav-item active"><span class="sb-nav-icon">📊</span> Dashboard</a>
+    <a class="sb-nav-item"><span class="sb-nav-icon">🌡️</span> Suhu & Kelembaban</a>
+    <a class="sb-nav-item"><span class="sb-nav-icon">⚖️</span> Berat Sampah</a>
+    <a class="sb-nav-item"><span class="sb-nav-icon">📈</span> Grafik Histori</a>
+
+    <span class="sb-section-label" id="sb-maker-label" style="display:none">Kontrol</span>
+    <a class="sb-nav-item" id="sb-mixer-nav" style="display:none"><span class="sb-nav-icon">🔄</span> Pengaduk</a>
+    <a class="sb-nav-item" id="sb-liquid-nav" style="display:none"><span class="sb-nav-icon">💧</span> Cairan Pupuk</a>
+
+    <div class="sb-role-badge">
+      <div class="sb-role-dot" id="sb-role-dot"></div>
+      <div>
+        <div class="sb-role-name" id="sb-role-name">—</div>
+        <div style="font-size:0.7rem;color:var(--text-light)">Mode aktif</div>
+      </div>
+    </div>
+    <div class="sb-logout" onclick="logout()">↩ Keluar</div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main-content" id="main-content">
+    <div class="page-header">
+      <h1 id="dash-title">Dashboard</h1>
+      <p id="dash-sub">Monitoring real-time NutriBin anda</p>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card temp">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-label">SUHU</div>
+        <div class="stat-value" id="val-temp">34<span class="stat-unit"> °C</span></div>
+        <div><span class="stat-badge badge-on">↑ Normal</span></div>
+      </div>
+      <div class="stat-card humid">
+        <div class="stat-icon">💧</div>
+        <div class="stat-label">KELEMBABAN</div>
+        <div class="stat-value" id="val-humid">72<span class="stat-unit"> %</span></div>
+        <div><span class="stat-badge badge-on">✓ Optimal</span></div>
+      </div>
+      <div class="stat-card weight">
+        <div class="stat-icon">⚖️</div>
+        <div class="stat-label">BERAT SAMPAH</div>
+        <div class="stat-value" id="val-weight">1.8<span class="stat-unit"> kg</span></div>
+        <div><span class="stat-badge badge-on">📦 Aktif</span></div>
+      </div>
+      <div class="stat-card mixer">
+        <div class="stat-icon">🔄</div>
+        <div class="stat-label">PENGADUK</div>
+        <div class="stat-value" id="val-mixer-state" style="font-size:1.3rem;">ON</div>
+        <div><span class="stat-badge badge-on" id="badge-mixer">⚡ Otomatis</span></div>
+      </div>
+    </div>
+
+    <!-- CHART ROW -->
+    <div class="chart-row">
+      <div class="card">
+        <div class="card-title">📈 Grafik Suhu & Kelembaban (24 jam)</div>
+        <canvas id="lineChart" height="180"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">⚖️ Kapasitas Tempat</div>
+        <div class="donut-wrap">
+          <div class="donut-ring">
+            <svg viewBox="0 0 100 100" width="130" height="130">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#E8F0EA" stroke-width="12"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="url(#donutGrad)" stroke-width="12"
+                stroke-dasharray="150.8" stroke-dashoffset="60" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#C1D591"/>
+                  <stop offset="100%" stop-color="#538376"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="donut-center">
+              <div class="big-num">60%</div>
+              <div class="small-l">penuh</div>
+            </div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:0.78rem;color:var(--text-light)">1.8 kg / 3.0 kg</div>
+            <div style="font-size:0.72rem;color:var(--text-light);margin-top:3px;">Estimasi penuh: <b>4 hari</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER INFO ROW -->
+    <div class="info-row" id="user-info-row">
+      <div class="info-card">
+        <div class="info-label">📅 PERKIRAAN PUPUK SIAP</div>
+        <div class="info-val">~12 hari</div>
+        <div class="info-meta">Berdasarkan suhu & kelembaban saat ini</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">🔄 STATUS PENGADUK OTOMATIS</div>
+        <div class="info-val" id="mixer-status-display">ON</div>
+        <div class="info-meta">Mode: <b>Otomatis</b> • Interval: 6 jam</div>
+      </div>
+    </div>
+
+    <!-- MAKER CONTROLS -->
+    <div class="controls-row" id="maker-controls" style="display:none">
+
+      <!-- Mixer control -->
+      <div class="control-card">
+        <div class="ctrl-header">
+          <div class="ctrl-title">🔄 Pengaduk Cairan</div>
+          <span class="ctrl-status on" id="mixer-ctrl-status">ON</span>
+        </div>
+        <div class="toggle-row">
+          <button class="mode-btn auto active" id="mixer-auto-btn" onclick="setMixerMode('auto')">⚙️ Otomatis</button>
+          <button class="mode-btn manual" id="mixer-manual-btn" onclick="setMixerMode('manual')">✋ Manual</button>
+        </div>
+        <div class="slider-wrap" id="mixer-slider-wrap" style="display:none">
+          <div class="slider-label"><span>Kecepatan</span><span id="mixer-speed-val">60%</span></div>
+          <input type="range" min="0" max="100" value="60" oninput="document.getElementById('mixer-speed-val').textContent=this.value+'%'">
+        </div>
+        <button class="action-btn start" id="mixer-toggle-btn" onclick="toggleMixer()">⏸ Hentikan Pengaduk</button>
+      </div>
+
+      <!-- Liquid control -->
+      <div class="control-card">
+        <div class="ctrl-header">
+          <div class="ctrl-title">💧 Cairan Pupuk</div>
+          <span class="ctrl-status off" id="liquid-ctrl-status">OFF</span>
+        </div>
+        <div class="toggle-row">
+          <button class="mode-btn auto active" id="liquid-auto-btn" onclick="setLiquidMode('auto')">⚙️ Otomatis</button>
+          <button class="mode-btn manual" id="liquid-manual-btn" onclick="setLiquidMode('manual')">✋ Manual</button>
+        </div>
+        <div class="slider-wrap" id="liquid-slider-wrap" style="display:none">
+          <div class="slider-label"><span>Volume</span><span id="liquid-vol-val">40%</span></div>
+          <input type="range" min="0" max="100" value="40" oninput="document.getElementById('liquid-vol-val').textContent=this.value+'%'">
+        </div>
+        <button class="action-btn start" id="liquid-toggle-btn" onclick="toggleLiquid()">▶ Jalankan Cairan</button>
+      </div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end page-dashboard -->
+
+<!-- ═══ AI CHAT FAB ═══ -->
+<button class="ai-fab" id="ai-fab" onclick="toggleChat()" style="display:none" title="Tanya NutriBot">
+  <div class="ai-fab-inner">
+    <svg class="ai-fab-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Center sparkle -->
+      <path d="M14 3 L15.2 11.5 L22 9 L16.5 14 L22 19 L15.2 16.5 L14 25 L12.8 16.5 L6 19 L11.5 14 L6 9 L12.8 11.5 Z" fill="url(#spk1)" />
+      <!-- Small top-right sparkle -->
+      <path d="M22 4 L22.6 7.2 L25.5 7 L23 9 L25.5 11 L22.6 10.8 L22 14 L21.4 10.8 L18.5 11 L21 9 L18.5 7 L21.4 7.2 Z" fill="url(#spk2)" opacity="0.8"/>
+      <!-- Small bottom-left sparkle -->
+      <path d="M5 17 L5.5 19.5 L8 19 L5.8 21 L8 23 L5.5 22.5 L5 25 L4.5 22.5 L2 23 L4.2 21 L2 19 L4.5 19.5 Z" fill="url(#spk3)" opacity="0.75"/>
+      <defs>
+        <linearGradient id="spk1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#9EC0EB"/>
+          <stop offset="50%" stop-color="#C1D591"/>
+          <stop offset="100%" stop-color="#F1B8D9"/>
+        </linearGradient>
+        <linearGradient id="spk2" x1="18" y1="4" x2="26" y2="14" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#F1B8D9"/>
+          <stop offset="100%" stop-color="#9EC0EB"/>
+        </linearGradient>
+        <linearGradient id="spk3" x1="2" y1="17" x2="8" y2="25" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#C1D591"/>
+          <stop offset="100%" stop-color="#B8D5DA"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+</button>
+
+<div class="ai-chat-popup" id="ai-chat-popup">
+  <div class="ai-header">
+    <div class="ai-avatar">🌿</div>
+    <div>
+      <div class="ai-name">NutriBot</div>
+      <div class="ai-sub">Asisten Kompos Pintar</div>
+    </div>
+  </div>
+
+  <div class="ai-msgs" id="ai-msgs">
+    <div class="msg bot">Halo! Saya NutriBot 🌱 Saya bisa membantu menjawab pertanyaan tentang kompos dan kondisi NutriBin kamu.</div>
+  </div>
+
+  <div class="ai-suggestions" id="ai-suggestions">
+    <span class="ai-chip" onclick="askChip(this)">Berapa hari pupuk siap?</span>
+    <span class="ai-chip" onclick="askChip(this)">Suhu ideal kompos?</span>
+    <span class="ai-chip" onclick="askChip(this)">Tips mempercepat kompos</span>
+  </div>
+
+  <div class="ai-input-row">
+    <input class="ai-input" id="ai-input" placeholder="Tanya sesuatu... 💬✨" onkeydown="if(event.key==='Enter')sendChat()" inputmode="text">
+    <button class="ai-send" onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <script>
-// ============================================================
-// STATE
-// ============================================================
-const state = {
-  mode: 'auto',
-  motor: false,
-  pump: false,
-  temp: 0,
-  hum: 0,
-  weight: 0,
-  tempMin: 999,
-  tempMax: -999,
-  motorRuntime: 0,
-  pumpDrained: 0,
-  uptimeSeconds: 0,
-  activeChart: 'temp',
-  nextMotorIn: 120,   // detik
-  nextPumpCheck: 30,
-};
+/* ════════════════════════════════════
+   HAMBURGER MENU
+════════════════════════════════════ */
+function toggleHamburger() {
+  document.getElementById('hamburger-btn').classList.toggle('open');
+  document.getElementById('hamburger-menu').classList.toggle('open');
+}
 
-const history = {
-  temp:   Array(60).fill(null),
-  hum:    Array(60).fill(null),
-  weight: Array(60).fill(null),
-  labels: Array(60).fill(''),
-};
+function closeHamburger() {
+  document.getElementById('hamburger-btn').classList.remove('open');
+  document.getElementById('hamburger-menu').classList.remove('open');
+}
 
-// ============================================================
-// CHART SETUP
-// ============================================================
-const chartColors = {
-  temp:   { line: '#39d353', fill: 'rgba(57,211,83,0.08)' },
-  hum:    { line: '#e3a628', fill: 'rgba(227,166,40,0.08)' },
-  weight: { line: '#4d9fff', fill: 'rgba(77,159,255,0.08)' },
-};
+function hamburgerGoHome() {
+  closeHamburger();
+  logout();
+}
 
-const ctx = document.getElementById('mainChart').getContext('2d');
-const chart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: history.labels,
-    datasets: [{
-      data: history.temp,
-      borderColor: chartColors.temp.line,
-      backgroundColor: chartColors.temp.fill,
-      borderWidth: 1.5,
-      pointRadius: 0,
-      tension: 0.4,
-      fill: true,
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: { duration: 300 },
-    plugins: { legend: { display: false }, tooltip: {
-      backgroundColor: '#1c2330',
-      borderColor: '#2a3441',
-      borderWidth: 1,
-      titleColor: '#8b949e',
-      bodyColor: '#c9d1d9',
-      titleFont: { family: 'IBM Plex Mono', size: 10 },
-      bodyFont: { family: 'IBM Plex Mono', size: 11 },
-      callbacks: {
-        title: items => items[0].label,
-        label: item => {
-          const units = { temp: '°C', hum: '%', weight: 'g' };
-          return ` ${item.raw?.toFixed(1)} ${units[state.activeChart]}`;
-        }
-      }
-    }},
-    scales: {
-      x: {
-        grid: { color: '#1c2330', lineWidth: 0.5 },
-        ticks: { color: '#484f58', font: { family: 'IBM Plex Mono', size: 9 }, maxTicksLimit: 6 },
-      },
-      y: {
-        grid: { color: '#1c2330', lineWidth: 0.5 },
-        ticks: { color: '#8b949e', font: { family: 'IBM Plex Mono', size: 10 } },
-        border: { dash: [3,3] }
-      }
-    }
+function hamburgerGoData() {
+  closeHamburger();
+  if (!currentRole) {
+    showToast('⚠️ Pilih peran dulu di halaman Login!');
+    return;
+  }
+  // Already on dashboard, just close menu
+  if (document.getElementById('page-dashboard').classList.contains('active')) {
+    showToast('✅ Kamu sudah di halaman Data!');
+    return;
+  }
+  openDashboard(currentRole);
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+  const btn  = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('hamburger-menu');
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    closeHamburger();
   }
 });
 
-function switchChart(type, btn) {
-  state.activeChart = type;
-  document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  chart.data.datasets[0].data = history[type];
-  chart.data.datasets[0].borderColor = chartColors[type].line;
-  chart.data.datasets[0].backgroundColor = chartColors[type].fill;
-  chart.update('none');
-}
+/* ════════════════════════════════════
+   STATE
+════════════════════════════════════ */
+let currentRole = null;
+let mixerOn = true, mixerAuto = true;
+let liquidOn = false, liquidAuto = true;
+const MAKER_PASS = 'nutribin123';
 
-
-
-// ============================================================
-// UPDATE UI
-// ============================================================
-function updateUI() {
-
-  // Cards
-  document.getElementById('temp-val').textContent    = state.temp.toFixed(1);
-  document.getElementById('hum-val').textContent     = state.hum.toFixed(1);
-  document.getElementById('weight-val').textContent  = Math.max(0, state.weight).toFixed(0);
-  document.getElementById('temp-min').textContent    = state.tempMin.toFixed(1);
-  document.getElementById('temp-max').textContent    = state.tempMax.toFixed(1);
-
-  // History push
-  const now = new Date();
-  const label = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
-  history.temp.push(state.temp); history.temp.shift();
-  history.hum.push(state.hum); history.hum.shift();
-  history.weight.push(Math.max(0, state.weight)); history.weight.shift();
-  history.labels.push(label); history.labels.shift();
-
-  chart.data.datasets[0].data = history[state.activeChart];
-  chart.update('none');
-
-  // Motor info
-  document.getElementById('motor-speed').textContent = state.motor ? '60' : '--';
-  document.getElementById('motor-runtime').textContent = state.motorRuntime;
-
-  // Pump info
-  document.getElementById('pump-drained').textContent = state.pumpDrained.toFixed(0);
-
-  // Last update
-  document.getElementById('last-update').textContent = `Last update: ${label}`;
-}
-
-// ============================================================
-// CONTROLS
-// ============================================================
-function setMotor(on) {
-  state.motor = on;
-  const badge = document.getElementById('motor-badge');
-  const onBtn = document.getElementById('motor-on-btn');
-  const offBtn = document.getElementById('motor-off-btn');
-  badge.textContent = on ? 'ON' : 'OFF';
-  badge.className = 'status-badge ' + (on ? 'on' : 'off');
-  onBtn.className  = 'ctrl-btn' + (on ? ' active-green' : '');
-  offBtn.className = 'ctrl-btn' + (!on ? ' active-red' : '');
-  if (state.mode === 'manual') addLog(on ? 'ok' : 'info', on ? 'Motor dinyalakan manual.' : 'Motor dimatikan manual.');
-}
-
-function setPump(on) {
-  state.pump = on;
-  const badge = document.getElementById('pump-badge');
-  const onBtn = document.getElementById('pump-on-btn');
-  const offBtn = document.getElementById('pump-off-btn');
-  badge.textContent = on ? 'ON' : 'OFF';
-  badge.className = 'status-badge ' + (on ? 'on' : 'off');
-  onBtn.className  = 'ctrl-btn' + (on ? ' active-green' : '');
-  offBtn.className = 'ctrl-btn' + (!on ? ' active-red' : '');
-  const now = new Date();
-  document.getElementById('pump-last').textContent =
-    `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  if (state.mode === 'manual') addLog(on ? 'ok' : 'info', on ? 'Pompa dinyalakan manual.' : 'Pompa dimatikan manual.');
-}
-
-function setMode(mode) {
-  state.mode = mode;
-  const badge = document.getElementById('mode-badge');
-  const btnAuto   = document.getElementById('btn-auto');
-  const btnManual = document.getElementById('btn-manual');
-  const desc = document.getElementById('mode-desc');
-
-  if (mode === 'auto') {
-    badge.textContent = 'AUTO';
-    badge.className = 'status-badge auto';
-    btnAuto.className   = 'mode-btn selected-auto';
-    btnManual.className = 'mode-btn';
-    desc.innerHTML = `Mode <span style="color:var(--blue)">OTOMATIS</span> aktif.<br>Motor: ngaduk setiap 2 jam selama 5 menit.<br>Pompa: nyala otomatis jika berat cairan ≥ 800g, mati setelah berat &lt; 200g.`;
-    addLog('info', 'Beralih ke mode OTOMATIS.');
-  } else {
-    badge.textContent = 'MANUAL';
-    badge.className = 'status-badge' ;
-    badge.style.color = 'var(--amber)';
-    badge.style.borderColor = 'rgba(227,166,40,0.4)';
-    badge.style.background = 'rgba(227,166,40,0.08)';
-    btnAuto.className   = 'mode-btn';
-    btnManual.className = 'mode-btn selected-manual';
-    desc.innerHTML = `Mode <span style="color:var(--amber)">MANUAL</span> aktif.<br>Semua kontrol motor dan pompa harus dilakukan manual.<br>Auto-trigger dinonaktifkan.`;
-    addLog('warn', 'Beralih ke mode MANUAL.');
+/* Simulated live sensor data */
+const sensorData = {
+  temp: 34, humid: 72, weight: 1.8,
+  history: {
+    labels: ['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00'],
+    temps:  [29,30,32,33,34,35,36,35,34,33,34,34],
+    humids: [68,70,71,72,74,73,72,71,72,73,72,72]
   }
+};
+
+/* ════════════════════════════════════
+   LOGIN
+════════════════════════════════════ */
+function selectRole(role) {
+  currentRole = role;
+  document.getElementById('btn-maker').classList.remove('selected');
+  document.getElementById('btn-user').classList.remove('selected');
+  document.getElementById('btn-' + role).classList.add('selected');
+  document.getElementById('pw-group').style.display = role === 'maker' ? 'block' : 'none';
+  document.getElementById('err-msg').style.display = 'none';
 }
 
-// ============================================================
-// LOG
-// ============================================================
-function addLog(type, msg) {
-  const list = document.getElementById('log-list');
-  const now = new Date();
-  const t = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
-  const entry = document.createElement('div');
-  entry.className = 'log-entry';
-  const typeMap = { ok:'log-ok', warn:'log-warn', err:'log-err', info:'log-info' };
-  const prefix = { ok:'[OK]  ', warn:'[WARN]', err:'[ERR] ', info:'[INFO]' };
-  entry.innerHTML = `<span class="log-time">${t}</span><span class="${typeMap[type]}">${prefix[type]} ${msg}</span>`;
-  list.insertBefore(entry, list.firstChild);
-  if (list.children.length > 40) list.removeChild(list.lastChild);
-}
-
-function clearLog() {
-  document.getElementById('log-list').innerHTML = '';
-  addLog('info', 'Log dibersihkan.');
-}
-
-// ============================================================
-// UPTIME
-// ============================================================
-setInterval(() => {
-  state.uptimeSeconds++;
-  const h = Math.floor(state.uptimeSeconds / 3600).toString().padStart(2,'0');
-  const m = Math.floor((state.uptimeSeconds % 3600) / 60).toString().padStart(2,'0');
-  const s = (state.uptimeSeconds % 60).toString().padStart(2,'0');
-  document.getElementById('uptime-display').textContent = `UP ${h}:${m}:${s}`;
-}, 1000);
-
-// ============================================================
-// CONFIG — Firebase
-// ============================================================
-const FIREBASE_URL = "https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json";
-
-// ============================================================
-// FETCH DATA DARI FIREBASE
-// ============================================================
-async function fetchSensor() {
-  try {
-    const res = await fetch(FIREBASE_URL);
-    if (!res.ok) throw new Error('HTTP error');
-    const data = await res.json();
-
-    state.temp   = data.suhu ?? state.temp;
-    state.hum    = data.kelembaban ?? state.hum;
-    state.weight = data.berat ?? state.weight;
-
-    if (state.temp < state.tempMin) state.tempMin = state.temp;
-    if (state.temp > state.tempMax) state.tempMax = state.temp;
-    if (state.motor) state.motorRuntime++;
-
-    if (state.mode === 'auto') {
-      if (state.weight >= 800 && !state.pump) {
-        setPump(true);
-        addLog('warn', `Pompa auto-ON. Berat: ${state.weight.toFixed(0)}g`);
-      }
-      if (state.weight < 200 && state.pump) {
-        setPump(false);
-        addLog('ok', 'Pompa auto-OFF. Cairan tuntas.');
-      }
-      if (state.temp > 70) addLog('err', `⚠ Suhu tinggi! ${state.temp.toFixed(1)}°C`);
+function doLogin() {
+  if (!currentRole) { showToast('Pilih peran dulu!'); return; }
+  if (currentRole === 'maker') {
+    const pw = document.getElementById('pw-input').value;
+    if (pw !== MAKER_PASS) {
+      document.getElementById('err-msg').style.display = 'block';
+      return;
     }
+  }
+  openDashboard(currentRole);
+}
 
-    document.querySelector('.status-dot').style.background = 'var(--green)';
-    document.querySelector('.status-dot').style.boxShadow = '0 0 6px var(--green)';
-    document.querySelector('.conn-label').textContent = 'ONLINE';
+function openDashboard(role) {
+  document.getElementById('page-login').classList.remove('active');
+  document.getElementById('page-dashboard').classList.add('active');
+  document.getElementById('ai-fab').style.display = 'flex';
 
-  } catch (err) {
-    document.querySelector('.status-dot').style.background = 'var(--red)';
-    document.querySelector('.status-dot').style.boxShadow = '0 0 6px var(--red)';
-    document.querySelector('.conn-label').textContent = 'OFFLINE';
-    addLog('err', 'Gagal konek ke Firebase. Cek koneksi internet.');
+  // Role badge
+  const dot = document.getElementById('sb-role-dot');
+  const name = document.getElementById('sb-role-name');
+  dot.className = 'sb-role-dot ' + role;
+  name.textContent = role === 'maker' ? '🔧 Maker' : '👤 User';
+
+  if (role === 'maker') {
+    document.getElementById('dash-title').textContent = 'Dashboard Maker';
+    document.getElementById('dash-sub').textContent = 'Kontrol penuh atas NutriBin anda';
+    document.getElementById('maker-controls').style.display = 'grid';
+    document.getElementById('user-info-row').style.display = 'none';
+    document.getElementById('sb-maker-label').style.display = 'block';
+    document.getElementById('sb-mixer-nav').style.display = 'flex';
+    document.getElementById('sb-liquid-nav').style.display = 'flex';
+  } else {
+    document.getElementById('dash-title').textContent = 'Dashboard User';
+    document.getElementById('dash-sub').textContent = 'Pantau kondisi kompos anda';
+    document.getElementById('maker-controls').style.display = 'none';
+    document.getElementById('user-info-row').style.display = 'grid';
+  }
+
+  initChart();
+  startSimulation();
+}
+
+function logout() {
+  document.getElementById('page-dashboard').classList.remove('active');
+  document.getElementById('page-login').classList.add('active');
+  document.getElementById('ai-fab').style.display = 'none';
+  document.getElementById('ai-chat-popup').classList.remove('open');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('btn-maker').classList.remove('selected');
+  document.getElementById('btn-user').classList.remove('selected');
+  document.getElementById('pw-group').style.display = 'none';
+  currentRole = null;
+}
+
+/* ════════════════════════════════════
+   CHART
+════════════════════════════════════ */
+let lineChart = null;
+
+function initChart() {
+  if (lineChart) { lineChart.destroy(); }
+  const ctx = document.getElementById('lineChart').getContext('2d');
+  lineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: sensorData.history.labels,
+      datasets: [
+        {
+          label: 'Suhu (°C)',
+          data: sensorData.history.temps,
+          borderColor: '#F1B8D9', backgroundColor: 'rgba(241,184,217,0.12)',
+          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#F1B8D9',
+          borderWidth: 2.5, fill: true
+        },
+        {
+          label: 'Kelembaban (%)',
+          data: sensorData.history.humids,
+          borderColor: '#9EC0EB', backgroundColor: 'rgba(158,192,235,0.12)',
+          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#9EC0EB',
+          borderWidth: 2.5, fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#538376', font: { family: 'DM Sans', size: 12 } } }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════════
+   LIVE SIMULATION
+════════════════════════════════════ */
+function startSimulation() {
+  setInterval(() => {
+    sensorData.temp   = +(32 + Math.random() * 5).toFixed(1);
+    sensorData.humid  = +(68 + Math.random() * 8).toFixed(1);
+    sensorData.weight = +(1.5 + Math.random() * 1).toFixed(2);
+
+    document.getElementById('val-temp').innerHTML   = sensorData.temp + '<span class="stat-unit"> °C</span>';
+    document.getElementById('val-humid').innerHTML  = sensorData.humid + '<span class="stat-unit"> %</span>';
+    document.getElementById('val-weight').innerHTML = sensorData.weight + '<span class="stat-unit"> kg</span>';
+  }, 3000);
+}
+
+/* ════════════════════════════════════
+   MAKER CONTROLS
+════════════════════════════════════ */
+function setMixerMode(mode) {
+  mixerAuto = mode === 'auto';
+  document.getElementById('mixer-auto-btn').classList.toggle('active', mixerAuto);
+  document.getElementById('mixer-manual-btn').classList.toggle('active', !mixerAuto);
+  document.getElementById('mixer-slider-wrap').style.display = mixerAuto ? 'none' : 'block';
+  showToast('Pengaduk: mode ' + (mixerAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
+}
+
+function toggleMixer() {
+  mixerOn = !mixerOn;
+  const btn = document.getElementById('mixer-toggle-btn');
+  const st  = document.getElementById('mixer-ctrl-status');
+  const sv  = document.getElementById('val-mixer-state');
+  const bm  = document.getElementById('badge-mixer');
+  btn.className = 'action-btn ' + (mixerOn ? 'stop' : 'start');
+  btn.textContent = mixerOn ? '⏸ Hentikan Pengaduk' : '▶ Jalankan Pengaduk';
+  st.className    = 'ctrl-status ' + (mixerOn ? 'on' : 'off');
+  st.textContent  = mixerOn ? 'ON' : 'OFF';
+  sv.textContent  = mixerOn ? 'ON' : 'OFF';
+  bm.className    = 'stat-badge ' + (mixerOn ? 'badge-on' : 'badge-off');
+  bm.textContent  = mixerOn ? '⚡ Otomatis' : '⛔ Berhenti';
+  document.getElementById('mixer-status-display').textContent = mixerOn ? 'ON' : 'OFF';
+  showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
+}
+
+function setLiquidMode(mode) {
+  liquidAuto = mode === 'auto';
+  document.getElementById('liquid-auto-btn').classList.toggle('active', liquidAuto);
+  document.getElementById('liquid-manual-btn').classList.toggle('active', !liquidAuto);
+  document.getElementById('liquid-slider-wrap').style.display = liquidAuto ? 'none' : 'block';
+  showToast('Cairan pupuk: mode ' + (liquidAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
+}
+
+function toggleLiquid() {
+  liquidOn = !liquidOn;
+  const btn = document.getElementById('liquid-toggle-btn');
+  const st  = document.getElementById('liquid-ctrl-status');
+  btn.className = 'action-btn ' + (liquidOn ? 'stop' : 'start');
+  btn.textContent = liquidOn ? '⏸ Hentikan Cairan' : '▶ Jalankan Cairan';
+  st.className    = 'ctrl-status ' + (liquidOn ? 'on' : 'off');
+  st.textContent  = liquidOn ? 'ON' : 'OFF';
+  showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ✓' : 'dihentikan ✗'));
+}
+
+/* ════════════════════════════════════
+   AI CHAT
+════════════════════════════════════ */
+function toggleChat() {
+  const popup = document.getElementById('ai-chat-popup');
+  const fab   = document.getElementById('ai-fab');
+  popup.classList.toggle('open');
+  fab.classList.toggle('chat-open');
+}
+
+function askChip(el) {
+  document.getElementById('ai-input').value = el.textContent;
+  document.getElementById('ai-suggestions').style.display = 'none';
+  sendChat();
+}
+
+async function sendChat() {
+  const inp = document.getElementById('ai-input');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+
+  appendMsg('user-msg', q);
+
+  const loading = appendMsg('loading', '⏳ NutriBot sedang berpikir...');
+
+  const systemPrompt = `Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.
+Data sensor saat ini:
+- Suhu: ${sensorData.temp}°C
+- Kelembaban: ${sensorData.humid}%
+- Berat sampah: ${sensorData.weight} kg
+- Status pengaduk: ${mixerOn ? 'ON (Otomatis)' : 'OFF'}
+
+ATURAN FORMAT JAWABAN (WAJIB DIIKUTI):
+- Jika jawabanmu punya lebih dari satu poin, SELALU tulis dalam format bernomor atau berpeluru per baris baru.
+- Format nomor: "1. teks" lalu baris baru "2. teks" dst.
+- Format peluru: "• teks" lalu baris baru "• teks" dst.
+- Gunakan emoji yang relevan di awal setiap poin untuk membuat lebih menarik.
+- Pisahkan setiap poin dengan baris baru (\n).
+- Boleh menggunakan simbol seperti ✅ ❌ ⚠️ 📌 🌡️ 💧 ⚖️ 🔄 ✨ ➤ → dll.
+- Jangan tulis semua jawaban dalam satu paragraf panjang jika bisa dipisah per poin.
+- Jawab dalam Bahasa Indonesia, ramah dan informatif.
+- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system: systemPrompt,
+        messages:[{role:'user',content:q}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(c=>c.text||'').join('') || 'Maaf, ada gangguan. Coba lagi ya!';
+    loading.remove();
+    appendMsg('bot', text);
+  } catch(e) {
+    loading.remove();
+    appendMsg('bot', '⚠️ Tidak bisa terhubung. Periksa koneksi internet.');
   }
 }
 
-// ============================================================
-// MAIN LOOP
-// ============================================================
-async function mainLoop() {
-  await fetchSensor();
-  updateUI();
+function formatBotText(text) {
+  // Split by newlines and render each line
+  const lines = text.split('\n');
+  const container = document.createDocumentFragment();
+  lines.forEach((line, i) => {
+    const trimmed = line.trimStart();
+    if (trimmed === '') {
+      if (i > 0 && i < lines.length - 1) {
+        container.appendChild(document.createElement('br'));
+      }
+      return;
+    }
+    const span = document.createElement('span');
+    span.style.display = 'block';
+    // Add slight indent for numbered/bulleted lines
+    if (/^(\d+\.|[•\-\*➤→✅❌⚠️📌])/.test(trimmed)) {
+      span.style.paddingLeft = '2px';
+      span.style.marginTop = i === 0 ? '0' : '5px';
+    }
+    span.textContent = line;
+    container.appendChild(span);
+  });
+  return container;
 }
 
-// Inisialisasi awal
-state.weight = 0;
-addLog('ok', 'Dashboard terhubung.');
-addLog('info', 'Menghubungkan ke ESP32...');
-setInterval(mainLoop, 2000);
-mainLoop();
-</script>
+function appendMsg(type, text) {
+  const msgs = document.getElementById('ai-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg ' + type;
+  if (type === 'bot') {
+    d.appendChild(formatBotText(text));
+  } else {
+    d.textContent = text;
+  }
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
 
+/* ════════════════════════════════════
+   TOAST
+════════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
 </body>
 </html>
