@@ -468,4 +468,985 @@
     box-shadow: 0 4px 20px rgba(83,131,118,0.2), 0 1px 4px rgba(0,0,0,0.08);
     transition: all 0.22s ease;
   }
-  .hamburger-btn:hover { transform: scal
+  .hamburger-btn:hover { transform: scale(1.07); box-shadow: 0 6px 24px rgba(83,131,118,0.28); }
+  .hamburger-btn .bar {
+    width: 20px; height: 2.5px; border-radius: 3px;
+    background: var(--basil); transition: all 0.25s ease;
+    display: block;
+  }
+  .hamburger-btn.open .bar:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+  .hamburger-btn.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger-btn.open .bar:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+  .hamburger-menu {
+    position: fixed; top: 72px; right: 20px; z-index: 2999;
+    background: rgba(255,255,255,0.97); backdrop-filter: blur(20px);
+    border-radius: 18px; padding: 8px;
+    box-shadow: 0 16px 48px rgba(83,131,118,0.22), 0 4px 14px rgba(0,0,0,0.1);
+    border: 1px solid rgba(184,213,218,0.45);
+    min-width: 190px;
+    transform: scale(0.85) translateY(-12px); transform-origin: top right;
+    opacity: 0; pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .hamburger-menu.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+
+  .hmenu-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 12px;
+    font-size: 0.9rem; font-weight: 500; color: var(--text-dark);
+    cursor: pointer; transition: all 0.18s;
+  }
+  .hmenu-item:hover { background: rgba(193,213,145,0.3); color: var(--basil); transform: translateX(3px); }
+  .hmenu-item .hmenu-icon {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.05rem; flex-shrink:0;
+  }
+  .hmenu-item.home .hmenu-icon { background: rgba(193,213,145,0.4); }
+  .hmenu-item.data .hmenu-icon { background: rgba(158,192,235,0.4); }
+  .hmenu-divider { height: 1px; background: rgba(184,213,218,0.45); margin: 4px 6px; }
+  .hmenu-label {
+    font-size: 0.68rem; color: var(--text-light);
+    padding: 6px 14px 4px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ─── DARK MODE ─── */
+  body.dark {
+    --cream:     #1A2420;
+    --soft-white:#1E2B26;
+    --text-dark: #E8F5EF;
+    --text-mid:  #A8C8BC;
+    --text-light:#6A9A8A;
+    --card-bg:   rgba(40,60,52,0.85);
+    --shadow:    rgba(0,0,0,0.3);
+    background: var(--cream);
+  }
+  body.dark .login-card,
+  body.dark .sidebar,
+  body.dark .stat-card,
+  body.dark .card,
+  body.dark .control-card,
+  body.dark .info-card,
+  body.dark .settings-card,
+  body.dark .ai-chat-popup { background: var(--card-bg); border-color: rgba(255,255,255,0.08); }
+  body.dark .hamburger-btn { background: rgba(40,60,52,0.95); border-color: rgba(100,160,140,0.4); }
+  body.dark .hamburger-btn .bar { background: var(--vetiver); }
+  body.dark .hamburger-menu { background: rgba(30,43,38,0.98); border-color: rgba(100,160,140,0.3); }
+  body.dark .hmenu-item { color: var(--text-dark); }
+  body.dark .ai-chat-popup { background: rgba(30,43,38,0.97); }
+  body.dark .ai-input { background: rgba(255,255,255,0.08); border-color: rgba(100,160,140,0.3); color: var(--text-dark); }
+  body.dark .msg.bot { background: rgba(83,131,118,0.25); }
+  body.dark #page-login { background: linear-gradient(135deg, #1A2E1A 0%, #1A2A2E 35%, #1A2035 65%, #2E1A28 100%); }
+  body.dark .login-card { background: rgba(30,43,38,0.9); }
+  body.dark .pw-input { background: rgba(255,255,255,0.08); border-color: rgba(100,160,140,0.3); color: var(--text-dark); }
+  body.dark .role-btn { background: rgba(255,255,255,0.06); }
+  body.dark .sidebar { background: linear-gradient(180deg, rgba(30,50,40,0.9) 0%, rgba(25,45,50,0.9) 100%); }
+  body.dark .sb-back-btn { background: rgba(255,255,255,0.07); border-color: rgba(100,160,140,0.3); }
+  body.dark .settings-textarea { background: rgba(255,255,255,0.06); border-color: rgba(100,160,140,0.3); color: var(--text-dark); }
+  body.dark .faq-item { border-color: rgba(100,160,140,0.2); }
+  body.dark .faq-q { color: var(--text-dark); }
+  body.dark .theme-opt { background: rgba(255,255,255,0.06); border-color: rgba(100,160,140,0.25); }
+
+  /* ─── SETTINGS PAGE ─── */
+  .settings-card {
+    background: var(--card-bg); backdrop-filter: blur(12px);
+    border-radius: 20px; padding: 22px;
+    box-shadow: 0 4px 20px var(--shadow);
+    border: 1px solid rgba(255,255,255,0.85);
+    margin-bottom: 16px;
+  }
+  .settings-section-title {
+    font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700;
+    color: var(--basil); margin-bottom: 6px;
+  }
+  .settings-desc { font-size: 0.82rem; color: var(--text-light); margin-bottom: 16px; }
+
+  .theme-options { display: flex; gap: 14px; }
+  .theme-opt {
+    flex: 1; border-radius: 16px; padding: 14px 12px;
+    border: 2px solid rgba(184,213,218,0.4);
+    background: rgba(255,255,255,0.6);
+    cursor: pointer; transition: all 0.22s;
+    text-align: center; font-size: 0.85rem; font-weight: 600;
+    color: var(--text-mid); position: relative;
+  }
+  .theme-opt:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--shadow); }
+  .theme-opt.active { border-color: var(--basil); background: rgba(193,213,145,0.2); color: var(--basil); }
+  .theme-preview {
+    width: 100%; height: 52px; border-radius: 10px;
+    margin-bottom: 10px; padding: 8px; display: flex; flex-direction: column; gap: 5px;
+  }
+  .light-preview { background: #F9F6EF; }
+  .dark-preview  { background: #1A2420; }
+  .tp-bar  { height: 8px; border-radius: 4px; background: var(--vetiver); width: 70%; }
+  .dark-preview .tp-bar { background: #538376; }
+  .tp-card { height: 10px; border-radius: 4px; background: rgba(255,255,255,0.9); }
+  .dark-preview .tp-card { background: rgba(255,255,255,0.12); }
+  .theme-check {
+    position: absolute; top: 8px; right: 10px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--basil); color: #fff;
+    font-size: 0.7rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .settings-textarea {
+    width: 100%; min-height: 90px; padding: 12px 14px;
+    border-radius: 13px; border: 1.5px solid rgba(184,213,218,0.5);
+    background: rgba(255,255,255,0.7);
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    color: var(--text-dark); resize: vertical; outline: none;
+    transition: border-color 0.2s; line-height: 1.5;
+    margin-bottom: 12px; display: block;
+  }
+  .settings-textarea:focus { border-color: var(--basil); }
+
+  .settings-btn {
+    width: 100%; padding: 13px; border-radius: 13px; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.22s;
+  }
+  .settings-btn.primary { background: linear-gradient(135deg, var(--basil), #6aab98); color: #fff; box-shadow: 0 4px 14px rgba(83,131,118,0.3); }
+  .settings-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(83,131,118,0.38); }
+  .settings-btn.secondary { background: linear-gradient(135deg, #d4709a, #e8a0c0); color: #fff; box-shadow: 0 4px 14px rgba(212,112,154,0.28); }
+  .settings-btn.secondary:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(212,112,154,0.38); }
+
+  .faq-item {
+    border-bottom: 1px solid rgba(184,213,218,0.35);
+    cursor: pointer; padding: 13px 0;
+  }
+  .faq-item:last-of-type { border-bottom: none; }
+  .faq-q {
+    font-size: 0.88rem; font-weight: 600; color: var(--text-dark);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px;
+  }
+  .faq-arrow { font-size: 1.1rem; color: var(--text-light); transition: transform 0.22s; flex-shrink: 0; }
+  .faq-item.open .faq-arrow { transform: rotate(90deg); }
+  .faq-a {
+    font-size: 0.82rem; color: var(--text-mid); line-height: 1.6;
+    margin-top: 0; max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, margin-top 0.2s;
+  }
+  .faq-item.open .faq-a { max-height: 200px; margin-top: 9px; }
+
+  #page-settings { background: var(--cream); }
+
+  @media(max-width:700px){
+    .sidebar{transform:translateX(-230px);}
+    .main-content{margin-left:0;padding:20px 16px 80px;}
+    .chart-row,.controls-row,.info-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HAMBURGER BUTTON (only shown on page 2) -->
+<button class="hamburger-btn" id="hamburger-btn" onclick="toggleHamburger()" style="display:none">
+  <span class="bar"></span>
+  <span class="bar"></span>
+  <span class="bar"></span>
+</button>
+
+<!-- HAMBURGER DROPDOWN MENU -->
+<div class="hamburger-menu" id="hamburger-menu">
+  <div class="hmenu-label">Menu</div>
+  <div class="hmenu-item home" onclick="hamburgerGoHome()">
+    <div class="hmenu-icon">🏠</div>
+    <span>Home</span>
+  </div>
+  <div class="hmenu-divider"></div>
+  <div class="hmenu-item settings" onclick="hamburgerGoSettings()">
+    <div class="hmenu-icon" style="background:rgba(241,184,217,0.4)">⚙️</div>
+    <span>Pengaturan</span>
+  </div>
+</div>
+
+<!-- ═══ PAGE 1: LOGIN ═══ -->
+<div class="page active" id="page-login">
+  <div class="login-card">
+    <div class="login-logo">🌱</div>
+    <h1 class="login-title">NutriBin</h1>
+    <p class="login-sub">Smart Compost Monitoring System</p>
+
+    <div class="role-btn-group">
+      <button class="role-btn maker" id="btn-maker" onclick="selectRole('maker')">
+        <span class="role-icon">🔧</span>
+        <span>Maker</span>
+      </button>
+      <button class="role-btn user" id="btn-user" onclick="selectRole('user')">
+        <span class="role-icon">👤</span>
+        <span>User</span>
+      </button>
+    </div>
+
+    <div class="pw-group" id="pw-group" style="display:none">
+      <label class="pw-label">🔒 Password Maker</label>
+      <input type="password" class="pw-input" id="pw-input" placeholder="Masukan password..." onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="err-msg" id="err-msg">⚠️ Password salah. Coba lagi.</div>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">Masuk Dashboard →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 2: DASHBOARD ═══ -->
+<div class="page" id="page-dashboard" style="flex-direction:row">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">🌱</div>
+      <span class="sb-logo-text">NutriBin</span>
+    </div>
+
+    <div class="sb-back-btn" onclick="logout()">‹ Ganti Akun</div>
+
+    <span class="sb-section-label">Monitor</span>
+    <a class="sb-nav-item active"><span class="sb-nav-icon">📊</span> Dashboard</a>
+    <a class="sb-nav-item"><span class="sb-nav-icon">🌡️</span> Suhu & Kelembaban</a>
+    <a class="sb-nav-item"><span class="sb-nav-icon">⚖️</span> Berat Sampah</a>
+    <a class="sb-nav-item"><span class="sb-nav-icon">📈</span> Grafik Histori</a>
+
+    <span class="sb-section-label" id="sb-maker-label" style="display:none">Kontrol</span>
+    <a class="sb-nav-item" id="sb-mixer-nav" style="display:none"><span class="sb-nav-icon">🔄</span> Pengaduk</a>
+    <a class="sb-nav-item" id="sb-liquid-nav" style="display:none"><span class="sb-nav-icon">💧</span> Cairan Pupuk</a>
+
+    <div class="sb-role-badge">
+      <div class="sb-role-dot" id="sb-role-dot"></div>
+      <div>
+        <div class="sb-role-name" id="sb-role-name">—</div>
+        <div style="font-size:0.7rem;color:var(--text-light)">Mode aktif</div>
+      </div>
+    </div>
+    <div class="sb-logout" onclick="logout()">↩ Keluar</div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main-content" id="main-content">
+    <div class="page-header">
+      <h1 id="dash-title">Dashboard</h1>
+      <p id="dash-sub">Monitoring real-time NutriBin anda &nbsp;<span id="firebase-status" style="font-size:0.78rem;background:rgba(193,213,145,0.3);padding:3px 10px;border-radius:20px;font-weight:600;color:var(--basil)">⏳ Menghubungkan...</span></p>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card temp">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-label">SUHU</div>
+        <div class="stat-value" id="val-temp">34<span class="stat-unit"> °C</span></div>
+        <div><span class="stat-badge badge-on">↑ Normal</span></div>
+      </div>
+      <div class="stat-card humid">
+        <div class="stat-icon">💧</div>
+        <div class="stat-label">KELEMBABAN</div>
+        <div class="stat-value" id="val-humid">72<span class="stat-unit"> %</span></div>
+        <div><span class="stat-badge badge-on">✓ Optimal</span></div>
+      </div>
+      <div class="stat-card weight">
+        <div class="stat-icon">⚖️</div>
+        <div class="stat-label">BERAT SAMPAH</div>
+        <div class="stat-value" id="val-weight">1.8<span class="stat-unit"> kg</span></div>
+        <div><span class="stat-badge badge-on">📦 Aktif</span></div>
+      </div>
+      <div class="stat-card mixer">
+        <div class="stat-icon">🔄</div>
+        <div class="stat-label">PENGADUK</div>
+        <div class="stat-value" id="val-mixer-state" style="font-size:1.3rem;">ON</div>
+        <div><span class="stat-badge badge-on" id="badge-mixer">⚡ Otomatis</span></div>
+      </div>
+    </div>
+
+    <!-- CHART ROW -->
+    <div class="chart-row">
+      <div class="card">
+        <div class="card-title">📈 Grafik Suhu & Kelembaban (24 jam)</div>
+        <canvas id="lineChart" height="180"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-title">⚖️ Kapasitas Tempat</div>
+        <div class="donut-wrap">
+          <div class="donut-ring">
+            <svg viewBox="0 0 100 100" width="130" height="130">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#E8F0EA" stroke-width="12"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="url(#donutGrad)" stroke-width="12"
+                stroke-dasharray="150.8" stroke-dashoffset="60" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#C1D591"/>
+                  <stop offset="100%" stop-color="#538376"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="donut-center">
+              <div class="big-num">60%</div>
+              <div class="small-l">penuh</div>
+            </div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:0.78rem;color:var(--text-light)">1.8 kg / 3.0 kg</div>
+            <div style="font-size:0.72rem;color:var(--text-light);margin-top:3px;">Estimasi penuh: <b>4 hari</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER INFO ROW -->
+    <div class="info-row" id="user-info-row">
+      <div class="info-card">
+        <div class="info-label">📅 PERKIRAAN PUPUK SIAP</div>
+        <div class="info-val">~12 hari</div>
+        <div class="info-meta">Berdasarkan suhu & kelembaban saat ini</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">🔄 STATUS PENGADUK OTOMATIS</div>
+        <div class="info-val" id="mixer-status-display">ON</div>
+        <div class="info-meta">Mode: <b>Otomatis</b> • Interval: 6 jam</div>
+      </div>
+    </div>
+
+    <!-- MAKER CONTROLS -->
+    <div class="controls-row" id="maker-controls" style="display:none">
+
+      <!-- Mixer control -->
+      <div class="control-card">
+        <div class="ctrl-header">
+          <div class="ctrl-title">🔄 Pengaduk Cairan</div>
+          <span class="ctrl-status on" id="mixer-ctrl-status">ON</span>
+        </div>
+        <div class="toggle-row">
+          <button class="mode-btn auto active" id="mixer-auto-btn" onclick="setMixerMode('auto')">⚙️ Otomatis</button>
+          <button class="mode-btn manual" id="mixer-manual-btn" onclick="setMixerMode('manual')">✋ Manual</button>
+        </div>
+        <div class="slider-wrap" id="mixer-slider-wrap" style="display:none">
+          <div class="slider-label"><span>Kecepatan</span><span id="mixer-speed-val">60%</span></div>
+          <input type="range" min="0" max="100" value="60" oninput="document.getElementById('mixer-speed-val').textContent=this.value+'%'">
+        </div>
+        <button class="action-btn start" id="mixer-toggle-btn" onclick="toggleMixer()">⏸ Hentikan Pengaduk</button>
+      </div>
+
+      <!-- Liquid control -->
+      <div class="control-card">
+        <div class="ctrl-header">
+          <div class="ctrl-title">💧 Cairan Pupuk</div>
+          <span class="ctrl-status off" id="liquid-ctrl-status">OFF</span>
+        </div>
+        <div class="toggle-row">
+          <button class="mode-btn auto active" id="liquid-auto-btn" onclick="setLiquidMode('auto')">⚙️ Otomatis</button>
+          <button class="mode-btn manual" id="liquid-manual-btn" onclick="setLiquidMode('manual')">✋ Manual</button>
+        </div>
+        <div class="slider-wrap" id="liquid-slider-wrap" style="display:none">
+          <div class="slider-label"><span>Volume</span><span id="liquid-vol-val">40%</span></div>
+          <input type="range" min="0" max="100" value="40" oninput="document.getElementById('liquid-vol-val').textContent=this.value+'%'">
+        </div>
+        <button class="action-btn start" id="liquid-toggle-btn" onclick="toggleLiquid()">▶ Jalankan Cairan</button>
+      </div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end page-dashboard -->
+
+<!-- ═══ AI CHAT FAB ═══ -->
+<button class="ai-fab" id="ai-fab" onclick="toggleChat()" style="display:none" title="Tanya NutriBot">
+  <div class="ai-fab-inner">
+    <svg class="ai-fab-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Center sparkle -->
+      <path d="M14 3 L15.2 11.5 L22 9 L16.5 14 L22 19 L15.2 16.5 L14 25 L12.8 16.5 L6 19 L11.5 14 L6 9 L12.8 11.5 Z" fill="url(#spk1)" />
+      <!-- Small top-right sparkle -->
+      <path d="M22 4 L22.6 7.2 L25.5 7 L23 9 L25.5 11 L22.6 10.8 L22 14 L21.4 10.8 L18.5 11 L21 9 L18.5 7 L21.4 7.2 Z" fill="url(#spk2)" opacity="0.8"/>
+      <!-- Small bottom-left sparkle -->
+      <path d="M5 17 L5.5 19.5 L8 19 L5.8 21 L8 23 L5.5 22.5 L5 25 L4.5 22.5 L2 23 L4.2 21 L2 19 L4.5 19.5 Z" fill="url(#spk3)" opacity="0.75"/>
+      <defs>
+        <linearGradient id="spk1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#9EC0EB"/>
+          <stop offset="50%" stop-color="#C1D591"/>
+          <stop offset="100%" stop-color="#F1B8D9"/>
+        </linearGradient>
+        <linearGradient id="spk2" x1="18" y1="4" x2="26" y2="14" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#F1B8D9"/>
+          <stop offset="100%" stop-color="#9EC0EB"/>
+        </linearGradient>
+        <linearGradient id="spk3" x1="2" y1="17" x2="8" y2="25" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#C1D591"/>
+          <stop offset="100%" stop-color="#B8D5DA"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+</button>
+
+<div class="ai-chat-popup" id="ai-chat-popup">
+  <div class="ai-header">
+    <div class="ai-avatar">🌿</div>
+    <div>
+      <div class="ai-name">NutriBot</div>
+      <div class="ai-sub">Asisten Kompos Pintar</div>
+    </div>
+  </div>
+
+  <div class="ai-msgs" id="ai-msgs">
+    <div class="msg bot">Halo! Saya NutriBot 🌱 Saya bisa membantu menjawab pertanyaan tentang kompos dan kondisi NutriBin kamu.</div>
+  </div>
+
+  <div class="ai-suggestions" id="ai-suggestions">
+    <span class="ai-chip" onclick="askChip(this)">Berapa hari pupuk siap?</span>
+    <span class="ai-chip" onclick="askChip(this)">Suhu ideal kompos?</span>
+    <span class="ai-chip" onclick="askChip(this)">Tips mempercepat kompos</span>
+  </div>
+
+  <div class="ai-input-row">
+    <input class="ai-input" id="ai-input" placeholder="Tanya sesuatu... 💬✨" onkeydown="if(event.key==='Enter')sendChat()" inputmode="text">
+    <button class="ai-send" onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<!-- ═══ PAGE 3: PENGATURAN ═══ -->
+<div class="page" id="page-settings" style="flex-direction:column; align-items:center; justify-content:flex-start; padding: 40px 20px 80px;">
+
+  <div style="width:min(520px,96vw)">
+    <!-- Back header -->
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:32px;">
+      <button onclick="goBackToDashboard()" style="width:40px;height:40px;border-radius:12px;border:1.5px solid rgba(184,213,218,0.6);background:rgba(255,255,255,0.8);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" onmouseover="this.style.background='rgba(193,213,145,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.8)'">‹</button>
+      <div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--basil)">Pengaturan</h1>
+        <p style="font-size:0.82rem;color:var(--text-light)">Sesuaikan NutriBin sesuai preferensimu</p>
+      </div>
+    </div>
+
+    <!-- TEMA -->
+    <div class="settings-card">
+      <div class="settings-section-title">🎨 Tema Tampilan</div>
+      <p class="settings-desc">Pilih tampilan yang nyaman untuk kamu</p>
+      <div class="theme-options">
+        <div class="theme-opt active" id="theme-light" onclick="setTheme('light')">
+          <div class="theme-preview light-preview">
+            <div class="tp-bar"></div><div class="tp-card"></div><div class="tp-card"></div>
+          </div>
+          <span>☀️ Terang</span>
+          <div class="theme-check" id="check-light">✓</div>
+        </div>
+        <div class="theme-opt" id="theme-dark" onclick="setTheme('dark')">
+          <div class="theme-preview dark-preview">
+            <div class="tp-bar"></div><div class="tp-card"></div><div class="tp-card"></div>
+          </div>
+          <span>🌙 Gelap</span>
+          <div class="theme-check" id="check-dark" style="display:none">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAPORAN MASALAH -->
+    <div class="settings-card">
+      <div class="settings-section-title">🐛 Laporan Masalah</div>
+      <p class="settings-desc">Temukan bug atau error? Laporkan ke developer.</p>
+      <textarea class="settings-textarea" id="report-text" placeholder="Ceritakan masalah yang kamu alami... Contoh: tombol X tidak berfungsi saat halaman pertama dibuka"></textarea>
+      <button class="settings-btn primary" onclick="sendReport()">📧 Kirim Laporan via Gmail</button>
+    </div>
+
+    <!-- KOTAK SARAN -->
+    <div class="settings-card">
+      <div class="settings-section-title">💡 Kotak Saran</div>
+      <p class="settings-desc">Punya ide atau saran untuk NutriBin? Kami senang mendengarnya!</p>
+      <textarea class="settings-textarea" id="saran-text" placeholder="Tulis saranmu di sini... Contoh: tambahkan fitur notifikasi ketika pupuk sudah siap 🌱"></textarea>
+      <button class="settings-btn secondary" onclick="sendSaran()">✉️ Kirim Saran via Gmail</button>
+    </div>
+
+    <!-- PUSAT BANTUAN -->
+    <div class="settings-card">
+      <div class="settings-section-title">❓ Pusat Bantuan</div>
+      <p class="settings-desc">Pertanyaan umum seputar NutriBin</p>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">🌡️ Berapa suhu ideal untuk pengomposan?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Suhu ideal pengomposan adalah <b>45–65°C</b>. Di suhu ini, bakteri termofil bekerja paling aktif untuk menguraikan bahan organik. Jika suhu di bawah 40°C, proses akan melambat.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">💧 Kelembaban berapa yang disarankan?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Kelembaban optimal adalah <b>50–70%</b>. Terlalu kering akan memperlambat proses dekomposisi, terlalu basah menyebabkan bau tidak sedap dan kondisi anaerobik.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">🔄 Seberapa sering perlu diaduk?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Disarankan pengadukan setiap <b>2–3 hari sekali</b>. Pengadukan memastikan oksigen masuk ke seluruh tumpukan dan mempercepat proses pengomposan secara merata.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">📅 Berapa lama pupuk kompos siap?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Dengan kondisi optimal (suhu 55°C, kelembaban 60%), pupuk kompos bisa siap dalam <b>2–4 minggu</b>. Tanda siap: berwarna coklat gelap, berbau tanah, tidak panas lagi.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">⚙️ Bagaimana cara reset alat?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Tekan dan tahan tombol reset di ESP32 selama <b>5 detik</b> sampai LED berkedip 3 kali. Alat akan restart dan menghubungkan ulang ke WiFi secara otomatis.</div>
+      </div>
+
+      <div style="margin-top:16px;padding:14px;background:rgba(158,192,235,0.15);border-radius:12px;font-size:0.82rem;color:var(--text-mid);text-align:center;">
+        Masih butuh bantuan? 📬 Hubungi developer di<br>
+        <b style="color:var(--basil)">itsandika.tech@gmail.com</b>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<script>
+/* ════════════════════════════════════
+   HAMBURGER MENU
+════════════════════════════════════ */
+function toggleHamburger() {
+  document.getElementById('hamburger-btn').classList.toggle('open');
+  document.getElementById('hamburger-menu').classList.toggle('open');
+}
+
+function closeHamburger() {
+  document.getElementById('hamburger-btn').classList.remove('open');
+  document.getElementById('hamburger-menu').classList.remove('open');
+}
+
+function hamburgerGoHome() {
+  closeHamburger();
+  logout();
+}
+
+function hamburgerGoSettings() {
+  closeHamburger();
+  document.getElementById('page-dashboard').classList.remove('active');
+  document.getElementById('page-settings').classList.add('active');
+  document.getElementById('ai-fab').style.display = 'none';
+  document.getElementById('hamburger-btn').style.display = 'none';
+}
+
+function goBackToDashboard() {
+  document.getElementById('page-settings').classList.remove('active');
+  document.getElementById('page-dashboard').classList.add('active');
+  document.getElementById('ai-fab').style.display = 'flex';
+  document.getElementById('hamburger-btn').style.display = 'flex';
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e) {
+  const btn  = document.getElementById('hamburger-btn');
+  const menu = document.getElementById('hamburger-menu');
+  if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+    closeHamburger();
+  }
+});
+
+/* ════════════════════════════════════
+   THEME
+════════════════════════════════════ */
+function setTheme(mode) {
+  if (mode === 'dark') {
+    document.body.classList.add('dark');
+    document.getElementById('theme-light').classList.remove('active');
+    document.getElementById('theme-dark').classList.add('active');
+    document.getElementById('check-light').style.display = 'none';
+    document.getElementById('check-dark').style.display = 'flex';
+  } else {
+    document.body.classList.remove('dark');
+    document.getElementById('theme-dark').classList.remove('active');
+    document.getElementById('theme-light').classList.add('active');
+    document.getElementById('check-dark').style.display = 'none';
+    document.getElementById('check-light').style.display = 'flex';
+  }
+  showToast(mode === 'dark' ? '🌙 Tema Gelap aktif' : '☀️ Tema Terang aktif');
+}
+
+/* ════════════════════════════════════
+   SETTINGS ACTIONS
+════════════════════════════════════ */
+function sendReport() {
+  const txt = document.getElementById('report-text').value.trim();
+  if (!txt) { showToast('⚠️ Tulis laporan masalahmu dulu!'); return; }
+  const subject = encodeURIComponent('🐛 Laporan Masalah NutriBin');
+  const body    = encodeURIComponent('Halo Developer,\n\nSaya ingin melaporkan masalah berikut:\n\n' + txt + '\n\nTerima kasih.');
+  window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
+  document.getElementById('report-text').value = '';
+  showToast('✅ Membuka Gmail untuk laporan...');
+}
+
+function sendSaran() {
+  const txt = document.getElementById('saran-text').value.trim();
+  if (!txt) { showToast('⚠️ Tulis saranmu dulu!'); return; }
+  const subject = encodeURIComponent('💡 Kotak Saran NutriBin');
+  const body    = encodeURIComponent('Halo Developer,\n\nSaya punya saran untuk NutriBin:\n\n' + txt + '\n\nTerima kasih.');
+  window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
+  document.getElementById('saran-text').value = '';
+  showToast('✅ Membuka Gmail untuk saran...');
+}
+
+function toggleFaq(el) {
+  el.classList.toggle('open');
+}
+
+/* ════════════════════════════════════
+   STATE
+════════════════════════════════════ */
+let currentRole = null;
+let mixerOn = true, mixerAuto = true;
+let liquidOn = false, liquidAuto = true;
+const MAKER_PASS = 'nutribin123';
+
+/* Simulated live sensor data */
+const sensorData = {
+  temp: 34, humid: 72, weight: 1.8,
+  history: {
+    labels: ['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00'],
+    temps:  [29,30,32,33,34,35,36,35,34,33,34,34],
+    humids: [68,70,71,72,74,73,72,71,72,73,72,72]
+  }
+};
+
+/* ════════════════════════════════════
+   LOGIN
+════════════════════════════════════ */
+function selectRole(role) {
+  currentRole = role;
+  document.getElementById('btn-maker').classList.remove('selected');
+  document.getElementById('btn-user').classList.remove('selected');
+  document.getElementById('btn-' + role).classList.add('selected');
+  document.getElementById('pw-group').style.display = role === 'maker' ? 'block' : 'none';
+  document.getElementById('err-msg').style.display = 'none';
+}
+
+function doLogin() {
+  if (!currentRole) { showToast('Pilih peran dulu!'); return; }
+  if (currentRole === 'maker') {
+    const pw = document.getElementById('pw-input').value;
+    if (pw !== MAKER_PASS) {
+      document.getElementById('err-msg').style.display = 'block';
+      return;
+    }
+  }
+  openDashboard(currentRole);
+}
+
+function openDashboard(role) {
+  document.getElementById('page-login').classList.remove('active');
+  document.getElementById('page-dashboard').classList.add('active');
+  document.getElementById('ai-fab').style.display = 'flex';
+  document.getElementById('hamburger-btn').style.display = 'flex';
+
+  // Role badge
+  const dot = document.getElementById('sb-role-dot');
+  const name = document.getElementById('sb-role-name');
+  dot.className = 'sb-role-dot ' + role;
+  name.textContent = role === 'maker' ? '🔧 Maker' : '👤 User';
+
+  if (role === 'maker') {
+    document.getElementById('dash-title').textContent = 'Dashboard Maker';
+    document.getElementById('dash-sub').textContent = 'Kontrol penuh atas NutriBin anda';
+    document.getElementById('maker-controls').style.display = 'grid';
+    document.getElementById('user-info-row').style.display = 'none';
+    document.getElementById('sb-maker-label').style.display = 'block';
+    document.getElementById('sb-mixer-nav').style.display = 'flex';
+    document.getElementById('sb-liquid-nav').style.display = 'flex';
+  } else {
+    document.getElementById('dash-title').textContent = 'Dashboard User';
+    document.getElementById('dash-sub').textContent = 'Pantau kondisi kompos anda';
+    document.getElementById('maker-controls').style.display = 'none';
+    document.getElementById('user-info-row').style.display = 'grid';
+  }
+
+  initChart();
+  startSimulation();
+}
+
+function logout() {
+  document.getElementById('page-dashboard').classList.remove('active');
+  document.getElementById('page-settings').classList.remove('active');
+  document.getElementById('page-login').classList.add('active');
+  document.getElementById('ai-fab').style.display = 'none';
+  document.getElementById('hamburger-btn').style.display = 'none';
+  document.getElementById('ai-chat-popup').classList.remove('open');
+  document.getElementById('ai-fab').classList.remove('chat-open');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('btn-maker').classList.remove('selected');
+  document.getElementById('btn-user').classList.remove('selected');
+  document.getElementById('pw-group').style.display = 'none';
+  currentRole = null;
+}
+
+/* ════════════════════════════════════
+   CHART
+════════════════════════════════════ */
+let lineChart = null;
+
+function initChart() {
+  if (lineChart) { lineChart.destroy(); }
+  const ctx = document.getElementById('lineChart').getContext('2d');
+  lineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: sensorData.history.labels,
+      datasets: [
+        {
+          label: 'Suhu (°C)',
+          data: sensorData.history.temps,
+          borderColor: '#F1B8D9', backgroundColor: 'rgba(241,184,217,0.12)',
+          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#F1B8D9',
+          borderWidth: 2.5, fill: true
+        },
+        {
+          label: 'Kelembaban (%)',
+          data: sensorData.history.humids,
+          borderColor: '#9EC0EB', backgroundColor: 'rgba(158,192,235,0.12)',
+          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#9EC0EB',
+          borderWidth: 2.5, fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#538376', font: { family: 'DM Sans', size: 12 } } }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════════
+   FIREBASE REAL-TIME DATA
+════════════════════════════════════ */
+const FIREBASE_URL = 'https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json';
+
+async function fetchSensorData() {
+  try {
+    const res = await fetch(FIREBASE_URL);
+    const data = await res.json();
+    if (!data) return;
+
+    // Update sensor values
+    if (data.suhu !== undefined) {
+      sensorData.temp = parseFloat(data.suhu);
+      document.getElementById('val-temp').innerHTML = sensorData.temp + '<span class="stat-unit"> °C</span>';
+    }
+    if (data.kelembaban !== undefined) {
+      sensorData.humid = parseFloat(data.kelembaban);
+      document.getElementById('val-humid').innerHTML = sensorData.humid + '<span class="stat-unit"> %</span>';
+    }
+    if (data.berat !== undefined) {
+      sensorData.weight = parseFloat(data.berat);
+      document.getElementById('val-weight').innerHTML = (sensorData.weight / 1000).toFixed(2) + '<span class="stat-unit"> kg</span>';
+
+      // Update donut chart capacity (max 3kg = 3000g)
+      const pct = Math.min(100, Math.round(sensorData.weight / 3000 * 100));
+      const dashoffset = 150.8 - (150.8 * pct / 100);
+      const donutCircle = document.querySelector('#page-dashboard .donut-ring circle:last-child');
+      if (donutCircle) donutCircle.setAttribute('stroke-dashoffset', dashoffset);
+      const bigNum = document.querySelector('.donut-center .big-num');
+      if (bigNum) bigNum.textContent = pct + '%';
+      const donutSub = document.querySelector('.donut-wrap > div div:first-child');
+      if (donutSub) donutSub.textContent = (sensorData.weight/1000).toFixed(2) + ' kg / 3.0 kg';
+    }
+
+    // Update history for chart (keep last 12 points)
+    const now = new Date();
+    const timeLabel = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+    sensorData.history.labels.push(timeLabel);
+    sensorData.history.temps.push(sensorData.temp);
+    sensorData.history.humids.push(sensorData.humid);
+    if (sensorData.history.labels.length > 12) {
+      sensorData.history.labels.shift();
+      sensorData.history.temps.shift();
+      sensorData.history.humids.shift();
+    }
+    if (lineChart) {
+      lineChart.data.labels = sensorData.history.labels;
+      lineChart.data.datasets[0].data = sensorData.history.temps;
+      lineChart.data.datasets[1].data = sensorData.history.humids;
+      lineChart.update('none');
+    }
+
+    // Status indicator
+    document.getElementById('firebase-status').textContent = '🟢 Live • ' + timeLabel;
+
+  } catch(e) {
+    document.getElementById('firebase-status').textContent = '🔴 Offline';
+    console.error('Firebase fetch error:', e);
+  }
+}
+
+function startSimulation() {
+  // Fetch immediately then every 3 seconds
+  fetchSensorData();
+  setInterval(fetchSensorData, 3000);
+}
+
+/* ════════════════════════════════════
+   MAKER CONTROLS
+════════════════════════════════════ */
+function setMixerMode(mode) {
+  mixerAuto = mode === 'auto';
+  document.getElementById('mixer-auto-btn').classList.toggle('active', mixerAuto);
+  document.getElementById('mixer-manual-btn').classList.toggle('active', !mixerAuto);
+  document.getElementById('mixer-slider-wrap').style.display = mixerAuto ? 'none' : 'block';
+  showToast('Pengaduk: mode ' + (mixerAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
+}
+
+function toggleMixer() {
+  mixerOn = !mixerOn;
+  const btn = document.getElementById('mixer-toggle-btn');
+  const st  = document.getElementById('mixer-ctrl-status');
+  const sv  = document.getElementById('val-mixer-state');
+  const bm  = document.getElementById('badge-mixer');
+  btn.className = 'action-btn ' + (mixerOn ? 'stop' : 'start');
+  btn.textContent = mixerOn ? '⏸ Hentikan Pengaduk' : '▶ Jalankan Pengaduk';
+  st.className    = 'ctrl-status ' + (mixerOn ? 'on' : 'off');
+  st.textContent  = mixerOn ? 'ON' : 'OFF';
+  sv.textContent  = mixerOn ? 'ON' : 'OFF';
+  bm.className    = 'stat-badge ' + (mixerOn ? 'badge-on' : 'badge-off');
+  bm.textContent  = mixerOn ? '⚡ Otomatis' : '⛔ Berhenti';
+  document.getElementById('mixer-status-display').textContent = mixerOn ? 'ON' : 'OFF';
+  showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
+}
+
+function setLiquidMode(mode) {
+  liquidAuto = mode === 'auto';
+  document.getElementById('liquid-auto-btn').classList.toggle('active', liquidAuto);
+  document.getElementById('liquid-manual-btn').classList.toggle('active', !liquidAuto);
+  document.getElementById('liquid-slider-wrap').style.display = liquidAuto ? 'none' : 'block';
+  showToast('Cairan pupuk: mode ' + (liquidAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
+}
+
+function toggleLiquid() {
+  liquidOn = !liquidOn;
+  const btn = document.getElementById('liquid-toggle-btn');
+  const st  = document.getElementById('liquid-ctrl-status');
+  btn.className = 'action-btn ' + (liquidOn ? 'stop' : 'start');
+  btn.textContent = liquidOn ? '⏸ Hentikan Cairan' : '▶ Jalankan Cairan';
+  st.className    = 'ctrl-status ' + (liquidOn ? 'on' : 'off');
+  st.textContent  = liquidOn ? 'ON' : 'OFF';
+  showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ✓' : 'dihentikan ✗'));
+}
+
+/* ════════════════════════════════════
+   AI CHAT
+════════════════════════════════════ */
+function toggleChat() {
+  const popup = document.getElementById('ai-chat-popup');
+  const fab   = document.getElementById('ai-fab');
+  popup.classList.toggle('open');
+  fab.classList.toggle('chat-open');
+}
+
+function askChip(el) {
+  document.getElementById('ai-input').value = el.textContent;
+  document.getElementById('ai-suggestions').style.display = 'none';
+  sendChat();
+}
+
+async function sendChat() {
+  const inp = document.getElementById('ai-input');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+
+  appendMsg('user-msg', q);
+
+  const loading = appendMsg('loading', '⏳ NutriBot sedang berpikir...');
+
+  const systemPrompt = `Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.
+Data sensor saat ini:
+- Suhu: ${sensorData.temp}°C
+- Kelembaban: ${sensorData.humid}%
+- Berat sampah: ${sensorData.weight} kg
+- Status pengaduk: ${mixerOn ? 'ON (Otomatis)' : 'OFF'}
+
+ATURAN FORMAT JAWABAN (WAJIB DIIKUTI):
+- Jika jawabanmu punya lebih dari satu poin, SELALU tulis dalam format bernomor atau berpeluru per baris baru.
+- Format nomor: "1. teks" lalu baris baru "2. teks" dst.
+- Format peluru: "• teks" lalu baris baru "• teks" dst.
+- Gunakan emoji yang relevan di awal setiap poin untuk membuat lebih menarik.
+- Pisahkan setiap poin dengan baris baru (\n).
+- Boleh menggunakan simbol seperti ✅ ❌ ⚠️ 📌 🌡️ 💧 ⚖️ 🔄 ✨ ➤ → dll.
+- Jangan tulis semua jawaban dalam satu paragraf panjang jika bisa dipisah per poin.
+- Jawab dalam Bahasa Indonesia, ramah dan informatif.
+- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.`;
+
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer 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'
+      },
+      body: JSON.stringify({
+        model:'llama-3.3-70b-versatile',
+        max_tokens:1000,
+        messages:[
+          {role:'system', content: systemPrompt},
+          {role:'user', content:q}
+        ]
+      })
+    });
+    const data = await res.json();
+    const text = data.choices?.[0]?.message?.content || 'Maaf, ada gangguan. Coba lagi ya!';
+    loading.remove();
+    appendMsg('bot', text);
+  } catch(e) {
+    loading.remove();
+    appendMsg('bot', '⚠️ Tidak bisa terhubung. Periksa koneksi internet.');
+  }
+}
+
+function formatBotText(text) {
+  // Split by newlines and render each line
+  const lines = text.split('\n');
+  const container = document.createDocumentFragment();
+  lines.forEach((line, i) => {
+    const trimmed = line.trimStart();
+    if (trimmed === '') {
+      if (i > 0 && i < lines.length - 1) {
+        container.appendChild(document.createElement('br'));
+      }
+      return;
+    }
+    const span = document.createElement('span');
+    span.style.display = 'block';
+    // Add slight indent for numbered/bulleted lines
+    if (/^(\d+\.|[•\-\*➤→✅❌⚠️📌])/.test(trimmed)) {
+      span.style.paddingLeft = '2px';
+      span.style.marginTop = i === 0 ? '0' : '5px';
+    }
+    span.textContent = line;
+    container.appendChild(span);
+  });
+  return container;
+}
+
+function appendMsg(type, text) {
+  const msgs = document.getElementById('ai-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg ' + type;
+  if (type === 'bot') {
+    d.appendChild(formatBotText(text));
+  } else {
+    d.textContent = text;
+  }
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+/* ════════════════════════════════════
+   TOAST
+════════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
