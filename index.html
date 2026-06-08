@@ -512,6 +512,128 @@
     letter-spacing: 1px; text-transform: uppercase;
   }
 
+  /* ─── DARK MODE ─── */
+  body.dark {
+    --cream:     #1A2420;
+    --soft-white:#1E2B26;
+    --text-dark: #E8F5EF;
+    --text-mid:  #A8C8BC;
+    --text-light:#6A9A8A;
+    --card-bg:   rgba(40,60,52,0.85);
+    --shadow:    rgba(0,0,0,0.3);
+    background: var(--cream);
+  }
+  body.dark .login-card,
+  body.dark .sidebar,
+  body.dark .stat-card,
+  body.dark .card,
+  body.dark .control-card,
+  body.dark .info-card,
+  body.dark .settings-card,
+  body.dark .ai-chat-popup { background: var(--card-bg); border-color: rgba(255,255,255,0.08); }
+  body.dark .hamburger-btn { background: rgba(40,60,52,0.95); border-color: rgba(100,160,140,0.4); }
+  body.dark .hamburger-btn .bar { background: var(--vetiver); }
+  body.dark .hamburger-menu { background: rgba(30,43,38,0.98); border-color: rgba(100,160,140,0.3); }
+  body.dark .hmenu-item { color: var(--text-dark); }
+  body.dark .ai-chat-popup { background: rgba(30,43,38,0.97); }
+  body.dark .ai-input { background: rgba(255,255,255,0.08); border-color: rgba(100,160,140,0.3); color: var(--text-dark); }
+  body.dark .msg.bot { background: rgba(83,131,118,0.25); }
+  body.dark #page-login { background: linear-gradient(135deg, #1A2E1A 0%, #1A2A2E 35%, #1A2035 65%, #2E1A28 100%); }
+  body.dark .login-card { background: rgba(30,43,38,0.9); }
+  body.dark .pw-input { background: rgba(255,255,255,0.08); border-color: rgba(100,160,140,0.3); color: var(--text-dark); }
+  body.dark .role-btn { background: rgba(255,255,255,0.06); }
+  body.dark .sidebar { background: linear-gradient(180deg, rgba(30,50,40,0.9) 0%, rgba(25,45,50,0.9) 100%); }
+  body.dark .sb-back-btn { background: rgba(255,255,255,0.07); border-color: rgba(100,160,140,0.3); }
+  body.dark .settings-textarea { background: rgba(255,255,255,0.06); border-color: rgba(100,160,140,0.3); color: var(--text-dark); }
+  body.dark .faq-item { border-color: rgba(100,160,140,0.2); }
+  body.dark .faq-q { color: var(--text-dark); }
+  body.dark .theme-opt { background: rgba(255,255,255,0.06); border-color: rgba(100,160,140,0.25); }
+
+  /* ─── SETTINGS PAGE ─── */
+  .settings-card {
+    background: var(--card-bg); backdrop-filter: blur(12px);
+    border-radius: 20px; padding: 22px;
+    box-shadow: 0 4px 20px var(--shadow);
+    border: 1px solid rgba(255,255,255,0.85);
+    margin-bottom: 16px;
+  }
+  .settings-section-title {
+    font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700;
+    color: var(--basil); margin-bottom: 6px;
+  }
+  .settings-desc { font-size: 0.82rem; color: var(--text-light); margin-bottom: 16px; }
+
+  .theme-options { display: flex; gap: 14px; }
+  .theme-opt {
+    flex: 1; border-radius: 16px; padding: 14px 12px;
+    border: 2px solid rgba(184,213,218,0.4);
+    background: rgba(255,255,255,0.6);
+    cursor: pointer; transition: all 0.22s;
+    text-align: center; font-size: 0.85rem; font-weight: 600;
+    color: var(--text-mid); position: relative;
+  }
+  .theme-opt:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--shadow); }
+  .theme-opt.active { border-color: var(--basil); background: rgba(193,213,145,0.2); color: var(--basil); }
+  .theme-preview {
+    width: 100%; height: 52px; border-radius: 10px;
+    margin-bottom: 10px; padding: 8px; display: flex; flex-direction: column; gap: 5px;
+  }
+  .light-preview { background: #F9F6EF; }
+  .dark-preview  { background: #1A2420; }
+  .tp-bar  { height: 8px; border-radius: 4px; background: var(--vetiver); width: 70%; }
+  .dark-preview .tp-bar { background: #538376; }
+  .tp-card { height: 10px; border-radius: 4px; background: rgba(255,255,255,0.9); }
+  .dark-preview .tp-card { background: rgba(255,255,255,0.12); }
+  .theme-check {
+    position: absolute; top: 8px; right: 10px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--basil); color: #fff;
+    font-size: 0.7rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .settings-textarea {
+    width: 100%; min-height: 90px; padding: 12px 14px;
+    border-radius: 13px; border: 1.5px solid rgba(184,213,218,0.5);
+    background: rgba(255,255,255,0.7);
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    color: var(--text-dark); resize: vertical; outline: none;
+    transition: border-color 0.2s; line-height: 1.5;
+    margin-bottom: 12px; display: block;
+  }
+  .settings-textarea:focus { border-color: var(--basil); }
+
+  .settings-btn {
+    width: 100%; padding: 13px; border-radius: 13px; border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.22s;
+  }
+  .settings-btn.primary { background: linear-gradient(135deg, var(--basil), #6aab98); color: #fff; box-shadow: 0 4px 14px rgba(83,131,118,0.3); }
+  .settings-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(83,131,118,0.38); }
+  .settings-btn.secondary { background: linear-gradient(135deg, #d4709a, #e8a0c0); color: #fff; box-shadow: 0 4px 14px rgba(212,112,154,0.28); }
+  .settings-btn.secondary:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(212,112,154,0.38); }
+
+  .faq-item {
+    border-bottom: 1px solid rgba(184,213,218,0.35);
+    cursor: pointer; padding: 13px 0;
+  }
+  .faq-item:last-of-type { border-bottom: none; }
+  .faq-q {
+    font-size: 0.88rem; font-weight: 600; color: var(--text-dark);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px;
+  }
+  .faq-arrow { font-size: 1.1rem; color: var(--text-light); transition: transform 0.22s; flex-shrink: 0; }
+  .faq-item.open .faq-arrow { transform: rotate(90deg); }
+  .faq-a {
+    font-size: 0.82rem; color: var(--text-mid); line-height: 1.6;
+    margin-top: 0; max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, margin-top 0.2s;
+  }
+  .faq-item.open .faq-a { max-height: 200px; margin-top: 9px; }
+
+  #page-settings { background: var(--cream); }
+
   @media(max-width:700px){
     .sidebar{transform:translateX(-230px);}
     .main-content{margin-left:0;padding:20px 16px 80px;}
@@ -524,8 +646,8 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- HAMBURGER BUTTON (always visible) -->
-<button class="hamburger-btn" id="hamburger-btn" onclick="toggleHamburger()">
+<!-- HAMBURGER BUTTON (only shown on page 2) -->
+<button class="hamburger-btn" id="hamburger-btn" onclick="toggleHamburger()" style="display:none">
   <span class="bar"></span>
   <span class="bar"></span>
   <span class="bar"></span>
@@ -533,15 +655,15 @@
 
 <!-- HAMBURGER DROPDOWN MENU -->
 <div class="hamburger-menu" id="hamburger-menu">
-  <div class="hmenu-label">Navigasi</div>
+  <div class="hmenu-label">Menu</div>
   <div class="hmenu-item home" onclick="hamburgerGoHome()">
     <div class="hmenu-icon">🏠</div>
     <span>Home</span>
   </div>
   <div class="hmenu-divider"></div>
-  <div class="hmenu-item data" id="hmenu-data" onclick="hamburgerGoData()">
-    <div class="hmenu-icon">📊</div>
-    <span>Data</span>
+  <div class="hmenu-item settings" onclick="hamburgerGoSettings()">
+    <div class="hmenu-icon" style="background:rgba(241,184,217,0.4)">⚙️</div>
+    <span>Pengaturan</span>
   </div>
 </div>
 
@@ -784,6 +906,92 @@
 </div>
 
 <!-- Chart.js CDN -->
+<!-- ═══ PAGE 3: PENGATURAN ═══ -->
+<div class="page" id="page-settings" style="flex-direction:column; align-items:center; justify-content:flex-start; padding: 40px 20px 80px;">
+
+  <div style="width:min(520px,96vw)">
+    <!-- Back header -->
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:32px;">
+      <button onclick="goBackToDashboard()" style="width:40px;height:40px;border-radius:12px;border:1.5px solid rgba(184,213,218,0.6);background:rgba(255,255,255,0.8);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" onmouseover="this.style.background='rgba(193,213,145,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.8)'">‹</button>
+      <div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--basil)">Pengaturan</h1>
+        <p style="font-size:0.82rem;color:var(--text-light)">Sesuaikan NutriBin sesuai preferensimu</p>
+      </div>
+    </div>
+
+    <!-- TEMA -->
+    <div class="settings-card">
+      <div class="settings-section-title">🎨 Tema Tampilan</div>
+      <p class="settings-desc">Pilih tampilan yang nyaman untuk kamu</p>
+      <div class="theme-options">
+        <div class="theme-opt active" id="theme-light" onclick="setTheme('light')">
+          <div class="theme-preview light-preview">
+            <div class="tp-bar"></div><div class="tp-card"></div><div class="tp-card"></div>
+          </div>
+          <span>☀️ Terang</span>
+          <div class="theme-check" id="check-light">✓</div>
+        </div>
+        <div class="theme-opt" id="theme-dark" onclick="setTheme('dark')">
+          <div class="theme-preview dark-preview">
+            <div class="tp-bar"></div><div class="tp-card"></div><div class="tp-card"></div>
+          </div>
+          <span>🌙 Gelap</span>
+          <div class="theme-check" id="check-dark" style="display:none">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAPORAN MASALAH -->
+    <div class="settings-card">
+      <div class="settings-section-title">🐛 Laporan Masalah</div>
+      <p class="settings-desc">Temukan bug atau error? Laporkan ke developer.</p>
+      <textarea class="settings-textarea" id="report-text" placeholder="Ceritakan masalah yang kamu alami... Contoh: tombol X tidak berfungsi saat halaman pertama dibuka"></textarea>
+      <button class="settings-btn primary" onclick="sendReport()">📧 Kirim Laporan via Gmail</button>
+    </div>
+
+    <!-- KOTAK SARAN -->
+    <div class="settings-card">
+      <div class="settings-section-title">💡 Kotak Saran</div>
+      <p class="settings-desc">Punya ide atau saran untuk NutriBin? Kami senang mendengarnya!</p>
+      <textarea class="settings-textarea" id="saran-text" placeholder="Tulis saranmu di sini... Contoh: tambahkan fitur notifikasi ketika pupuk sudah siap 🌱"></textarea>
+      <button class="settings-btn secondary" onclick="sendSaran()">✉️ Kirim Saran via Gmail</button>
+    </div>
+
+    <!-- PUSAT BANTUAN -->
+    <div class="settings-card">
+      <div class="settings-section-title">❓ Pusat Bantuan</div>
+      <p class="settings-desc">Pertanyaan umum seputar NutriBin</p>
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">🌡️ Berapa suhu ideal untuk pengomposan?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Suhu ideal pengomposan adalah <b>45–65°C</b>. Di suhu ini, bakteri termofil bekerja paling aktif untuk menguraikan bahan organik. Jika suhu di bawah 40°C, proses akan melambat.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">💧 Kelembaban berapa yang disarankan?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Kelembaban optimal adalah <b>50–70%</b>. Terlalu kering akan memperlambat proses dekomposisi, terlalu basah menyebabkan bau tidak sedap dan kondisi anaerobik.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">🔄 Seberapa sering perlu diaduk?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Disarankan pengadukan setiap <b>2–3 hari sekali</b>. Pengadukan memastikan oksigen masuk ke seluruh tumpukan dan mempercepat proses pengomposan secara merata.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">📅 Berapa lama pupuk kompos siap?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Dengan kondisi optimal (suhu 55°C, kelembaban 60%), pupuk kompos bisa siap dalam <b>2–4 minggu</b>. Tanda siap: berwarna coklat gelap, berbau tanah, tidak panas lagi.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">⚙️ Bagaimana cara reset alat?<span class="faq-arrow">›</span></div>
+        <div class="faq-a">Tekan dan tahan tombol reset di ESP32 selama <b>5 detik</b> sampai LED berkedip 3 kali. Alat akan restart dan menghubungkan ulang ke WiFi secara otomatis.</div>
+      </div>
+
+      <div style="margin-top:16px;padding:14px;background:rgba(158,192,235,0.15);border-radius:12px;font-size:0.82rem;color:var(--text-mid);text-align:center;">
+        Masih butuh bantuan? 📬 Hubungi developer di<br>
+        <b style="color:var(--basil)">itsandika.tech@gmail.com</b>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 
 <script>
@@ -805,28 +1013,76 @@ function hamburgerGoHome() {
   logout();
 }
 
-function hamburgerGoData() {
+function hamburgerGoSettings() {
   closeHamburger();
-  if (!currentRole) {
-    showToast('⚠️ Pilih peran dulu di halaman Login!');
-    return;
-  }
-  // Already on dashboard, just close menu
-  if (document.getElementById('page-dashboard').classList.contains('active')) {
-    showToast('✅ Kamu sudah di halaman Data!');
-    return;
-  }
-  openDashboard(currentRole);
+  document.getElementById('page-dashboard').classList.remove('active');
+  document.getElementById('page-settings').classList.add('active');
+  document.getElementById('ai-fab').style.display = 'none';
+  document.getElementById('hamburger-btn').style.display = 'none';
+}
+
+function goBackToDashboard() {
+  document.getElementById('page-settings').classList.remove('active');
+  document.getElementById('page-dashboard').classList.add('active');
+  document.getElementById('ai-fab').style.display = 'flex';
+  document.getElementById('hamburger-btn').style.display = 'flex';
 }
 
 // Close menu when clicking outside
 document.addEventListener('click', function(e) {
   const btn  = document.getElementById('hamburger-btn');
   const menu = document.getElementById('hamburger-menu');
-  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+  if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
     closeHamburger();
   }
 });
+
+/* ════════════════════════════════════
+   THEME
+════════════════════════════════════ */
+function setTheme(mode) {
+  if (mode === 'dark') {
+    document.body.classList.add('dark');
+    document.getElementById('theme-light').classList.remove('active');
+    document.getElementById('theme-dark').classList.add('active');
+    document.getElementById('check-light').style.display = 'none';
+    document.getElementById('check-dark').style.display = 'flex';
+  } else {
+    document.body.classList.remove('dark');
+    document.getElementById('theme-dark').classList.remove('active');
+    document.getElementById('theme-light').classList.add('active');
+    document.getElementById('check-dark').style.display = 'none';
+    document.getElementById('check-light').style.display = 'flex';
+  }
+  showToast(mode === 'dark' ? '🌙 Tema Gelap aktif' : '☀️ Tema Terang aktif');
+}
+
+/* ════════════════════════════════════
+   SETTINGS ACTIONS
+════════════════════════════════════ */
+function sendReport() {
+  const txt = document.getElementById('report-text').value.trim();
+  if (!txt) { showToast('⚠️ Tulis laporan masalahmu dulu!'); return; }
+  const subject = encodeURIComponent('🐛 Laporan Masalah NutriBin');
+  const body    = encodeURIComponent('Halo Developer,\n\nSaya ingin melaporkan masalah berikut:\n\n' + txt + '\n\nTerima kasih.');
+  window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
+  document.getElementById('report-text').value = '';
+  showToast('✅ Membuka Gmail untuk laporan...');
+}
+
+function sendSaran() {
+  const txt = document.getElementById('saran-text').value.trim();
+  if (!txt) { showToast('⚠️ Tulis saranmu dulu!'); return; }
+  const subject = encodeURIComponent('💡 Kotak Saran NutriBin');
+  const body    = encodeURIComponent('Halo Developer,\n\nSaya punya saran untuk NutriBin:\n\n' + txt + '\n\nTerima kasih.');
+  window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
+  document.getElementById('saran-text').value = '';
+  showToast('✅ Membuka Gmail untuk saran...');
+}
+
+function toggleFaq(el) {
+  el.classList.toggle('open');
+}
 
 /* ════════════════════════════════════
    STATE
@@ -874,6 +1130,7 @@ function openDashboard(role) {
   document.getElementById('page-login').classList.remove('active');
   document.getElementById('page-dashboard').classList.add('active');
   document.getElementById('ai-fab').style.display = 'flex';
+  document.getElementById('hamburger-btn').style.display = 'flex';
 
   // Role badge
   const dot = document.getElementById('sb-role-dot');
@@ -902,9 +1159,12 @@ function openDashboard(role) {
 
 function logout() {
   document.getElementById('page-dashboard').classList.remove('active');
+  document.getElementById('page-settings').classList.remove('active');
   document.getElementById('page-login').classList.add('active');
   document.getElementById('ai-fab').style.display = 'none';
+  document.getElementById('hamburger-btn').style.display = 'none';
   document.getElementById('ai-chat-popup').classList.remove('open');
+  document.getElementById('ai-fab').classList.remove('chat-open');
   document.getElementById('pw-input').value = '';
   document.getElementById('btn-maker').classList.remove('selected');
   document.getElementById('btn-user').classList.remove('selected');
@@ -1061,18 +1321,23 @@ ATURAN FORMAT JAWABAN (WAJIB DIIKUTI):
 - Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer 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'
+      },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'llama-3.3-70b-versatile',
         max_tokens:1000,
-        system: systemPrompt,
-        messages:[{role:'user',content:q}]
+        messages:[
+          {role:'system', content: systemPrompt},
+          {role:'user', content:q}
+        ]
       })
     });
     const data = await res.json();
-    const text = data.content?.map(c=>c.text||'').join('') || 'Maaf, ada gangguan. Coba lagi ya!';
+    const text = data.choices?.[0]?.message?.content || 'Maaf, ada gangguan. Coba lagi ya!';
     loading.remove();
     appendMsg('bot', text);
   } catch(e) {
