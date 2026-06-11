@@ -731,7 +731,20 @@
   <div class="main-content" id="main-content">
     <div class="page-header">
       <h1 id="dash-title">Dashboard</h1>
-      <p id="dash-sub">Monitoring real-time NutriBin anda &nbsp;<span id="firebase-status" style="font-size:0.78rem;background:rgba(193,213,145,0.3);padding:3px 10px;border-radius:20px;font-weight:600;color:var(--basil)">⏳ Menghubungkan...</span></p>
+      <p id="dash-sub">Monitoring real-time NutriBin anda</p>
+    </div>
+
+    <!-- STATUS BANNER -->
+    <div id="status-banner" style="
+      display:flex; align-items:center; gap:10px;
+      padding:12px 16px; border-radius:14px; margin-bottom:18px;
+      background:rgba(255,255,255,0.7); backdrop-filter:blur(10px);
+      border:1.5px solid rgba(184,213,218,0.5);
+      font-size:0.85rem; font-weight:500; color:var(--text-mid);
+      box-shadow:0 2px 12px var(--shadow);
+    ">
+      <span style="font-size:1.1rem">📡</span>
+      <span class="conn-status">⏳ Menghubungkan ke ESP32...</span>
     </div>
 
     <!-- STAT CARDS -->
@@ -1215,71 +1228,78 @@ function initChart() {
 }
 
 /* ════════════════════════════════════
-   FIREBASE REAL-TIME DATA
+   FIREBASE — DATA REAL ESP32
 ════════════════════════════════════ */
-const FIREBASE_URL = 'https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json';
+const FIREBASE_URL = "https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json";
 
-async function fetchSensorData() {
+async function fetchFirebase() {
   try {
     const res = await fetch(FIREBASE_URL);
+    if (!res.ok) throw new Error('HTTP error');
     const data = await res.json();
-    if (!data) return;
 
-    // Update sensor values
-    if (data.suhu !== undefined) {
-      sensorData.temp = parseFloat(data.suhu);
-      document.getElementById('val-temp').innerHTML = sensorData.temp + '<span class="stat-unit"> °C</span>';
-    }
-    if (data.kelembaban !== undefined) {
-      sensorData.humid = parseFloat(data.kelembaban);
-      document.getElementById('val-humid').innerHTML = sensorData.humid + '<span class="stat-unit"> %</span>';
-    }
-    if (data.berat !== undefined) {
-      sensorData.weight = parseFloat(data.berat);
-      document.getElementById('val-weight').innerHTML = (sensorData.weight / 1000).toFixed(2) + '<span class="stat-unit"> kg</span>';
+    if (data.suhu !== undefined)       sensorData.temp   = +parseFloat(data.suhu).toFixed(1);
+    if (data.kelembaban !== undefined)  sensorData.humid  = +parseFloat(data.kelembaban).toFixed(1);
+    if (data.berat !== undefined)       sensorData.weight = +(parseFloat(data.berat) / 1000).toFixed(2);
 
-      // Update donut chart capacity (max 3kg = 3000g)
-      const pct = Math.min(100, Math.round(sensorData.weight / 3000 * 100));
-      const dashoffset = 150.8 - (150.8 * pct / 100);
-      const donutCircle = document.querySelector('#page-dashboard .donut-ring circle:last-child');
-      if (donutCircle) donutCircle.setAttribute('stroke-dashoffset', dashoffset);
-      const bigNum = document.querySelector('.donut-center .big-num');
-      if (bigNum) bigNum.textContent = pct + '%';
-      const donutSub = document.querySelector('.donut-wrap > div div:first-child');
-      if (donutSub) donutSub.textContent = (sensorData.weight/1000).toFixed(2) + ' kg / 3.0 kg';
-    }
+    document.getElementById('val-temp').innerHTML   = sensorData.temp + '<span class="stat-unit"> °C</span>';
+    document.getElementById('val-humid').innerHTML  = sensorData.humid + '<span class="stat-unit"> %</span>';
+    document.getElementById('val-weight').innerHTML = sensorData.weight + '<span class="stat-unit"> kg</span>';
 
-    // Update history for chart (keep last 12 points)
-    const now = new Date();
-    const timeLabel = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-    sensorData.history.labels.push(timeLabel);
-    sensorData.history.temps.push(sensorData.temp);
-    sensorData.history.humids.push(sensorData.humid);
-    if (sensorData.history.labels.length > 12) {
-      sensorData.history.labels.shift();
-      sensorData.history.temps.shift();
-      sensorData.history.humids.shift();
-    }
+    // Update grafik realtime
     if (lineChart) {
+      const now = new Date();
+      const label = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+      sensorData.history.labels.push(label); sensorData.history.labels.shift();
+      sensorData.history.temps.push(sensorData.temp); sensorData.history.temps.shift();
+      sensorData.history.humids.push(sensorData.humid); sensorData.history.humids.shift();
       lineChart.data.labels = sensorData.history.labels;
       lineChart.data.datasets[0].data = sensorData.history.temps;
       lineChart.data.datasets[1].data = sensorData.history.humids;
       lineChart.update('none');
     }
 
-    // Status indicator
-    document.getElementById('firebase-status').textContent = '🟢 Live • ' + timeLabel;
+    // ONLINE
+    setConnectionStatus(true);
 
-  } catch(e) {
-    document.getElementById('firebase-status').textContent = '🔴 Offline';
-    console.error('Firebase fetch error:', e);
+  } catch (err) {
+    console.log('Firebase error:', err);
+    // OFFLINE — reset semua ke 0
+    setConnectionStatus(false);
+  }
+}
+
+function setConnectionStatus(online) {
+  // Update status dot di sidebar & header
+  const dot = document.querySelector('.sb-role-dot');
+  const statusEls = document.querySelectorAll('.conn-status');
+
+  if (online) {
+    if (dot) { dot.style.boxShadow = ''; }
+    statusEls.forEach(el => {
+      el.textContent = '🟢 ESP32 Online';
+      el.style.color = '#538376';
+    });
+  } else {
+    // Reset semua sensor ke 0
+    sensorData.temp   = 0;
+    sensorData.humid  = 0;
+    sensorData.weight = 0;
+
+    document.getElementById('val-temp').innerHTML   = '0<span class="stat-unit"> °C</span>';
+    document.getElementById('val-humid').innerHTML  = '0<span class="stat-unit"> %</span>';
+    document.getElementById('val-weight').innerHTML = '0.00<span class="stat-unit"> kg</span>';
+
+    statusEls.forEach(el => {
+      el.textContent = '🔴 ESP32 Offline';
+      el.style.color = '#c0536a';
+    });
   }
 }
 
 function startSimulation() {
-  // Fetch immediately then every 3 seconds
-  fetchSensorData();
-  setInterval(fetchSensorData, 3000);
+  fetchFirebase();
+  setInterval(fetchFirebase, 3000);
 }
 
 /* ════════════════════════════════════
@@ -1374,23 +1394,22 @@ ATURAN FORMAT JAWABAN (WAJIB DIIKUTI):
 - Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.`;
 
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'Authorization':'Bearer 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'
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
       },
       body: JSON.stringify({
-        model:'llama-3.3-70b-versatile',
+        model:'claude-sonnet-4-20250514',
         max_tokens:1000,
-        messages:[
-          {role:'system', content: systemPrompt},
-          {role:'user', content:q}
-        ]
+        system: systemPrompt,
+        messages:[{role:'user',content:q}]
       })
     });
     const data = await res.json();
-    const text = data.choices?.[0]?.message?.content || 'Maaf, ada gangguan. Coba lagi ya!';
+    const text = data.content?.map(c=>c.text||'').join('') || 'Maaf, ada gangguan. Coba lagi ya!';
     loading.remove();
     appendMsg('bot', text);
   } catch(e) {
