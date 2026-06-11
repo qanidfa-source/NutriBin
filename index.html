@@ -1201,27 +1201,78 @@ function initChart() {
         {
           label: 'Suhu (°C)',
           data: sensorData.history.temps,
-          borderColor: '#F1B8D9', backgroundColor: 'rgba(241,184,217,0.12)',
-          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#F1B8D9',
-          borderWidth: 2.5, fill: true
+          borderColor: '#F1B8D9',
+          backgroundColor: 'rgba(241,184,217,0.15)',
+          tension: 0.45,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#F1B8D9',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 1.5,
+          borderWidth: 2.5,
+          fill: true,
+          yAxisID: 'yTemp'
         },
         {
           label: 'Kelembaban (%)',
           data: sensorData.history.humids,
-          borderColor: '#9EC0EB', backgroundColor: 'rgba(158,192,235,0.12)',
-          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#9EC0EB',
-          borderWidth: 2.5, fill: true
+          borderColor: '#9EC0EB',
+          backgroundColor: 'rgba(158,192,235,0.15)',
+          tension: 0.45,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#9EC0EB',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 1.5,
+          borderWidth: 2.5,
+          fill: true,
+          yAxisID: 'yHumid'
         }
       ]
     },
     options: {
       responsive: true,
+      interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { labels: { color: '#538376', font: { family: 'DM Sans', size: 12 } } }
+        legend: {
+          labels: {
+            color: '#538376',
+            font: { family: 'DM Sans', size: 12 },
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 16
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(255,255,255,0.95)',
+          titleColor: '#538376',
+          bodyColor: '#5A7A6E',
+          borderColor: 'rgba(184,213,218,0.6)',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 10,
+          callbacks: {
+            label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + (ctx.datasetIndex === 0 ? ' °C' : ' %')
+          }
+        }
       },
       scales: {
-        x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } },
-        y: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } }
+        x: {
+          grid: { color: 'rgba(184,213,218,0.2)', lineWidth: 1 },
+          ticks: { color: '#8AADA0', font: { size: 10, family: 'DM Sans' }, maxTicksLimit: 6 }
+        },
+        yTemp: {
+          type: 'linear', position: 'left',
+          grid: { color: 'rgba(241,184,217,0.2)', lineWidth: 1 },
+          ticks: { color: '#F1B8D9', font: { size: 10 }, callback: v => v + '°C' },
+          title: { display: true, text: 'Suhu', color: '#F1B8D9', font: { size: 10 } }
+        },
+        yHumid: {
+          type: 'linear', position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: { color: '#9EC0EB', font: { size: 10 }, callback: v => v + '%' },
+          title: { display: true, text: 'Kelembaban', color: '#9EC0EB', font: { size: 10 } }
+        }
       }
     }
   });
@@ -1313,7 +1364,7 @@ function setMixerMode(mode) {
   showToast('Pengaduk: mode ' + (mixerAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
 }
 
-function toggleMixer() {
+async function toggleMixer() {
   mixerOn = !mixerOn;
   const btn = document.getElementById('mixer-toggle-btn');
   const st  = document.getElementById('mixer-ctrl-status');
@@ -1325,9 +1376,20 @@ function toggleMixer() {
   st.textContent  = mixerOn ? 'ON' : 'OFF';
   sv.textContent  = mixerOn ? 'ON' : 'OFF';
   bm.className    = 'stat-badge ' + (mixerOn ? 'badge-on' : 'badge-off');
-  bm.textContent  = mixerOn ? '⚡ Otomatis' : '⛔ Berhenti';
+  bm.textContent  = mixerOn ? '⚡ Aktif' : '⛔ Berhenti';
   document.getElementById('mixer-status-display').textContent = mixerOn ? 'ON' : 'OFF';
-  showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
+
+  // Kirim perintah ke Firebase → ESP32 baca
+  try {
+    await fetch('https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/kontrol.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ motor: mixerOn ? 1 : 0 })
+    });
+    showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
+  } catch(e) {
+    showToast('⚠️ Gagal kirim perintah ke ESP32');
+  }
 }
 
 function setLiquidMode(mode) {
