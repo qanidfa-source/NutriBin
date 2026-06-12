@@ -734,19 +734,6 @@
       <p id="dash-sub">Monitoring real-time NutriBin anda</p>
     </div>
 
-    <!-- STATUS BANNER -->
-    <div id="status-banner" style="
-      display:flex; align-items:center; gap:10px;
-      padding:12px 16px; border-radius:14px; margin-bottom:18px;
-      background:rgba(255,255,255,0.7); backdrop-filter:blur(10px);
-      border:1.5px solid rgba(184,213,218,0.5);
-      font-size:0.85rem; font-weight:500; color:var(--text-mid);
-      box-shadow:0 2px 12px var(--shadow);
-    ">
-      <span style="font-size:1.1rem">📡</span>
-      <span class="conn-status">⏳ Menghubungkan ke ESP32...</span>
-    </div>
-
     <!-- STAT CARDS -->
     <div class="stats-grid">
       <div class="stat-card temp">
@@ -829,7 +816,7 @@
       <!-- Mixer control -->
       <div class="control-card">
         <div class="ctrl-header">
-          <div class="ctrl-title">🔄 Pengaduk Cairan</div>
+          <div class="ctrl-title">🔄 Pengaduk Kompos</div>
           <span class="ctrl-status on" id="mixer-ctrl-status">ON</span>
         </div>
         <div class="toggle-row">
@@ -1201,156 +1188,45 @@ function initChart() {
         {
           label: 'Suhu (°C)',
           data: sensorData.history.temps,
-          borderColor: '#F1B8D9',
-          backgroundColor: 'rgba(241,184,217,0.15)',
-          tension: 0.45,
-          pointRadius: 3,
-          pointHoverRadius: 6,
-          pointBackgroundColor: '#F1B8D9',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 1.5,
-          borderWidth: 2.5,
-          fill: true,
-          yAxisID: 'yTemp'
+          borderColor: '#F1B8D9', backgroundColor: 'rgba(241,184,217,0.12)',
+          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#F1B8D9',
+          borderWidth: 2.5, fill: true
         },
         {
           label: 'Kelembaban (%)',
           data: sensorData.history.humids,
-          borderColor: '#9EC0EB',
-          backgroundColor: 'rgba(158,192,235,0.15)',
-          tension: 0.45,
-          pointRadius: 3,
-          pointHoverRadius: 6,
-          pointBackgroundColor: '#9EC0EB',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 1.5,
-          borderWidth: 2.5,
-          fill: true,
-          yAxisID: 'yHumid'
+          borderColor: '#9EC0EB', backgroundColor: 'rgba(158,192,235,0.12)',
+          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#9EC0EB',
+          borderWidth: 2.5, fill: true
         }
       ]
     },
     options: {
       responsive: true,
-      interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: {
-          labels: {
-            color: '#538376',
-            font: { family: 'DM Sans', size: 12 },
-            usePointStyle: true,
-            pointStyle: 'circle',
-            padding: 16
-          }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(255,255,255,0.95)',
-          titleColor: '#538376',
-          bodyColor: '#5A7A6E',
-          borderColor: 'rgba(184,213,218,0.6)',
-          borderWidth: 1,
-          padding: 10,
-          cornerRadius: 10,
-          callbacks: {
-            label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + (ctx.datasetIndex === 0 ? ' °C' : ' %')
-          }
-        }
+        legend: { labels: { color: '#538376', font: { family: 'DM Sans', size: 12 } } }
       },
       scales: {
-        x: {
-          grid: { color: 'rgba(184,213,218,0.2)', lineWidth: 1 },
-          ticks: { color: '#8AADA0', font: { size: 10, family: 'DM Sans' }, maxTicksLimit: 6 }
-        },
-        yTemp: {
-          type: 'linear', position: 'left',
-          grid: { color: 'rgba(241,184,217,0.2)', lineWidth: 1 },
-          ticks: { color: '#F1B8D9', font: { size: 10 }, callback: v => v + '°C' },
-          title: { display: true, text: 'Suhu', color: '#F1B8D9', font: { size: 10 } }
-        },
-        yHumid: {
-          type: 'linear', position: 'right',
-          grid: { drawOnChartArea: false },
-          ticks: { color: '#9EC0EB', font: { size: 10 }, callback: v => v + '%' },
-          title: { display: true, text: 'Kelembaban', color: '#9EC0EB', font: { size: 10 } }
-        }
+        x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } }
       }
     }
   });
 }
 
 /* ════════════════════════════════════
-   FIREBASE — DATA REAL ESP32
+   LIVE SIMULATION
 ════════════════════════════════════ */
-const FIREBASE_URL = "https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json";
-
-async function fetchFirebase() {
-  try {
-    const res = await fetch(FIREBASE_URL);
-    if (!res.ok) throw new Error('HTTP error');
-    const data = await res.json();
-
-    if (data.suhu !== undefined)       sensorData.temp   = +parseFloat(data.suhu).toFixed(1);
-    if (data.kelembaban !== undefined)  sensorData.humid  = +parseFloat(data.kelembaban).toFixed(1);
-    if (data.berat !== undefined)       sensorData.weight = +(parseFloat(data.berat) / 1000).toFixed(2);
+function startSimulation() {
+  setInterval(() => {
+    sensorData.temp   = +(32 + Math.random() * 5).toFixed(1);
+    sensorData.humid  = +(68 + Math.random() * 8).toFixed(1);
+    sensorData.weight = +(1.5 + Math.random() * 1).toFixed(2);
 
     document.getElementById('val-temp').innerHTML   = sensorData.temp + '<span class="stat-unit"> °C</span>';
     document.getElementById('val-humid').innerHTML  = sensorData.humid + '<span class="stat-unit"> %</span>';
     document.getElementById('val-weight').innerHTML = sensorData.weight + '<span class="stat-unit"> kg</span>';
-
-    // Update grafik realtime
-    if (lineChart) {
-      const now = new Date();
-      const label = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-      sensorData.history.labels.push(label); sensorData.history.labels.shift();
-      sensorData.history.temps.push(sensorData.temp); sensorData.history.temps.shift();
-      sensorData.history.humids.push(sensorData.humid); sensorData.history.humids.shift();
-      lineChart.data.labels = sensorData.history.labels;
-      lineChart.data.datasets[0].data = sensorData.history.temps;
-      lineChart.data.datasets[1].data = sensorData.history.humids;
-      lineChart.update('none');
-    }
-
-    // ONLINE
-    setConnectionStatus(true);
-
-  } catch (err) {
-    console.log('Firebase error:', err);
-    // OFFLINE — reset semua ke 0
-    setConnectionStatus(false);
-  }
-}
-
-function setConnectionStatus(online) {
-  // Update status dot di sidebar & header
-  const dot = document.querySelector('.sb-role-dot');
-  const statusEls = document.querySelectorAll('.conn-status');
-
-  if (online) {
-    if (dot) { dot.style.boxShadow = ''; }
-    statusEls.forEach(el => {
-      el.textContent = '🟢 ESP32 Online';
-      el.style.color = '#538376';
-    });
-  } else {
-    // Reset semua sensor ke 0
-    sensorData.temp   = 0;
-    sensorData.humid  = 0;
-    sensorData.weight = 0;
-
-    document.getElementById('val-temp').innerHTML   = '0<span class="stat-unit"> °C</span>';
-    document.getElementById('val-humid').innerHTML  = '0<span class="stat-unit"> %</span>';
-    document.getElementById('val-weight').innerHTML = '0.00<span class="stat-unit"> kg</span>';
-
-    statusEls.forEach(el => {
-      el.textContent = '🔴 ESP32 Offline';
-      el.style.color = '#c0536a';
-    });
-  }
-}
-
-function startSimulation() {
-  fetchFirebase();
-  setInterval(fetchFirebase, 3000);
+  }, 3000);
 }
 
 /* ════════════════════════════════════
@@ -1364,7 +1240,7 @@ function setMixerMode(mode) {
   showToast('Pengaduk: mode ' + (mixerAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
 }
 
-async function toggleMixer() {
+function toggleMixer() {
   mixerOn = !mixerOn;
   const btn = document.getElementById('mixer-toggle-btn');
   const st  = document.getElementById('mixer-ctrl-status');
@@ -1376,20 +1252,9 @@ async function toggleMixer() {
   st.textContent  = mixerOn ? 'ON' : 'OFF';
   sv.textContent  = mixerOn ? 'ON' : 'OFF';
   bm.className    = 'stat-badge ' + (mixerOn ? 'badge-on' : 'badge-off');
-  bm.textContent  = mixerOn ? '⚡ Aktif' : '⛔ Berhenti';
+  bm.textContent  = mixerOn ? '⚡ Otomatis' : '⛔ Berhenti';
   document.getElementById('mixer-status-display').textContent = mixerOn ? 'ON' : 'OFF';
-
-  // Kirim perintah ke Firebase → ESP32 baca
-  try {
-    await fetch('https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/kontrol.json', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ motor: mixerOn ? 1 : 0 })
-    });
-    showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
-  } catch(e) {
-    showToast('⚠️ Gagal kirim perintah ke ESP32');
-  }
+  showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
 }
 
 function setLiquidMode(mode) {
@@ -1401,6 +1266,12 @@ function setLiquidMode(mode) {
 }
 
 function toggleLiquid() {
+  // SAFETY: cek apakah pengaduk sedang ON
+  if (!liquidOn && mixerOn) {
+    showWarning('⚠️ BAHAYA! Pengaduk sedang aktif. Matikan pengaduk dulu sebelum menyalakan pompa!');
+    return;
+  }
+
   liquidOn = !liquidOn;
   const btn = document.getElementById('liquid-toggle-btn');
   const st  = document.getElementById('liquid-ctrl-status');
@@ -1408,7 +1279,90 @@ function toggleLiquid() {
   btn.textContent = liquidOn ? '⏸ Hentikan Cairan' : '▶ Jalankan Cairan';
   st.className    = 'ctrl-status ' + (liquidOn ? 'on' : 'off');
   st.textContent  = liquidOn ? 'ON' : 'OFF';
+
+  // Update tampilan tombol pengaduk
+  updateSafetyLock();
+
   showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ✓' : 'dihentikan ✗'));
+}
+
+/* ════════════════════════════════════
+   SAFETY LOCK — mencegah motor + pompa jalan bersamaan
+════════════════════════════════════ */
+function updateSafetyLock() {
+  const mixerBtn   = document.getElementById('mixer-toggle-btn');
+  const liquidBtn  = document.getElementById('liquid-toggle-btn');
+
+  if (mixerOn && !liquidOn) {
+    // Pengaduk ON → disable tombol pompa
+    liquidBtn.disabled = true;
+    liquidBtn.style.opacity = '0.4';
+    liquidBtn.style.cursor = 'not-allowed';
+    liquidBtn.textContent = '🔒 Pengaduk Aktif';
+  } else if (liquidOn && !mixerOn) {
+    // Pompa ON → disable tombol pengaduk
+    mixerBtn.disabled = true;
+    mixerBtn.style.opacity = '0.4';
+    mixerBtn.style.cursor = 'not-allowed';
+    mixerBtn.textContent = '🔒 Pompa Aktif';
+  } else {
+    // Semua OFF → enable semua
+    liquidBtn.disabled = false;
+    liquidBtn.style.opacity = '1';
+    liquidBtn.style.cursor = 'pointer';
+    liquidBtn.textContent = liquidOn ? '⏸ Hentikan Cairan' : '▶ Jalankan Cairan';
+
+    mixerBtn.disabled = false;
+    mixerBtn.style.opacity = '1';
+    mixerBtn.style.cursor = 'pointer';
+    mixerBtn.textContent = mixerOn ? '⏸ Hentikan Pengaduk' : '▶ Jalankan Pengaduk';
+  }
+}
+
+function showWarning(msg) {
+  // Hapus warning lama kalau ada
+  const old = document.getElementById('safety-warning');
+  if (old) old.remove();
+
+  const warn = document.createElement('div');
+  warn.id = 'safety-warning';
+  warn.style.cssText = `
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.8);
+    background:#fff; border-radius:20px; padding:28px 32px; z-index:9999;
+    box-shadow:0 20px 60px rgba(0,0,0,0.2), 0 0 0 3px rgba(212,112,154,0.3);
+    text-align:center; max-width:320px; width:90vw;
+    animation: warnIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  `;
+
+  warn.innerHTML = `
+    <style>
+      @keyframes warnIn { from{transform:translate(-50%,-50%) scale(0.8);opacity:0} to{transform:translate(-50%,-50%) scale(1);opacity:1} }
+    </style>
+    <div style="font-size:3rem;margin-bottom:12px">⚠️</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:#c0536a;margin-bottom:10px">Peringatan Keamanan!</div>
+    <div style="font-size:0.88rem;color:#5A7A6E;line-height:1.6;margin-bottom:20px">${msg}</div>
+    <div style="font-size:0.78rem;color:#8AADA0;margin-bottom:16px">Motor dan pompa tidak boleh berjalan bersamaan untuk mencegah kerusakan alat.</div>
+    <button onclick="document.getElementById('safety-warning').remove()" style="
+      background:linear-gradient(135deg,#d4709a,#e8a0c0);color:#fff;border:none;
+      padding:11px 28px;border-radius:12px;font-size:0.9rem;font-weight:600;cursor:pointer;
+      font-family:'DM Sans',sans-serif;box-shadow:0 4px 14px rgba(212,112,154,0.3);
+    ">Mengerti</button>
+  `;
+
+  // Backdrop
+  const backdrop = document.createElement('div');
+  backdrop.id = 'safety-backdrop';
+  backdrop.style.cssText = `
+    position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998;
+    background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);
+  `;
+  backdrop.onclick = () => { warn.remove(); backdrop.remove(); };
+
+  document.body.appendChild(backdrop);
+  document.body.appendChild(warn);
+
+  // Auto close after 5 detik
+  setTimeout(() => { warn.remove(); backdrop.remove(); }, 5000);
 }
 
 /* ════════════════════════════════════
