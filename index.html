@@ -1240,7 +1240,13 @@ function setMixerMode(mode) {
   showToast('Pengaduk: mode ' + (mixerAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
 }
 
-function toggleMixer() {
+async function toggleMixer() {
+  // SAFETY: cek pompa sedang ON
+  if (!mixerOn && liquidOn) {
+    showWarning('⚠️ BAHAYA! Pompa sedang aktif.<br>Matikan pompa dulu sebelum menyalakan pengaduk!');
+    return;
+  }
+
   mixerOn = !mixerOn;
   const btn = document.getElementById('mixer-toggle-btn');
   const st  = document.getElementById('mixer-ctrl-status');
@@ -1252,9 +1258,21 @@ function toggleMixer() {
   st.textContent  = mixerOn ? 'ON' : 'OFF';
   sv.textContent  = mixerOn ? 'ON' : 'OFF';
   bm.className    = 'stat-badge ' + (mixerOn ? 'badge-on' : 'badge-off');
-  bm.textContent  = mixerOn ? '⚡ Otomatis' : '⛔ Berhenti';
+  bm.textContent  = mixerOn ? '⚡ Aktif' : '⛔ Berhenti';
   document.getElementById('mixer-status-display').textContent = mixerOn ? 'ON' : 'OFF';
-  showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
+
+  updateSafetyLock();
+
+  try {
+    await fetch('https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/kontrol.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ motor: mixerOn ? 1 : 0 })
+    });
+    showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
+  } catch(e) {
+    showToast('⚠️ Gagal kirim perintah ke ESP32');
+  }
 }
 
 function setLiquidMode(mode) {
