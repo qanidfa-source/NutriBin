@@ -1230,13 +1230,44 @@ function initChart() {
 /* ════════════════════════════════════
    FIREBASE — DATA REAL ESP32
 ════════════════════════════════════ */
-const FIREBASE_URL  = "https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json";
+const FIREBASE_URL = "https://nutribin-2804-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json";
+
+let lastHeartbeat = null;
+let lastHeartbeatTime = 0;
 
 async function fetchFirebase() {
   try {
     const res = await fetch(FIREBASE_URL);
     if (!res.ok) throw new Error('HTTP error');
     const data = await res.json();
+
+    // CEK HEARTBEAT — kalau heartbeat ga berubah lebih dari 10 detik → OFFLINE
+    const currentHB = data.heartbeat ?? null;
+    const now = Date.now();
+
+    if (currentHB !== null) {
+      if (currentHB !== lastHeartbeat) {
+        // Heartbeat berubah → ESP32 masih hidup
+        lastHeartbeat = currentHB;
+        lastHeartbeatTime = now;
+        setConnectionStatus(true);
+      } else {
+        // Heartbeat sama → cek sudah berapa lama
+        if (now - lastHeartbeatTime > 10000) {
+          setConnectionStatus(false);
+          return;
+        } else {
+          setConnectionStatus(true);
+        }
+      }
+    } else {
+      // Belum ada heartbeat field → pakai timeout 10 detik
+      if (lastHeartbeatTime === 0) lastHeartbeatTime = now;
+      if (now - lastHeartbeatTime > 10000) {
+        setConnectionStatus(false);
+        return;
+      }
+    }
 
     if (data.suhu !== undefined)        sensorData.temp   = +parseFloat(data.suhu).toFixed(1);
     if (data.kelembaban !== undefined)   sensorData.humid  = +parseFloat(data.kelembaban).toFixed(1);
@@ -1248,8 +1279,8 @@ async function fetchFirebase() {
 
     // Update grafik
     if (lineChart) {
-      const now = new Date();
-      const label = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+      const now2 = new Date();
+      const label = now2.getHours().toString().padStart(2,'0') + ':' + now2.getMinutes().toString().padStart(2,'0');
       sensorData.history.labels.push(label); sensorData.history.labels.shift();
       sensorData.history.temps.push(sensorData.temp); sensorData.history.temps.shift();
       sensorData.history.humids.push(sensorData.humid); sensorData.history.humids.shift();
@@ -1258,8 +1289,6 @@ async function fetchFirebase() {
       lineChart.data.datasets[1].data = sensorData.history.humids;
       lineChart.update('none');
     }
-
-    setConnectionStatus(true);
 
   } catch (err) {
     setConnectionStatus(false);
