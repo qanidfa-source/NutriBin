@@ -1355,7 +1355,7 @@ async function toggleMixer() {
   updateSafetyLock();
 
   try {
-    await fetch('https://nutribin-2804-default-rtdb.asia-southeast1.firebasedatabase.app/kontrol.json', {
+    await fetch('https://smart-compos-bc55f-default-rtdb.asia-southeast1.firebasedatabase.app/kontrol.json', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ motor: mixerOn ? 1 : 0 })
@@ -1374,7 +1374,7 @@ function setLiquidMode(mode) {
   showToast('Cairan pupuk: mode ' + (liquidAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
 }
 
-function toggleLiquid() {
+async function toggleLiquid() {
   // SAFETY: cek apakah pengaduk sedang ON
   if (!liquidOn && mixerOn) {
     showWarning('⚠️ BAHAYA! Pengaduk sedang aktif. Matikan pengaduk dulu sebelum menyalakan pompa!');
@@ -1392,7 +1392,17 @@ function toggleLiquid() {
   // Update tampilan tombol pengaduk
   updateSafetyLock();
 
-  showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ✓' : 'dihentikan ✗'));
+  // Kirim perintah pompa ke Firebase → ESP32 baca
+  try {
+    await fetch('https://nutribin-2804-default-rtdb.asia-southeast1.firebasedatabase.app/kontrol.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ motor: mixerOn ? 1 : 0, pompa: liquidOn ? 1 : 0 })
+    });
+    showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ✓' : 'dihentikan ✗'));
+  } catch(e) {
+    showToast('⚠️ Gagal kirim perintah ke ESP32');
+  }
 }
 
 /* ════════════════════════════════════
