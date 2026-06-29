@@ -1,1606 +1,2424 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NutriBin – Smart Compost Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --vetiver:    #C1D591;
-    --duck-egg:   #B8D5DA;
-    --hydrangea:  #9EC0EB;
-    --strawberry: #F1B8D9;
-    --basil:      #538376;
-    --cream:      #F9F6EF;
-    --soft-white: #FEFCF8;
-    --text-dark:  #2E4A3E;
-    --text-mid:   #5A7A6E;
-    --text-light: #8AADA0;
-    --shadow:     rgba(83,131,118,0.12);
-    --card-bg:    rgba(255,255,255,0.72);
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriBin – Smart Compost Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --vetiver: #C1D591;
+      --duck-egg: #B8D5DA;
+      --hydrangea: #9EC0EB;
+      --strawberry: #F1B8D9;
+      --basil: #538376;
+      --cream: #F9F6EF;
+      --soft-white: #FEFCF8;
+      --text-dark: #2E4A3E;
+      --text-mid: #5A7A6E;
+      --text-light: #8AADA0;
+      --shadow: rgba(83, 131, 118, 0.12);
+      --card-bg: rgba(255, 255, 255, 0.72);
+    }
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text-dark);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-  /* ─── PAGES ─── */
-  .page { display:none; min-height:100vh; }
-  .page.active { display:flex; }
+    /* ─── PAGES ─── */
+    .page {
+      display: none;
+      min-height: 100vh;
+    }
 
-  /* ═══════════════════════════════════════
-     PAGE 1 – LOGIN
-  ═══════════════════════════════════════ */
-  #page-login {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #E8F5D9 0%, #D6EBF0 35%, #C9DEFF 65%, #F5D6EA 100%);
-    position: relative;
-    overflow: hidden;
-  }
+    .page.active {
+      display: flex;
+    }
 
-  /* Floating blobs */
-  #page-login::before {
-    content:'';
-    position:absolute; top:-120px; right:-80px;
-    width:420px; height:420px; border-radius:50%;
-    background: radial-gradient(circle, rgba(193,213,145,0.45), transparent 70%);
-    animation: blob1 7s ease-in-out infinite;
-  }
-  #page-login::after {
-    content:'';
-    position:absolute; bottom:-100px; left:-80px;
-    width:380px; height:380px; border-radius:50%;
-    background: radial-gradient(circle, rgba(241,184,217,0.45), transparent 70%);
-    animation: blob2 9s ease-in-out infinite;
-  }
-  @keyframes blob1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,20px) scale(1.08)} }
-  @keyframes blob2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(20px,-30px) scale(1.06)} }
+    /* ═══════════════════════════════════════     PAGE 1 – LOGIN  ═══════════════════════════════════════ */
+    #page-login {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #E8F5D9 0%, #D6EBF0 35%, #C9DEFF 65%, #F5D6EA 100%);
+      position: relative;
+      overflow: hidden;
+    }
 
-  .login-card {
-    position: relative; z-index:10;
-    background: rgba(255,255,255,0.68);
-    backdrop-filter: blur(20px);
-    border-radius: 28px;
-    padding: 52px 48px 44px;
-    width: min(480px, 90vw);
-    box-shadow: 0 8px 48px rgba(83,131,118,0.18), 0 2px 12px rgba(0,0,0,0.06);
-    border: 1px solid rgba(255,255,255,0.85);
-    text-align: center;
-    animation: fadeUp 0.7s ease;
-  }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    /* Floating blobs */
+    #page-login::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -80px;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(193, 213, 145, 0.45), transparent 70%);
+      animation: blob1 7s ease-in-out infinite;
+    }
 
-  .login-logo {
-    width: 72px; height: 72px;
-    background: linear-gradient(135deg, var(--basil), var(--vetiver));
-    border-radius: 20px;
-    display: inline-flex; align-items:center; justify-content:center;
-    font-size: 36px; margin-bottom: 20px;
-    box-shadow: 0 6px 24px rgba(83,131,118,0.3);
-  }
+    #page-login::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -80px;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(241, 184, 217, 0.45), transparent 70%);
+      animation: blob2 9s ease-in-out infinite;
+    }
 
-  .login-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem; font-weight: 700;
-    color: var(--basil); letter-spacing: -0.5px;
-    margin-bottom: 6px;
-  }
-  .login-sub {
-    font-size: 0.88rem; color: var(--text-light);
-    margin-bottom: 36px; letter-spacing: 0.3px;
-  }
+    @keyframes blob1 {
 
-  .role-btn-group { display:flex; gap:14px; margin-bottom:28px; }
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1)
+      }
 
-  .role-btn {
-    flex:1; padding: 18px 10px;
-    border-radius: 18px; border: 2px solid transparent;
-    cursor:pointer; transition: all 0.25s ease;
-    background: rgba(255,255,255,0.5);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem; font-weight: 600;
-    color: var(--text-mid);
-    display:flex; flex-direction:column; align-items:center; gap:8px;
-  }
-  .role-btn .role-icon { font-size:2rem; }
-  .role-btn.maker { border-color: var(--basil); background: rgba(193,213,145,0.2); }
-  .role-btn.user  { border-color: var(--hydrangea); background: rgba(158,192,235,0.2); }
-  .role-btn:hover { transform: translateY(-3px); box-shadow:0 6px 20px var(--shadow); }
-  .role-btn.selected.maker { background: var(--vetiver); border-color: var(--basil); color: var(--basil); }
-  .role-btn.selected.user  { background: var(--hydrangea); border-color: #6A9FD8; color: #1a4a7a; }
+      50% {
+        transform: translate(-30px, 20px) scale(1.08)
+      }
+    }
 
-  .pw-group { margin-bottom:22px; text-align:left; }
-  .pw-label { font-size:0.82rem; color:var(--text-mid); font-weight:500; margin-bottom:7px; display:block; }
-  .pw-input {
-    width:100%; padding:13px 16px;
-    border-radius:13px; border:2px solid rgba(184,213,218,0.6);
-    background:rgba(255,255,255,0.7);
-    font-family:'DM Sans',sans-serif; font-size:0.95rem;
-    color:var(--text-dark); outline:none;
-    transition:border-color 0.2s;
-  }
-  .pw-input:focus { border-color:var(--basil); }
+    @keyframes blob2 {
 
-  .login-btn {
-    width:100%; padding:15px;
-    background: linear-gradient(135deg, var(--basil), #6aab98);
-    color:#fff; border:none; border-radius:14px;
-    font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600;
-    cursor:pointer; transition:all 0.25s;
-    box-shadow: 0 4px 18px rgba(83,131,118,0.35);
-    letter-spacing:0.3px;
-  }
-  .login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(83,131,118,0.4); }
-  .login-btn:active { transform:translateY(0); }
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1)
+      }
 
-  .err-msg { color:#c0536a; font-size:0.82rem; margin-top:10px; display:none; }
+      50% {
+        transform: translate(20px, -30px) scale(1.06)
+      }
+    }
 
-  /* ═══════════════════════════════════════
-     PAGE 2 – DASHBOARD
-  ═══════════════════════════════════════ */
-  #page-dashboard {
-    flex-direction: column;
-    background: var(--cream);
-  }
+    .login-card {
+      position: relative;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.68);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 52px 48px 44px;
+      width: min(480px, 90vw);
+      box-shadow: 0 8px 48px rgba(83, 131, 118, 0.18), 0 2px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      text-align: center;
+      animation: fadeUp 0.7s ease;
+    }
 
-  /* Sidebar */
-  .sidebar {
-    width: 230px; min-height:100vh;
-    background: linear-gradient(180deg, rgba(193,213,145,0.35) 0%, rgba(184,213,218,0.35) 100%);
-    backdrop-filter:blur(10px);
-    border-right: 1px solid rgba(255,255,255,0.7);
-    padding: 28px 16px;
-    display:flex; flex-direction:column;
-    position:fixed; left:0; top:0; bottom:0; z-index:50;
-    box-shadow: 2px 0 20px rgba(83,131,118,0.08);
-  }
-  .sb-logo {
-    display:flex; align-items:center; gap:10px; margin-bottom:36px; padding:0 6px;
-  }
-  .sb-logo-icon {
-    width:38px;height:38px;
-    background:linear-gradient(135deg,var(--basil),var(--vetiver));
-    border-radius:11px; display:flex;align-items:center;justify-content:center;
-    font-size:18px;box-shadow:0 4px 12px rgba(83,131,118,0.3);
-  }
-  .sb-logo-text { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:700; color:var(--basil); }
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px)
+      }
 
-  .sb-back-btn {
-    display:flex; align-items:center; gap:8px;
-    padding:10px 14px; border-radius:12px;
-    font-size:0.85rem; font-weight:600; color:var(--text-mid);
-    cursor:pointer; transition:all 0.2s; margin-bottom:12px;
-    background:rgba(255,255,255,0.55);
-    border:1.5px solid rgba(184,213,218,0.5);
-  }
-  .sb-back-btn:hover { background:rgba(241,184,217,0.25); color:#a03060; border-color:rgba(241,184,217,0.6); transform:translateX(-2px); }
-    font-size:0.68rem; font-weight:600; color:var(--text-light);
-    letter-spacing:1.2px; text-transform:uppercase;
-    padding: 0 10px; margin-bottom:6px; margin-top:16px;
-  }
-  .sb-nav-item {
-    display:flex; align-items:center; gap:10px;
-    padding:11px 14px; border-radius:12px;
-    font-size:0.88rem; font-weight:500; color:var(--text-mid);
-    cursor:pointer; transition:all 0.2s; margin-bottom:3px;
-    text-decoration:none;
-  }
-  .sb-nav-item:hover { background:rgba(255,255,255,0.6); color:var(--basil); }
-  .sb-nav-item.active { background:rgba(255,255,255,0.8); color:var(--basil); font-weight:600; box-shadow:0 2px 10px var(--shadow); }
-  .sb-nav-icon { font-size:1.1rem; width:22px; text-align:center; }
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
 
-  .sb-role-badge {
-    margin-top:auto; padding:12px 14px;
-    background:rgba(255,255,255,0.7);border-radius:14px;
-    display:flex;align-items:center;gap:10px;
-    box-shadow:0 2px 10px var(--shadow);
-  }
-  .sb-role-dot { width:10px;height:10px;border-radius:50%; }
-  .sb-role-dot.maker { background:var(--basil); }
-  .sb-role-dot.user  { background:var(--hydrangea); box-shadow:0 0 0 3px rgba(241,184,217,0.4); }
-  .sb-role-name { font-size:0.82rem; font-weight:600; color:var(--text-dark); }
-  .sb-logout {
-    margin-top:8px; font-size:0.78rem; color:var(--text-light);
-    cursor:pointer; padding:8px 14px; border-radius:10px;
-    transition:all 0.2s; text-align:center;
-    border:1px solid rgba(200,200,200,0.4);
-  }
-  .sb-logout:hover { background:rgba(241,184,217,0.3); color:#b03060; }
+    .login-logo {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--basil), var(--vetiver));
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 24px rgba(83, 131, 118, 0.3);
+    }
 
-  /* Main content */
-  .main-content { margin-left:230px; padding:32px 32px 80px; flex:1; }
+    .login-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--basil);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
 
-  .page-header { margin-bottom:28px; }
-  .page-header h1 { font-family:'Playfair Display',serif; font-size:1.85rem; font-weight:700; color:var(--basil); margin-bottom:4px; }
-  .page-header p { font-size:0.88rem; color:var(--text-light); }
+    .login-sub {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      margin-bottom: 36px;
+      letter-spacing: 0.3px;
+    }
 
-  /* Stat cards */
-  .stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:18px; margin-bottom:24px; }
+    .role-btn-group {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
 
-  .stat-card {
-    background:var(--card-bg);
-    backdrop-filter:blur(12px);
-    border-radius:20px; padding:22px 22px 18px;
-    box-shadow:0 4px 20px var(--shadow);
-    border:1px solid rgba(255,255,255,0.85);
-    transition:transform 0.2s, box-shadow 0.2s;
-    position:relative; overflow:hidden;
-  }
-  .stat-card:hover { transform:translateY(-3px); box-shadow:0 8px 32px var(--shadow); }
-  .stat-card::before {
-    content:''; position:absolute; top:-20px; right:-20px;
-    width:80px;height:80px;border-radius:50%;
-    opacity:0.18;
-  }
-  .stat-card.temp::before   { background:var(--strawberry); }
-  .stat-card.humid::before  { background:var(--hydrangea); }
-  .stat-card.weight::before { background:var(--vetiver); }
-  .stat-card.mixer::before  { background:var(--duck-egg); }
+    .role-btn {
+      flex: 1;
+      padding: 18px 10px;
+      border-radius: 18px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: rgba(255, 255, 255, 0.5);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
 
-  .stat-icon { font-size:1.6rem; margin-bottom:10px; }
-  .stat-label { font-size:0.78rem; font-weight:500; color:var(--text-light); letter-spacing:0.3px; margin-bottom:5px; }
-  .stat-value { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--text-dark); }
-  .stat-unit  { font-size:0.85rem; color:var(--text-mid); font-family:'DM Sans',sans-serif; }
-  .stat-badge {
-    display:inline-flex; align-items:center; gap:4px;
-    font-size:0.72rem; padding:4px 9px; border-radius:20px;
-    font-weight:600; margin-top:8px;
-  }
-  .badge-on  { background:rgba(193,213,145,0.4); color:#3a6c3a; }
-  .badge-off { background:rgba(220,220,220,0.5); color:#888; }
+    .role-btn .role-icon {
+      font-size: 2rem;
+    }
 
-  /* Chart */
-  .chart-row { display:grid; grid-template-columns:2fr 1fr; gap:18px; margin-bottom:24px; }
-  .card {
-    background:var(--card-bg); backdrop-filter:blur(12px);
-    border-radius:20px; padding:22px;
-    box-shadow:0 4px 20px var(--shadow);
-    border:1px solid rgba(255,255,255,0.85);
-  }
-  .card-title {
-    font-family:'Playfair Display',serif; font-size:1rem; font-weight:600;
-    color:var(--basil); margin-bottom:16px; display:flex; align-items:center; gap:8px;
-  }
+    .role-btn.maker {
+      border-color: var(--basil);
+      background: rgba(193, 213, 145, 0.2);
+    }
 
-  canvas { width:100% !important; }
+    .role-btn.user {
+      border-color: var(--hydrangea);
+      background: rgba(158, 192, 235, 0.2);
+    }
 
-  /* Donut chart for weight */
-  .donut-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; height:180px; }
-  .donut-ring { position:relative; width:130px;height:130px; }
-  .donut-ring svg { transform:rotate(-90deg); }
-  .donut-center {
-    position:absolute; top:50%;left:50%;transform:translate(-50%,-50%);
-    text-align:center;
-  }
-  .donut-center .big-num { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--basil); }
-  .donut-center .small-l { font-size:0.72rem; color:var(--text-light); }
+    .role-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px var(--shadow);
+    }
 
-  /* Maker controls */
-  .controls-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px; }
+    .role-btn.selected.maker {
+      background: var(--vetiver);
+      border-color: var(--basil);
+      color: var(--basil);
+    }
 
-  .control-card {
-    background:var(--card-bg); backdrop-filter:blur(12px);
-    border-radius:20px; padding:22px;
-    box-shadow:0 4px 20px var(--shadow);
-    border:1px solid rgba(255,255,255,0.85);
-  }
-  .ctrl-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
-  .ctrl-title  { font-family:'Playfair Display',serif; font-size:1rem; font-weight:600; color:var(--basil); }
-  .ctrl-status { font-size:0.75rem; padding:4px 10px; border-radius:20px; font-weight:600; }
-  .ctrl-status.on  { background:rgba(193,213,145,0.4);color:#3a6c3a; }
-  .ctrl-status.off { background:rgba(220,220,220,0.5);color:#888; }
+    .role-btn.selected.user {
+      background: var(--hydrangea);
+      border-color: #6A9FD8;
+      color: #1a4a7a;
+    }
 
-  .toggle-row { display:flex; gap:10px; margin-bottom:14px; }
-  .mode-btn {
-    flex:1; padding:11px; border-radius:12px; border:none;
-    font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:600;
-    cursor:pointer; transition:all 0.2s;
-  }
-  .mode-btn.auto { background:rgba(193,213,145,0.35); color:#3a6c3a; }
-  .mode-btn.manual { background:rgba(241,184,217,0.35); color:#a03060; }
-  .mode-btn.active.auto { background:var(--vetiver); }
-  .mode-btn.active.manual { background:var(--strawberry); }
-  .mode-btn:hover { transform:translateY(-1px); box-shadow:0 3px 10px var(--shadow); }
+    .pw-group {
+      margin-bottom: 22px;
+      text-align: left;
+    }
 
-  .action-btn {
-    width:100%; padding:13px; border-radius:13px; border:none;
-    font-family:'DM Sans',sans-serif; font-size:0.9rem; font-weight:600;
-    cursor:pointer; transition:all 0.25s; margin-top:4px;
-  }
-  .action-btn.start { background:linear-gradient(135deg,var(--basil),#6aab98); color:#fff; box-shadow:0 4px 14px rgba(83,131,118,0.3); }
-  .action-btn.stop  { background:linear-gradient(135deg,#d4709a,#e8a0c0); color:#fff; box-shadow:0 4px 14px rgba(212,112,154,0.3); }
-  .action-btn:hover { transform:translateY(-2px); }
+    .pw-label {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      font-weight: 500;
+      margin-bottom: 7px;
+      display: block;
+    }
 
-  .slider-wrap { margin-top:12px; }
-  .slider-label { font-size:0.78rem;color:var(--text-mid);margin-bottom:6px;display:flex;justify-content:space-between; }
-  input[type=range] {
-    width:100%; accent-color:var(--basil);
-    height:4px; border-radius:4px;
-    appearance:none; background:linear-gradient(to right, var(--basil) 60%, #ddd 60%);
-  }
+    .pw-input {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 13px;
+      border: 2px solid rgba(184, 213, 218, 0.6);
+      background: rgba(255, 255, 255, 0.7);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
 
-  /* Info readout for user view */
-  .info-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
-  .info-card { background:var(--card-bg);backdrop-filter:blur(12px);border-radius:18px;padding:20px;box-shadow:0 4px 18px var(--shadow);border:1px solid rgba(255,255,255,0.85); }
-  .info-label { font-size:0.75rem;color:var(--text-light);font-weight:500;margin-bottom:8px;letter-spacing:0.3px; }
-  .info-val { font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--text-dark); }
-  .info-meta { font-size:0.75rem;color:var(--text-mid);margin-top:4px; }
+    .pw-input:focus {
+      border-color: var(--basil);
+    }
 
-  /* ═══════════════════════════════════════
-     AI CHAT BUBBLE
-  ═══════════════════════════════════════ */
-  .ai-fab {
-    position:fixed; bottom:32px; right:32px; z-index:1000;
-    width:60px; height:60px; border-radius:18px;
-    background: conic-gradient(from 0deg, #C1D591, #9EC0EB, #F1B8D9, #B8D5DA, #C1D591);
-    box-shadow:0 6px 28px rgba(158,192,235,0.5), 0 2px 8px rgba(0,0,0,0.1);
-    cursor:pointer; display:flex;align-items:center;justify-content:center;
-    border:none; padding:0;
-    transform: rotate(0deg);
-    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
-    animation: fabPulse 3s ease-in-out infinite;
-  }
-  .ai-fab.chat-open {
-    transform: rotate(-18deg);
-    box-shadow: 0 12px 40px rgba(241,184,217,0.6), 0 0 0 5px rgba(193,213,145,0.25);
-    animation: none;
-  }
-  @keyframes fabPulse { 0%,100%{box-shadow:0 6px 28px rgba(158,192,235,0.5)} 50%{box-shadow:0 8px 36px rgba(241,184,217,0.6), 0 0 0 6px rgba(193,213,145,0.18)} }
+    .login-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--basil), #6aab98);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 18px rgba(83, 131, 118, 0.35);
+      letter-spacing: 0.3px;
+    }
 
-  .ai-fab-inner {
-    width:46px; height:46px; border-radius:13px;
-    background: rgba(255,255,255,0.93);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .ai-fab-svg { width:26px; height:26px; }
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(83, 131, 118, 0.4);
+    }
 
-  .ai-chat-popup {
-    position:fixed; bottom:104px; right:32px; z-index:1000;
-    width:340px; height:480px;
-    background:rgba(254,252,248,0.95);
-    backdrop-filter:blur(20px);
-    border-radius:24px; box-shadow:0 16px 56px rgba(83,131,118,0.22), 0 4px 16px rgba(0,0,0,0.08);
-    border:1px solid rgba(255,255,255,0.9);
-    display:flex;flex-direction:column;
-    transform: scale(0.7) translateY(40px); transform-origin: bottom right;
-    opacity:0; pointer-events:none;
-    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
-  }
-  .ai-chat-popup.open {
-    transform: scale(1) translateY(0);
-    opacity:1; pointer-events:all;
-  }
+    .login-btn:active {
+      transform: translateY(0);
+    }
 
-  .ai-header {
-    padding:16px 18px 14px;
-    border-bottom:1px solid rgba(184,213,218,0.4);
-    display:flex;align-items:center;gap:10px;
-  }
-  .ai-avatar {
-    width:38px;height:38px;border-radius:12px;
-    background:linear-gradient(135deg,var(--hydrangea),var(--strawberry));
-    display:flex;align-items:center;justify-content:center;font-size:1.2rem;
-    box-shadow:0 3px 10px rgba(158,192,235,0.4);
-  }
-  .ai-name { font-weight:700;font-size:0.9rem;color:var(--basil); }
-  .ai-sub  { font-size:0.72rem;color:var(--text-light); }
-  .ai-close { margin-left:auto;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--text-light);padding:4px;border-radius:8px;transition:background 0.2s; }
-  .ai-close:hover { background:rgba(241,184,217,0.3); }
+    .err-msg {
+      color: #c0536a;
+      font-size: 0.82rem;
+      margin-top: 10px;
+      display: none;
+    }
 
-  .ai-msgs {
-    flex:1;overflow-y:auto;padding:14px 14px 8px;
-    display:flex;flex-direction:column;gap:10px;
-  }
-  .ai-msgs::-webkit-scrollbar { width:4px; }
-  .ai-msgs::-webkit-scrollbar-thumb { background:rgba(184,213,218,0.5);border-radius:4px; }
+    /* ═══════════════════════════════════════     PAGE 2 – DASHBOARD  ═══════════════════════════════════════ */
+    #page-dashboard {
+      flex-direction: column;
+      background: var(--cream);
+    }
 
-  .msg { max-width:82%;padding:10px 14px;border-radius:16px;font-size:0.84rem;line-height:1.6; }
-  .msg.bot { align-self:flex-start; background:rgba(184,213,218,0.35); color:var(--text-dark); border-bottom-left-radius:4px; }
-  .msg.bot span { line-height:1.6; }
-  .msg.user-msg { align-self:flex-end; background:linear-gradient(135deg,var(--basil),#6aab98); color:#fff; border-bottom-right-radius:4px; }
-  .msg.loading { align-self:flex-start; background:rgba(184,213,218,0.25); color:var(--text-light); font-style:italic; }
+    /* Sidebar */
+    .sidebar {
+      width: 230px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, rgba(193, 213, 145, 0.35) 0%, rgba(184, 213, 218, 0.35) 100%);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 255, 255, 0.7);
+      padding: 28px 16px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 50;
+      box-shadow: 2px 0 20px rgba(83, 131, 118, 0.08);
+    }
 
-  .ai-input-row {
-    padding:12px 14px;
-    border-top:1px solid rgba(184,213,218,0.35);
-    display:flex;gap:8px;align-items:center;
-  }
-  .ai-input {
-    flex:1;padding:10px 14px;border-radius:12px;
-    border:1.5px solid rgba(184,213,218,0.5);
-    background:rgba(255,255,255,0.7);
-    font-family:'DM Sans',sans-serif;font-size:0.84rem;
-    color:var(--text-dark);outline:none;
-    transition:border-color 0.2s;
-  }
-  .ai-input:focus { border-color:var(--basil); }
-  .ai-send {
-    width:38px;height:38px;border-radius:11px;
-    background:linear-gradient(135deg,var(--basil),#6aab98);
-    border:none;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    color:#fff;font-size:1rem;
-    transition:all 0.2s;box-shadow:0 3px 10px rgba(83,131,118,0.3);
-  }
-  .ai-send:hover { transform:scale(1.08); }
+    .sb-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 36px;
+      padding: 0 6px;
+    }
 
-  /* Quick suggestions */
-  .ai-suggestions {
-    padding:0 14px 10px;
-    display:flex;gap:6px;flex-wrap:wrap;
-  }
-  .ai-chip {
-    font-size:0.72rem;padding:5px 10px;border-radius:20px;
-    background:rgba(193,213,145,0.3);color:var(--basil);
-    border:1px solid rgba(193,213,145,0.5);
-    cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;
-    transition:all 0.15s;white-space:nowrap;
-  }
-  .ai-chip:hover { background:var(--vetiver);transform:translateY(-1px); }
+    .sb-logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--basil), var(--vetiver));
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(83, 131, 118, 0.3);
+    }
 
-  /* Toast */
-  .toast {
-    position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-80px);
-    background:rgba(83,131,118,0.9);color:#fff;
-    padding:12px 24px;border-radius:12px;font-size:0.88rem;font-weight:500;
-    transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);z-index:9999;
-    box-shadow:0 6px 24px rgba(83,131,118,0.3);
-  }
-  .toast.show { transform:translateX(-50%) translateY(0); }
+    .sb-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--basil);
+    }
 
-  /* ─── HAMBURGER MENU ─── */
-  .hamburger-btn {
-    position: fixed; top: 18px; right: 20px; z-index: 3000;
-    width: 44px; height: 44px; border-radius: 13px;
-    background: rgba(255,255,255,0.95); backdrop-filter: blur(16px);
-    border: 1.5px solid rgba(184,213,218,0.7);
-    cursor: pointer; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 5px;
-    box-shadow: 0 4px 20px rgba(83,131,118,0.2), 0 1px 4px rgba(0,0,0,0.08);
-    transition: all 0.22s ease;
-  }
-  .hamburger-btn:hover { transform: scale(1.07); box-shadow: 0 6px 24px rgba(83,131,118,0.28); }
-  .hamburger-btn .bar {
-    width: 20px; height: 2.5px; border-radius: 3px;
-    background: var(--basil); transition: all 0.25s ease;
-    display: block;
-  }
-  .hamburger-btn.open .bar:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-  .hamburger-btn.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
-  .hamburger-btn.open .bar:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+    .sb-back-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1.5px solid rgba(184, 213, 218, 0.5);
+    }
 
-  .hamburger-menu {
-    position: fixed; top: 72px; right: 20px; z-index: 2999;
-    background: rgba(255,255,255,0.97); backdrop-filter: blur(20px);
-    border-radius: 18px; padding: 8px;
-    box-shadow: 0 16px 48px rgba(83,131,118,0.22), 0 4px 14px rgba(0,0,0,0.1);
-    border: 1px solid rgba(184,213,218,0.45);
-    min-width: 190px;
-    transform: scale(0.85) translateY(-12px); transform-origin: top right;
-    opacity: 0; pointer-events: none;
-    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  .hamburger-menu.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+    .sb-back-btn:hover {
+      background: rgba(241, 184, 217, 0.25);
+      color: #a03060;
+      border-color: rgba(241, 184, 217, 0.6);
+      transform: translateX(-2px);
+    }
 
-  .hmenu-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 14px; border-radius: 12px;
-    font-size: 0.9rem; font-weight: 500; color: var(--text-dark);
-    cursor: pointer; transition: all 0.18s;
-  }
-  .hmenu-item:hover { background: rgba(193,213,145,0.3); color: var(--basil); transform: translateX(3px); }
-  .hmenu-item .hmenu-icon {
-    width: 34px; height: 34px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.05rem; flex-shrink:0;
-  }
-  .hmenu-item.home .hmenu-icon { background: rgba(193,213,145,0.4); }
-  .hmenu-item.data .hmenu-icon { background: rgba(158,192,235,0.4); }
-  .hmenu-divider { height: 1px; background: rgba(184,213,218,0.45); margin: 4px 6px; }
-  .hmenu-label {
-    font-size: 0.68rem; color: var(--text-light);
-    padding: 6px 14px 4px; font-weight: 700;
-    letter-spacing: 1px; text-transform: uppercase;
-  }
+    font-size:0.68rem;
+    font-weight:600;
+    color:var(--text-light);
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    padding: 0 10px;
+    margin-bottom:6px;
+    margin-top:16px;
+    }
 
-  /* ─── DARK MODE ─── */
-  body.dark {
-    --cream:     #1A2420;
-    --soft-white:#1E2B26;
-    --text-dark: #E8F5EF;
-    --text-mid:  #A8C8BC;
-    --text-light:#6A9A8A;
-    --card-bg:   rgba(40,60,52,0.85);
-    --shadow:    rgba(0,0,0,0.3);
-    background: var(--cream);
-  }
-  body.dark .login-card,
-  body.dark .sidebar,
-  body.dark .stat-card,
-  body.dark .card,
-  body.dark .control-card,
-  body.dark .info-card,
-  body.dark .settings-card,
-  body.dark .ai-chat-popup { background: var(--card-bg); border-color: rgba(255,255,255,0.08); }
-  body.dark .hamburger-btn { background: rgba(40,60,52,0.95); border-color: rgba(100,160,140,0.4); }
-  body.dark .hamburger-btn .bar { background: var(--vetiver); }
-  body.dark .hamburger-menu { background: rgba(30,43,38,0.98); border-color: rgba(100,160,140,0.3); }
-  body.dark .hmenu-item { color: var(--text-dark); }
-  body.dark .ai-chat-popup { background: rgba(30,43,38,0.97); }
-  body.dark .ai-input { background: rgba(255,255,255,0.08); border-color: rgba(100,160,140,0.3); color: var(--text-dark); }
-  body.dark .msg.bot { background: rgba(83,131,118,0.25); }
-  body.dark #page-login { background: linear-gradient(135deg, #1A2E1A 0%, #1A2A2E 35%, #1A2035 65%, #2E1A28 100%); }
-  body.dark .login-card { background: rgba(30,43,38,0.9); }
-  body.dark .pw-input { background: rgba(255,255,255,0.08); border-color: rgba(100,160,140,0.3); color: var(--text-dark); }
-  body.dark .role-btn { background: rgba(255,255,255,0.06); }
-  body.dark .sidebar { background: linear-gradient(180deg, rgba(30,50,40,0.9) 0%, rgba(25,45,50,0.9) 100%); }
-  body.dark .sb-back-btn { background: rgba(255,255,255,0.07); border-color: rgba(100,160,140,0.3); }
-  body.dark .settings-textarea { background: rgba(255,255,255,0.06); border-color: rgba(100,160,140,0.3); color: var(--text-dark); }
-  body.dark .faq-item { border-color: rgba(100,160,140,0.2); }
-  body.dark .faq-q { color: var(--text-dark); }
-  body.dark .theme-opt { background: rgba(255,255,255,0.06); border-color: rgba(100,160,140,0.25); }
+    .sb-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 3px;
+      text-decoration: none;
+    }
 
-  /* ─── SETTINGS PAGE ─── */
-  .settings-card {
-    background: var(--card-bg); backdrop-filter: blur(12px);
-    border-radius: 20px; padding: 22px;
-    box-shadow: 0 4px 20px var(--shadow);
-    border: 1px solid rgba(255,255,255,0.85);
-    margin-bottom: 16px;
-  }
-  .settings-section-title {
-    font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700;
-    color: var(--basil); margin-bottom: 6px;
-  }
-  .settings-desc { font-size: 0.82rem; color: var(--text-light); margin-bottom: 16px; }
+    .sb-nav-item:hover {
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--basil);
+    }
 
-  .theme-options { display: flex; gap: 14px; }
-  .theme-opt {
-    flex: 1; border-radius: 16px; padding: 14px 12px;
-    border: 2px solid rgba(184,213,218,0.4);
-    background: rgba(255,255,255,0.6);
-    cursor: pointer; transition: all 0.22s;
-    text-align: center; font-size: 0.85rem; font-weight: 600;
-    color: var(--text-mid); position: relative;
-  }
-  .theme-opt:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--shadow); }
-  .theme-opt.active { border-color: var(--basil); background: rgba(193,213,145,0.2); color: var(--basil); }
-  .theme-preview {
-    width: 100%; height: 52px; border-radius: 10px;
-    margin-bottom: 10px; padding: 8px; display: flex; flex-direction: column; gap: 5px;
-  }
-  .light-preview { background: #F9F6EF; }
-  .dark-preview  { background: #1A2420; }
-  .tp-bar  { height: 8px; border-radius: 4px; background: var(--vetiver); width: 70%; }
-  .dark-preview .tp-bar { background: #538376; }
-  .tp-card { height: 10px; border-radius: 4px; background: rgba(255,255,255,0.9); }
-  .dark-preview .tp-card { background: rgba(255,255,255,0.12); }
-  .theme-check {
-    position: absolute; top: 8px; right: 10px;
-    width: 20px; height: 20px; border-radius: 50%;
-    background: var(--basil); color: #fff;
-    font-size: 0.7rem; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-  }
+    .sb-nav-item.active {
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--basil);
+      font-weight: 600;
+      box-shadow: 0 2px 10px var(--shadow);
+    }
 
-  .settings-textarea {
-    width: 100%; min-height: 90px; padding: 12px 14px;
-    border-radius: 13px; border: 1.5px solid rgba(184,213,218,0.5);
-    background: rgba(255,255,255,0.7);
-    font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
-    color: var(--text-dark); resize: vertical; outline: none;
-    transition: border-color 0.2s; line-height: 1.5;
-    margin-bottom: 12px; display: block;
-  }
-  .settings-textarea:focus { border-color: var(--basil); }
+    .sb-nav-icon {
+      font-size: 1.1rem;
+      width: 22px;
+      text-align: center;
+    }
 
-  .settings-btn {
-    width: 100%; padding: 13px; border-radius: 13px; border: none;
-    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
-    cursor: pointer; transition: all 0.22s;
-  }
-  .settings-btn.primary { background: linear-gradient(135deg, var(--basil), #6aab98); color: #fff; box-shadow: 0 4px 14px rgba(83,131,118,0.3); }
-  .settings-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(83,131,118,0.38); }
-  .settings-btn.secondary { background: linear-gradient(135deg, #d4709a, #e8a0c0); color: #fff; box-shadow: 0 4px 14px rgba(212,112,154,0.28); }
-  .settings-btn.secondary:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(212,112,154,0.38); }
+    .sb-role-badge {
+      margin-top: auto;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 10px var(--shadow);
+    }
 
-  .faq-item {
-    border-bottom: 1px solid rgba(184,213,218,0.35);
-    cursor: pointer; padding: 13px 0;
-  }
-  .faq-item:last-of-type { border-bottom: none; }
-  .faq-q {
-    font-size: 0.88rem; font-weight: 600; color: var(--text-dark);
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 8px;
-  }
-  .faq-arrow { font-size: 1.1rem; color: var(--text-light); transition: transform 0.22s; flex-shrink: 0; }
-  .faq-item.open .faq-arrow { transform: rotate(90deg); }
-  .faq-a {
-    font-size: 0.82rem; color: var(--text-mid); line-height: 1.6;
-    margin-top: 0; max-height: 0; overflow: hidden;
-    transition: max-height 0.3s ease, margin-top 0.2s;
-  }
-  .faq-item.open .faq-a { max-height: 200px; margin-top: 9px; }
+    .sb-role-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
 
-  #page-settings { background: var(--cream); }
+    .sb-role-dot.maker {
+      background: var(--basil);
+    }
 
-  @media(max-width:700px){
-    .sidebar{transform:translateX(-230px);}
-    .main-content{margin-left:0;padding:20px 16px 80px;}
-    .chart-row,.controls-row,.info-row{grid-template-columns:1fr;}
-  }
-</style>
+    .sb-role-dot.user {
+      background: var(--hydrangea);
+      box-shadow: 0 0 0 3px rgba(241, 184, 217, 0.4);
+    }
+
+    .sb-role-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .sb-logout {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 8px 14px;
+      border-radius: 10px;
+      transition: all 0.2s;
+      text-align: center;
+      border: 1px solid rgba(200, 200, 200, 0.4);
+    }
+
+    .sb-logout:hover {
+      background: rgba(241, 184, 217, 0.3);
+      color: #b03060;
+    }
+
+    /* Main content */
+    .main-content {
+      margin-left: 230px;
+      padding: 32px 32px 80px;
+      flex: 1;
+    }
+
+    .page-header {
+      margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--basil);
+      margin-bottom: 4px;
+    }
+
+    .page-header p {
+      font-size: 0.88rem;
+      color: var(--text-light);
+    }
+
+    /* Stat cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 22px 22px 18px;
+      box-shadow: 0 4px 20px var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px var(--shadow);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      opacity: 0.18;
+    }
+
+    .stat-card.temp::before {
+      background: var(--strawberry);
+    }
+
+    .stat-card.humid::before {
+      background: var(--hydrangea);
+    }
+
+    .stat-card.weight::before {
+      background: var(--vetiver);
+    }
+
+    .stat-card.mixer::before {
+      background: var(--duck-egg);
+    }
+
+    .stat-icon {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-light);
+      letter-spacing: 0.3px;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .stat-unit {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      padding: 4px 9px;
+      border-radius: 20px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .badge-on {
+      background: rgba(193, 213, 145, 0.4);
+      color: #3a6c3a;
+    }
+
+    .badge-off {
+      background: rgba(220, 220, 220, 0.5);
+      color: #888;
+    }
+
+    /* Chart */
+    .chart-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 4px 20px var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--basil);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    canvas {
+      width: 100% !important;
+    }
+
+    /* Donut chart for weight */
+    .donut-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      height: 180px;
+    }
+
+    .donut-ring {
+      position: relative;
+      width: 130px;
+      height: 130px;
+    }
+
+    .donut-ring svg {
+      transform: rotate(-90deg);
+    }
+
+    .donut-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .donut-center .big-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--basil);
+    }
+
+    .donut-center .small-l {
+      font-size: 0.72rem;
+      color: var(--text-light);
+    }
+
+    /* Maker controls */
+    .controls-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .control-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 4px 20px var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+    }
+
+    .ctrl-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .ctrl-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--basil);
+    }
+
+    .ctrl-status {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .ctrl-status.on {
+      background: rgba(193, 213, 145, 0.4);
+      color: #3a6c3a;
+    }
+
+    .ctrl-status.off {
+      background: rgba(220, 220, 220, 0.5);
+      color: #888;
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 11px;
+      border-radius: 12px;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.auto {
+      background: rgba(193, 213, 145, 0.35);
+      color: #3a6c3a;
+    }
+
+    .mode-btn.manual {
+      background: rgba(241, 184, 217, 0.35);
+      color: #a03060;
+    }
+
+    .mode-btn.active.auto {
+      background: var(--vetiver);
+    }
+
+    .mode-btn.active.manual {
+      background: var(--strawberry);
+    }
+
+    .mode-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px var(--shadow);
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 13px;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin-top: 4px;
+    }
+
+    .action-btn.start {
+      background: linear-gradient(135deg, var(--basil), #6aab98);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(83, 131, 118, 0.3);
+    }
+
+    .action-btn.stop {
+      background: linear-gradient(135deg, #d4709a, #e8a0c0);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(212, 112, 154, 0.3);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .slider-wrap {
+      margin-top: 12px;
+    }
+
+    .slider-label {
+      font-size: 0.78rem;
+      color: var(--text-mid);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--basil);
+      height: 4px;
+      border-radius: 4px;
+      appearance: none;
+      background: linear-gradient(to right, var(--basil) 60%, #ddd 60%);
+    }
+
+    /* Info readout for user view */
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 18px var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+    }
+
+    .info-label {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: 500;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .info-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .info-meta {
+      font-size: 0.75rem;
+      color: var(--text-mid);
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════════     AI CHAT BUBBLE  ═══════════════════════════════════════ */
+    .ai-fab {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 1000;
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      background: conic-gradient(from 0deg, #C1D591, #9EC0EB, #F1B8D9, #B8D5DA, #C1D591);
+      box-shadow: 0 6px 28px rgba(158, 192, 235, 0.5), 0 2px 8px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      padding: 0;
+      transform: rotate(0deg);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      animation: fabPulse 3s ease-in-out infinite;
+    }
+
+    .ai-fab.chat-open {
+      transform: rotate(-18deg);
+      box-shadow: 0 12px 40px rgba(241, 184, 217, 0.6), 0 0 0 5px rgba(193, 213, 145, 0.25);
+      animation: none;
+    }
+
+    @keyframes fabPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 6px 28px rgba(158, 192, 235, 0.5)
+      }
+
+      50% {
+        box-shadow: 0 8px 36px rgba(241, 184, 217, 0.6), 0 0 0 6px rgba(193, 213, 145, 0.18)
+      }
+    }
+
+    .ai-fab-inner {
+      width: 46px;
+      height: 46px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.93);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ai-fab-svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .ai-chat-popup {
+      position: fixed;
+      bottom: 104px;
+      right: 32px;
+      z-index: 1000;
+      width: 340px;
+      height: 480px;
+      background: rgba(254, 252, 248, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 0 16px 56px rgba(83, 131, 118, 0.22), 0 4px 16px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.7) translateY(40px);
+      transform-origin: bottom right;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+    }
+
+    .ai-chat-popup.open {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .ai-header {
+      padding: 16px 18px 14px;
+      border-bottom: 1px solid rgba(184, 213, 218, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--hydrangea), var(--strawberry));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 3px 10px rgba(158, 192, 235, 0.4);
+    }
+
+    .ai-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--basil);
+    }
+
+    .ai-sub {
+      font-size: 0.72rem;
+      color: var(--text-light);
+    }
+
+    .ai-close {
+      margin-left: auto;
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: var(--text-light);
+      padding: 4px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .ai-close:hover {
+      background: rgba(241, 184, 217, 0.3);
+    }
+
+    .ai-msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ai-msgs::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .ai-msgs::-webkit-scrollbar-thumb {
+      background: rgba(184, 213, 218, 0.5);
+      border-radius: 4px;
+    }
+
+    .msg {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 0.84rem;
+      line-height: 1.6;
+    }
+
+    .msg.bot {
+      align-self: flex-start;
+      background: rgba(184, 213, 218, 0.35);
+      color: var(--text-dark);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg.bot span {
+      line-height: 1.6;
+    }
+
+    .msg.user-msg {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--basil), #6aab98);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg.loading {
+      align-self: flex-start;
+      background: rgba(184, 213, 218, 0.25);
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    .ai-input-row {
+      padding: 12px 14px;
+      border-top: 1px solid rgba(184, 213, 218, 0.35);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .ai-input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(184, 213, 218, 0.5);
+      background: rgba(255, 255, 255, 0.7);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.84rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .ai-input:focus {
+      border-color: var(--basil);
+    }
+
+    .ai-send {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--basil), #6aab98);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.2s;
+      box-shadow: 0 3px 10px rgba(83, 131, 118, 0.3);
+    }
+
+    .ai-send:hover {
+      transform: scale(1.08);
+    }
+
+    /* Quick suggestions */
+    .ai-suggestions {
+      padding: 0 14px 10px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .ai-chip {
+      font-size: 0.72rem;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: rgba(193, 213, 145, 0.3);
+      color: var(--basil);
+      border: 1px solid rgba(193, 213, 145, 0.5);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .ai-chip:hover {
+      background: var(--vetiver);
+      transform: translateY(-1px);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: rgba(83, 131, 118, 0.9);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 9999;
+      box-shadow: 0 6px 24px rgba(83, 131, 118, 0.3);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ─── HAMBURGER MENU ─── */
+    .hamburger-btn {
+      position: fixed;
+      top: 18px;
+      right: 20px;
+      z-index: 3000;
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(184, 213, 218, 0.7);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      box-shadow: 0 4px 20px rgba(83, 131, 118, 0.2), 0 1px 4px rgba(0, 0, 0, 0.08);
+      transition: all 0.22s ease;
+    }
+
+    .hamburger-btn:hover {
+      transform: scale(1.07);
+      box-shadow: 0 6px 24px rgba(83, 131, 118, 0.28);
+    }
+
+    .hamburger-btn .bar {
+      width: 20px;
+      height: 2.5px;
+      border-radius: 3px;
+      background: var(--basil);
+      transition: all 0.25s ease;
+      display: block;
+    }
+
+    .hamburger-btn.open .bar:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+
+    .hamburger-btn.open .bar:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    .hamburger-btn.open .bar:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+
+    .hamburger-menu {
+      position: fixed;
+      top: 72px;
+      right: 20px;
+      z-index: 2999;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px);
+      border-radius: 18px;
+      padding: 8px;
+      box-shadow: 0 16px 48px rgba(83, 131, 118, 0.22), 0 4px 14px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(184, 213, 218, 0.45);
+      min-width: 190px;
+      transform: scale(0.85) translateY(-12px);
+      transform-origin: top right;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .hamburger-menu.open {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .hmenu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .hmenu-item:hover {
+      background: rgba(193, 213, 145, 0.3);
+      color: var(--basil);
+      transform: translateX(3px);
+    }
+
+    .hmenu-item .hmenu-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+    }
+
+    .hmenu-item.home .hmenu-icon {
+      background: rgba(193, 213, 145, 0.4);
+    }
+
+    .hmenu-item.data .hmenu-icon {
+      background: rgba(158, 192, 235, 0.4);
+    }
+
+    .hmenu-divider {
+      height: 1px;
+      background: rgba(184, 213, 218, 0.45);
+      margin: 4px 6px;
+    }
+
+    .hmenu-label {
+      font-size: 0.68rem;
+      color: var(--text-light);
+      padding: 6px 14px 4px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ─── DARK MODE ─── */
+    body.dark {
+      --cream: #1A2420;
+      --soft-white: #1E2B26;
+      --text-dark: #E8F5EF;
+      --text-mid: #A8C8BC;
+      --text-light: #6A9A8A;
+      --card-bg: rgba(40, 60, 52, 0.85);
+      --shadow: rgba(0, 0, 0, 0.3);
+      background: var(--cream);
+    }
+
+    body.dark .login-card,
+    body.dark .sidebar,
+    body.dark .stat-card,
+    body.dark .card,
+    body.dark .control-card,
+    body.dark .info-card,
+    body.dark .settings-card,
+    body.dark .ai-chat-popup {
+      background: var(--card-bg);
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    body.dark .hamburger-btn {
+      background: rgba(40, 60, 52, 0.95);
+      border-color: rgba(100, 160, 140, 0.4);
+    }
+
+    body.dark .hamburger-btn .bar {
+      background: var(--vetiver);
+    }
+
+    body.dark .hamburger-menu {
+      background: rgba(30, 43, 38, 0.98);
+      border-color: rgba(100, 160, 140, 0.3);
+    }
+
+    body.dark .hmenu-item {
+      color: var(--text-dark);
+    }
+
+    body.dark .ai-chat-popup {
+      background: rgba(30, 43, 38, 0.97);
+    }
+
+    body.dark .ai-input {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(100, 160, 140, 0.3);
+      color: var(--text-dark);
+    }
+
+    body.dark .msg.bot {
+      background: rgba(83, 131, 118, 0.25);
+    }
+
+    body.dark #page-login {
+      background: linear-gradient(135deg, #1A2E1A 0%, #1A2A2E 35%, #1A2035 65%, #2E1A28 100%);
+    }
+
+    body.dark .login-card {
+      background: rgba(30, 43, 38, 0.9);
+    }
+
+    body.dark .pw-input {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(100, 160, 140, 0.3);
+      color: var(--text-dark);
+    }
+
+    body.dark .role-btn {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    body.dark .sidebar {
+      background: linear-gradient(180deg, rgba(30, 50, 40, 0.9) 0%, rgba(25, 45, 50, 0.9) 100%);
+    }
+
+    body.dark .sb-back-btn {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(100, 160, 140, 0.3);
+    }
+
+    body.dark .settings-textarea {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(100, 160, 140, 0.3);
+      color: var(--text-dark);
+    }
+
+    body.dark .faq-item {
+      border-color: rgba(100, 160, 140, 0.2);
+    }
+
+    body.dark .faq-q {
+      color: var(--text-dark);
+    }
+
+    body.dark .theme-opt {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(100, 160, 140, 0.25);
+    }
+
+    /* ─── SETTINGS PAGE ─── */
+    .settings-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 4px 20px var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      margin-bottom: 16px;
+    }
+
+    .settings-section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--basil);
+      margin-bottom: 6px;
+    }
+
+    .settings-desc {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+
+    .theme-options {
+      display: flex;
+      gap: 14px;
+    }
+
+    .theme-opt {
+      flex: 1;
+      border-radius: 16px;
+      padding: 14px 12px;
+      border: 2px solid rgba(184, 213, 218, 0.4);
+      background: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      transition: all 0.22s;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      position: relative;
+    }
+
+    .theme-opt:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px var(--shadow);
+    }
+
+    .theme-opt.active {
+      border-color: var(--basil);
+      background: rgba(193, 213, 145, 0.2);
+      color: var(--basil);
+    }
+
+    .theme-preview {
+      width: 100%;
+      height: 52px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .light-preview {
+      background: #F9F6EF;
+    }
+
+    .dark-preview {
+      background: #1A2420;
+    }
+
+    .tp-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--vetiver);
+      width: 70%;
+    }
+
+    .dark-preview .tp-bar {
+      background: #538376;
+    }
+
+    .tp-card {
+      height: 10px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .dark-preview .tp-card {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .theme-check {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--basil);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 12px 14px;
+      border-radius: 13px;
+      border: 1.5px solid rgba(184, 213, 218, 0.5);
+      background: rgba(255, 255, 255, 0.7);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--text-dark);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .settings-textarea:focus {
+      border-color: var(--basil);
+    }
+
+    .settings-btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 13px;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.22s;
+    }
+
+    .settings-btn.primary {
+      background: linear-gradient(135deg, var(--basil), #6aab98);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(83, 131, 118, 0.3);
+    }
+
+    .settings-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(83, 131, 118, 0.38);
+    }
+
+    .settings-btn.secondary {
+      background: linear-gradient(135deg, #d4709a, #e8a0c0);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(212, 112, 154, 0.28);
+    }
+
+    .settings-btn.secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(212, 112, 154, 0.38);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(184, 213, 218, 0.35);
+      cursor: pointer;
+      padding: 13px 0;
+    }
+
+    .faq-item:last-of-type {
+      border-bottom: none;
+    }
+
+    .faq-q {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .faq-arrow {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      transition: transform 0.22s;
+      flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-arrow {
+      transform: rotate(90deg);
+    }
+
+    .faq-a {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+      margin-top: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, margin-top 0.2s;
+    }
+
+    .faq-item.open .faq-a {
+      max-height: 200px;
+      margin-top: 9px;
+    }
+
+    #page-settings {
+      background: var(--cream);
+    }
+
+    @media(max-width:700px) {
+      .sidebar {
+        transform: translateX(-230px);
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 20px 16px 80px;
+      }
+
+      .chart-row,
+      .controls-row,
+      .info-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-<body>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- HAMBURGER BUTTON (only shown on page 2) -->
-<button class="hamburger-btn" id="hamburger-btn" onclick="toggleHamburger()" style="display:none">
-  <span class="bar"></span>
-  <span class="bar"></span>
-  <span class="bar"></span>
-</button>
-
-<!-- HAMBURGER DROPDOWN MENU -->
-<div class="hamburger-menu" id="hamburger-menu">
-  <div class="hmenu-label">Menu</div>
-  <div class="hmenu-item home" onclick="hamburgerGoHome()">
-    <div class="hmenu-icon">🏠</div>
-    <span>Home</span>
-  </div>
-  <div class="hmenu-divider"></div>
-  <div class="hmenu-item settings" onclick="hamburgerGoSettings()">
-    <div class="hmenu-icon" style="background:rgba(241,184,217,0.4)">⚙️</div>
-    <span>Pengaturan</span>
-  </div>
-</div>
-
-<!-- ═══ PAGE 1: LOGIN ═══ -->
-<div class="page active" id="page-login">
-  <div class="login-card">
-    <div class="login-logo">🌱</div>
-    <h1 class="login-title">NutriBin</h1>
-    <p class="login-sub">Smart Compost Monitoring System</p>
-
-    <div class="role-btn-group">
-      <button class="role-btn maker" id="btn-maker" onclick="selectRole('maker')">
-        <span class="role-icon">🔧</span>
-        <span>Maker</span>
-      </button>
-      <button class="role-btn user" id="btn-user" onclick="selectRole('user')">
-        <span class="role-icon">👤</span>
-        <span>User</span>
-      </button>
+<body><!-- TOAST -->
+  <div class="toast" id="toast"></div><!-- HAMBURGER BUTTON (only shown on page 2) --><button class="hamburger-btn" id="hamburger-btn" onclick="toggleHamburger()" style="display:none"> <span class="bar"></span> <span class="bar"></span> <span class="bar"></span></button><!-- HAMBURGER DROPDOWN MENU -->
+  <div class="hamburger-menu" id="hamburger-menu">
+    <div class="hmenu-label">Menu</div>
+    <div class="hmenu-item home" onclick="hamburgerGoHome()">
+      <div class="hmenu-icon">🏠</div> <span>Home</span>
     </div>
-
-    <div class="pw-group" id="pw-group" style="display:none">
-      <label class="pw-label">🔒 Password Maker</label>
-      <input type="password" class="pw-input" id="pw-input" placeholder="Masukan password..." onkeydown="if(event.key==='Enter')doLogin()">
-      <div class="err-msg" id="err-msg">⚠️ Password salah. Coba lagi.</div>
+    <div class="hmenu-divider"></div>
+    <div class="hmenu-item settings" onclick="hamburgerGoSettings()">
+      <div class="hmenu-icon" style="background:rgba(241,184,217,0.4)">⚙️</div> <span>Pengaturan</span>
     </div>
-
-    <button class="login-btn" onclick="doLogin()">Masuk Dashboard →</button>
-  </div>
-</div>
-
-<!-- ═══ PAGE 2: DASHBOARD ═══ -->
-<div class="page" id="page-dashboard" style="flex-direction:row">
-
-  <!-- SIDEBAR -->
-  <nav class="sidebar" id="sidebar">
-    <div class="sb-logo">
-      <div class="sb-logo-icon">🌱</div>
-      <span class="sb-logo-text">NutriBin</span>
+  </div><!-- ═══ PAGE 1: LOGIN ═══ -->
+  <div class="page active" id="page-login">
+    <div class="login-card">
+      <div class="login-logo">🌱</div>
+      <h1 class="login-title">NutriBin</h1>
+      <p class="login-sub">Smart Compost Monitoring System</p>
+      <div class="role-btn-group"> <button class="role-btn maker" id="btn-maker" onclick="selectRole('maker')"> <span class="role-icon">🔧</span> <span>Maker</span> </button> <button class="role-btn user" id="btn-user" onclick="selectRole('user')"> <span class="role-icon">👤</span> <span>User</span> </button> </div>
+      <div class="pw-group" id="pw-group" style="display:none"> <label class="pw-label">🔒 Password Maker</label> <input type="password" class="pw-input" id="pw-input" placeholder="Masukan password..." onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="err-msg" id="err-msg">⚠️ Password salah. Coba lagi.</div>
+      </div> <button class="login-btn" onclick="doLogin()">Masuk Dashboard →</button>
     </div>
-
-    <div class="sb-back-btn" onclick="logout()">‹ Ganti Akun</div>
-
-    <span class="sb-section-label">Monitor</span>
-    <a class="sb-nav-item active"><span class="sb-nav-icon">📊</span> Dashboard</a>
-    <a class="sb-nav-item"><span class="sb-nav-icon">🌡️</span> Suhu & Kelembaban</a>
-    <a class="sb-nav-item"><span class="sb-nav-icon">⚖️</span> Berat Sampah</a>
-    <a class="sb-nav-item"><span class="sb-nav-icon">📈</span> Grafik Histori</a>
-
-    <span class="sb-section-label" id="sb-maker-label" style="display:none">Kontrol</span>
-    <a class="sb-nav-item" id="sb-mixer-nav" style="display:none"><span class="sb-nav-icon">🔄</span> Pengaduk</a>
-    <a class="sb-nav-item" id="sb-liquid-nav" style="display:none"><span class="sb-nav-icon">💧</span> Cairan Pupuk</a>
-
-    <div class="sb-role-badge">
-      <div class="sb-role-dot" id="sb-role-dot"></div>
-      <div>
-        <div class="sb-role-name" id="sb-role-name">—</div>
-        <div style="font-size:0.7rem;color:var(--text-light)">Mode aktif</div>
+  </div><!-- ═══ PAGE 2: DASHBOARD ═══ -->
+  <div class="page" id="page-dashboard" style="flex-direction:row"> <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sb-logo">
+        <div class="sb-logo-icon">🌱</div> <span class="sb-logo-text">NutriBin</span>
       </div>
-    </div>
-    <div class="sb-logout" onclick="logout()">↩ Keluar</div>
-  </nav>
-
-  <!-- MAIN -->
-  <div class="main-content" id="main-content">
-    <div class="page-header">
-      <h1 id="dash-title">Dashboard</h1>
-      <p id="dash-sub">Monitoring real-time NutriBin anda</p>
-    </div>
-
-    <!-- STATUS BANNER -->
-    <div id="status-banner" style="
-      display:flex; align-items:center; gap:10px;
-      padding:12px 16px; border-radius:14px; margin-bottom:18px;
-      background:rgba(184,213,218,0.2); backdrop-filter:blur(10px);
-      border:1.5px solid rgba(184,213,218,0.5);
-      font-size:0.85rem; font-weight:500; color:var(--text-mid);
-      box-shadow:0 2px 12px var(--shadow); transition: all 0.4s ease;
-    ">
-      <span style="font-size:1.1rem">📡</span>
-      <span style="color:var(--text-mid)">⏳ Menghubungkan ke ESP32...</span>
-    </div>
-
-    <!-- STAT CARDS -->
-    <div class="stats-grid">
-      <div class="stat-card temp">
-        <div class="stat-icon">🌡️</div>
-        <div class="stat-label">SUHU</div>
-        <div class="stat-value" id="val-temp">34<span class="stat-unit"> °C</span></div>
-        <div><span class="stat-badge badge-on">↑ Normal</span></div>
+      <div class="sb-back-btn" onclick="logout()">‹ Ganti Akun</div> <span class="sb-section-label">Monitor</span> <a class="sb-nav-item active"><span class="sb-nav-icon">📊</span> Dashboard</a> <a class="sb-nav-item"><span class="sb-nav-icon">🌡️</span> Suhu & Kelembaban</a> <a class="sb-nav-item"><span class="sb-nav-icon">⚖️</span> Berat Sampah</a> <a class="sb-nav-item"><span class="sb-nav-icon">📈</span> Grafik Histori</a> <span class="sb-section-label" id="sb-maker-label" style="display:none">Kontrol</span> <a class="sb-nav-item" id="sb-mixer-nav" style="display:none"><span class="sb-nav-icon">🔄</span> Pengaduk</a> <a class="sb-nav-item" id="sb-liquid-nav" style="display:none"><span class="sb-nav-icon">💧</span> Cairan Pupuk</a>
+      <div class="sb-role-badge">
+        <div class="sb-role-dot" id="sb-role-dot"></div>
+        <div>
+          <div class="sb-role-name" id="sb-role-name">—</div>
+          <div style="font-size:0.7rem;color:var(--text-light)">Mode aktif</div>
+        </div>
       </div>
-      <div class="stat-card humid">
-        <div class="stat-icon">💧</div>
-        <div class="stat-label">KELEMBABAN</div>
-        <div class="stat-value" id="val-humid">72<span class="stat-unit"> %</span></div>
-        <div><span class="stat-badge badge-on">✓ Optimal</span></div>
-      </div>
-      <div class="stat-card weight">
-        <div class="stat-icon">⚖️</div>
-        <div class="stat-label">BERAT SAMPAH</div>
-        <div class="stat-value" id="val-weight">1.8<span class="stat-unit"> kg</span></div>
-        <div><span class="stat-badge badge-on">📦 Aktif</span></div>
-      </div>
-      <div class="stat-card mixer">
-        <div class="stat-icon">🔄</div>
-        <div class="stat-label">PENGADUK</div>
-        <div class="stat-value" id="val-mixer-state" style="font-size:1.3rem;">ON</div>
-        <div><span class="stat-badge badge-on" id="badge-mixer">⚡ Otomatis</span></div>
-      </div>
-    </div>
-
-    <!-- CHART ROW -->
-    <div class="chart-row">
-      <div class="card">
-        <div class="card-title">📈 Grafik Suhu & Kelembaban (24 jam)</div>
-        <canvas id="lineChart" height="180"></canvas>
-      </div>
-      <div class="card">
-        <div class="card-title">⚖️ Kapasitas Tempat</div>
-        <div class="donut-wrap">
-          <div class="donut-ring">
-            <svg viewBox="0 0 100 100" width="130" height="130">
-              <circle cx="50" cy="50" r="40" fill="none" stroke="#E8F0EA" stroke-width="12"/>
-              <circle cx="50" cy="50" r="40" fill="none" stroke="url(#donutGrad)" stroke-width="12"
-                stroke-dasharray="150.8" stroke-dashoffset="60" stroke-linecap="round"/>
-              <defs>
-                <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#C1D591"/>
-                  <stop offset="100%" stop-color="#538376"/>
-                </linearGradient>
-              </defs>
-            </svg>
-            <div class="donut-center">
-              <div class="big-num">60%</div>
-              <div class="small-l">penuh</div>
+      <div class="sb-logout" onclick="logout()">↩ Keluar</div>
+    </nav> <!-- MAIN -->
+    <div class="main-content" id="main-content">
+      <div class="page-header">
+        <h1 id="dash-title">Dashboard</h1>
+        <p id="dash-sub">Monitoring real-time NutriBin anda</p>
+      </div> <!-- STATUS BANNER -->
+      <div id="status-banner" style="      display:flex; align-items:center; gap:10px;      padding:12px 16px; border-radius:14px; margin-bottom:18px;      background:rgba(184,213,218,0.2); backdrop-filter:blur(10px);      border:1.5px solid rgba(184,213,218,0.5);      font-size:0.85rem; font-weight:500; color:var(--text-mid);      box-shadow:0 2px 12px var(--shadow); transition: all 0.4s ease;    "> <span style="font-size:1.1rem">📡</span> <span style="color:var(--text-mid)">⏳ Menghubungkan ke ESP32...</span> </div> <!-- STAT CARDS -->
+      <div class="stats-grid">
+        <div class="stat-card temp">
+          <div class="stat-icon">🌡️</div>
+          <div class="stat-label">SUHU</div>
+          <div class="stat-value" id="val-temp">34<span class="stat-unit"> °C</span></div>
+          <div><span class="stat-badge badge-on">↑ Normal</span></div>
+        </div>
+        <div class="stat-card humid">
+          <div class="stat-icon">💧</div>
+          <div class="stat-label">KELEMBABAN</div>
+          <div class="stat-value" id="val-humid">72<span class="stat-unit"> %</span></div>
+          <div><span class="stat-badge badge-on">✓ Optimal</span></div>
+        </div>
+        <div class="stat-card weight">
+          <div class="stat-icon">⚖️</div>
+          <div class="stat-label">BERAT SAMPAH</div>
+          <div class="stat-value" id="val-weight">1.8<span class="stat-unit"> kg</span></div>
+          <div><span class="stat-badge badge-on">📦 Aktif</span></div>
+        </div>
+        <div class="stat-card mixer">
+          <div class="stat-icon">🔄</div>
+          <div class="stat-label">PENGADUK</div>
+          <div class="stat-value" id="val-mixer-state" style="font-size:1.3rem;">ON</div>
+          <div><span class="stat-badge badge-on" id="badge-mixer">⚡ Otomatis</span></div>
+        </div>
+      </div> <!-- CHART ROW -->
+      <div class="chart-row">
+        <div class="card">
+          <div class="card-title">📈 Grafik Suhu & Kelembaban (Real-time)</div> <canvas id="lineChart" height="180"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-title">⚖️ Kapasitas Tempat</div>
+          <div class="donut-wrap">
+            <div class="donut-ring"> <svg viewBox="0 0 100 100" width="130" height="130">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#E8F0EA" stroke-width="12" />
+                <circle cx="50" cy="50" r="40" fill="none" stroke="url(#donutGrad)" stroke-width="12" stroke-dasharray="150.8" stroke-dashoffset="60" stroke-linecap="round" />
+                <defs>
+                  <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#C1D591" />
+                    <stop offset="100%" stop-color="#538376" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="donut-center">
+                <div class="big-num">60%</div>
+                <div class="small-l">penuh</div>
+              </div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:0.78rem;color:var(--text-light)">1.8 kg / 3.0 kg</div>
+              <div style="font-size:0.72rem;color:var(--text-light);margin-top:3px;">Estimasi penuh: <b>4 hari</b></div>
             </div>
           </div>
-          <div style="text-align:center">
-            <div style="font-size:0.78rem;color:var(--text-light)">1.8 kg / 3.0 kg</div>
-            <div style="font-size:0.72rem;color:var(--text-light);margin-top:3px;">Estimasi penuh: <b>4 hari</b></div>
+        </div>
+      </div> <!-- USER INFO ROW -->
+      <div class="info-row" id="user-info-row">
+        <div class="info-card">
+          <div class="info-label">📅 PERKIRAAN PUPUK SIAP</div>
+          <div class="info-val">~12 hari</div>
+          <div class="info-meta">Berdasarkan suhu & kelembaban saat ini</div>
+        </div>
+        <div class="info-card">
+          <div class="info-label">🔄 STATUS PENGADUK OTOMATIS</div>
+          <div class="info-val" id="mixer-status-display">ON</div>
+          <div class="info-meta">Mode: <b>Otomatis</b> • Interval: 6 jam</div>
+        </div>
+      </div> <!-- MAKER CONTROLS -->
+      <div class="controls-row" id="maker-controls" style="display:none"> <!-- Mixer control -->
+        <div class="control-card">
+          <div class="ctrl-header">
+            <div class="ctrl-title">🔄 Pengaduk Kompos</div> <span class="ctrl-status on" id="mixer-ctrl-status">ON</span>
           </div>
+          <div class="toggle-row"> <button class="mode-btn auto active" id="mixer-auto-btn" onclick="setMixerMode('auto')">⚙️ Otomatis</button> <button class="mode-btn manual" id="mixer-manual-btn" onclick="setMixerMode('manual')">✋ Manual</button> </div>
+          <div class="slider-wrap" id="mixer-slider-wrap" style="display:none">
+            <div class="slider-label"><span>Kecepatan</span><span id="mixer-speed-val">60%</span></div> <input type="range" min="0" max="100" value="60" oninput="document.getElementById('mixer-speed-val').textContent=this.value+'%'">
+          </div> <button class="action-btn start" id="mixer-toggle-btn" onclick="toggleMixer()">⏸ Hentikan Pengaduk</button>
+        </div> <!-- Liquid control -->
+        <div class="control-card">
+          <div class="ctrl-header">
+            <div class="ctrl-title">💧 Cairan Pupuk</div> <span class="ctrl-status off" id="liquid-ctrl-status">OFF</span>
+          </div>
+          <div class="toggle-row"> <button class="mode-btn auto active" id="liquid-auto-btn" onclick="setLiquidMode('auto')">⚙️ Otomatis</button> <button class="mode-btn manual" id="liquid-manual-btn" onclick="setLiquidMode('manual')">✋ Manual</button> </div>
+          <div class="slider-wrap" id="liquid-slider-wrap" style="display:none">
+            <div class="slider-label"><span>Volume</span><span id="liquid-vol-val">40%</span></div> <input type="range" min="0" max="100" value="40" oninput="document.getElementById('liquid-vol-val').textContent=this.value+'%'">
+          </div> <button class="action-btn start" id="liquid-toggle-btn" onclick="toggleLiquid()">▶ Jalankan Cairan</button>
         </div>
       </div>
-    </div>
-
-    <!-- USER INFO ROW -->
-    <div class="info-row" id="user-info-row">
-      <div class="info-card">
-        <div class="info-label">📅 PERKIRAAN PUPUK SIAP</div>
-        <div class="info-val">~12 hari</div>
-        <div class="info-meta">Berdasarkan suhu & kelembaban saat ini</div>
-      </div>
-      <div class="info-card">
-        <div class="info-label">🔄 STATUS PENGADUK OTOMATIS</div>
-        <div class="info-val" id="mixer-status-display">ON</div>
-        <div class="info-meta">Mode: <b>Otomatis</b> • Interval: 6 jam</div>
-      </div>
-    </div>
-
-    <!-- MAKER CONTROLS -->
-    <div class="controls-row" id="maker-controls" style="display:none">
-
-      <!-- Mixer control -->
-      <div class="control-card">
-        <div class="ctrl-header">
-          <div class="ctrl-title">🔄 Pengaduk Kompos</div>
-          <span class="ctrl-status on" id="mixer-ctrl-status">ON</span>
-        </div>
-        <div class="toggle-row">
-          <button class="mode-btn auto active" id="mixer-auto-btn" onclick="setMixerMode('auto')">⚙️ Otomatis</button>
-          <button class="mode-btn manual" id="mixer-manual-btn" onclick="setMixerMode('manual')">✋ Manual</button>
-        </div>
-        <div class="slider-wrap" id="mixer-slider-wrap" style="display:none">
-          <div class="slider-label"><span>Kecepatan</span><span id="mixer-speed-val">60%</span></div>
-          <input type="range" min="0" max="100" value="60" oninput="document.getElementById('mixer-speed-val').textContent=this.value+'%'">
-        </div>
-        <button class="action-btn start" id="mixer-toggle-btn" onclick="toggleMixer()">⏸ Hentikan Pengaduk</button>
-      </div>
-
-      <!-- Liquid control -->
-      <div class="control-card">
-        <div class="ctrl-header">
-          <div class="ctrl-title">💧 Cairan Pupuk</div>
-          <span class="ctrl-status off" id="liquid-ctrl-status">OFF</span>
-        </div>
-        <div class="toggle-row">
-          <button class="mode-btn auto active" id="liquid-auto-btn" onclick="setLiquidMode('auto')">⚙️ Otomatis</button>
-          <button class="mode-btn manual" id="liquid-manual-btn" onclick="setLiquidMode('manual')">✋ Manual</button>
-        </div>
-        <div class="slider-wrap" id="liquid-slider-wrap" style="display:none">
-          <div class="slider-label"><span>Volume</span><span id="liquid-vol-val">40%</span></div>
-          <input type="range" min="0" max="100" value="40" oninput="document.getElementById('liquid-vol-val').textContent=this.value+'%'">
-        </div>
-        <button class="action-btn start" id="liquid-toggle-btn" onclick="toggleLiquid()">▶ Jalankan Cairan</button>
-      </div>
-    </div>
-
-  </div><!-- end main-content -->
-</div><!-- end page-dashboard -->
-
-<!-- ═══ AI CHAT FAB ═══ -->
-<button class="ai-fab" id="ai-fab" onclick="toggleChat()" style="display:none" title="Tanya NutriBot">
-  <div class="ai-fab-inner">
-    <svg class="ai-fab-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Center sparkle -->
-      <path d="M14 3 L15.2 11.5 L22 9 L16.5 14 L22 19 L15.2 16.5 L14 25 L12.8 16.5 L6 19 L11.5 14 L6 9 L12.8 11.5 Z" fill="url(#spk1)" />
-      <!-- Small top-right sparkle -->
-      <path d="M22 4 L22.6 7.2 L25.5 7 L23 9 L25.5 11 L22.6 10.8 L22 14 L21.4 10.8 L18.5 11 L21 9 L18.5 7 L21.4 7.2 Z" fill="url(#spk2)" opacity="0.8"/>
-      <!-- Small bottom-left sparkle -->
-      <path d="M5 17 L5.5 19.5 L8 19 L5.8 21 L8 23 L5.5 22.5 L5 25 L4.5 22.5 L2 23 L4.2 21 L2 19 L4.5 19.5 Z" fill="url(#spk3)" opacity="0.75"/>
-      <defs>
-        <linearGradient id="spk1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#9EC0EB"/>
-          <stop offset="50%" stop-color="#C1D591"/>
-          <stop offset="100%" stop-color="#F1B8D9"/>
-        </linearGradient>
-        <linearGradient id="spk2" x1="18" y1="4" x2="26" y2="14" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#F1B8D9"/>
-          <stop offset="100%" stop-color="#9EC0EB"/>
-        </linearGradient>
-        <linearGradient id="spk3" x1="2" y1="17" x2="8" y2="25" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#C1D591"/>
-          <stop offset="100%" stop-color="#B8D5DA"/>
-        </linearGradient>
-      </defs>
-    </svg>
-  </div>
-</button>
-
-<div class="ai-chat-popup" id="ai-chat-popup">
-  <div class="ai-header">
-    <div class="ai-avatar">🌿</div>
-    <div>
-      <div class="ai-name">NutriBot</div>
-      <div class="ai-sub">Asisten Kompos Pintar</div>
-    </div>
-  </div>
-
-  <div class="ai-msgs" id="ai-msgs">
-    <div class="msg bot">Halo! Saya NutriBot 🌱 Saya bisa membantu menjawab pertanyaan tentang kompos dan kondisi NutriBin kamu.</div>
-  </div>
-
-  <div class="ai-suggestions" id="ai-suggestions">
-    <span class="ai-chip" onclick="askChip(this)">Berapa hari pupuk siap?</span>
-    <span class="ai-chip" onclick="askChip(this)">Suhu ideal kompos?</span>
-    <span class="ai-chip" onclick="askChip(this)">Tips mempercepat kompos</span>
-  </div>
-
-  <div class="ai-input-row">
-    <input class="ai-input" id="ai-input" placeholder="Tanya sesuatu... 💬✨" onkeydown="if(event.key==='Enter')sendChat()" inputmode="text">
-    <button class="ai-send" onclick="sendChat()">➤</button>
-  </div>
-</div>
-
-<!-- Chart.js CDN -->
-<!-- ═══ PAGE 3: PENGATURAN ═══ -->
-<div class="page" id="page-settings" style="flex-direction:column; align-items:center; justify-content:flex-start; padding: 40px 20px 80px;">
-
-  <div style="width:min(520px,96vw)">
-    <!-- Back header -->
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:32px;">
-      <button onclick="goBackToDashboard()" style="width:40px;height:40px;border-radius:12px;border:1.5px solid rgba(184,213,218,0.6);background:rgba(255,255,255,0.8);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" onmouseover="this.style.background='rgba(193,213,145,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.8)'">‹</button>
+    </div><!-- end main-content -->
+  </div><!-- end page-dashboard --><!-- ═══ AI CHAT FAB ═══ --><button class="ai-fab" id="ai-fab" onclick="toggleChat()" style="display:none" title="Tanya NutriBot">
+    <div class="ai-fab-inner"> <svg class="ai-fab-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"> <!-- Center sparkle -->
+        <path d="M14 3 L15.2 11.5 L22 9 L16.5 14 L22 19 L15.2 16.5 L14 25 L12.8 16.5 L6 19 L11.5 14 L6 9 L12.8 11.5 Z" fill="url(#spk1)" /> <!-- Small top-right sparkle -->
+        <path d="M22 4 L22.6 7.2 L25.5 7 L23 9 L25.5 11 L22.6 10.8 L22 14 L21.4 10.8 L18.5 11 L21 9 L18.5 7 L21.4 7.2 Z" fill="url(#spk2)" opacity="0.8" /> <!-- Small bottom-left sparkle -->
+        <path d="M5 17 L5.5 19.5 L8 19 L5.8 21 L8 23 L5.5 22.5 L5 25 L4.5 22.5 L2 23 L4.2 21 L2 19 L4.5 19.5 Z" fill="url(#spk3)" opacity="0.75" />
+        <defs>
+          <linearGradient id="spk1" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#9EC0EB" />
+            <stop offset="50%" stop-color="#C1D591" />
+            <stop offset="100%" stop-color="#F1B8D9" />
+          </linearGradient>
+          <linearGradient id="spk2" x1="18" y1="4" x2="26" y2="14" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#F1B8D9" />
+            <stop offset="100%" stop-color="#9EC0EB" />
+          </linearGradient>
+          <linearGradient id="spk3" x1="2" y1="17" x2="8" y2="25" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#C1D591" />
+            <stop offset="100%" stop-color="#B8D5DA" />
+          </linearGradient>
+        </defs>
+      </svg> </div>
+  </button>
+  <div class="ai-chat-popup" id="ai-chat-popup">
+    <div class="ai-header">
+      <div class="ai-avatar">🌿</div>
       <div>
-        <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--basil)">Pengaturan</h1>
-        <p style="font-size:0.82rem;color:var(--text-light)">Sesuaikan NutriBin sesuai preferensimu</p>
+        <div class="ai-name">NutriBot</div>
+        <div class="ai-sub">Asisten Kompos Pintar</div>
       </div>
     </div>
-
-    <!-- TEMA -->
-    <div class="settings-card">
-      <div class="settings-section-title">🎨 Tema Tampilan</div>
-      <p class="settings-desc">Pilih tampilan yang nyaman untuk kamu</p>
-      <div class="theme-options">
-        <div class="theme-opt active" id="theme-light" onclick="setTheme('light')">
-          <div class="theme-preview light-preview">
-            <div class="tp-bar"></div><div class="tp-card"></div><div class="tp-card"></div>
-          </div>
-          <span>☀️ Terang</span>
-          <div class="theme-check" id="check-light">✓</div>
+    <div class="ai-msgs" id="ai-msgs">
+      <div class="msg bot">Halo! Saya NutriBot 🌱 Saya bisa membantu menjawab pertanyaan tentang kompos dan kondisi NutriBin kamu.</div>
+    </div>
+    <div class="ai-suggestions" id="ai-suggestions"> <span class="ai-chip" onclick="askChip(this)">Berapa hari pupuk siap?</span> <span class="ai-chip" onclick="askChip(this)">Suhu ideal kompos?</span> <span class="ai-chip" onclick="askChip(this)">Tips mempercepat kompos</span> </div>
+    <div class="ai-input-row"> <input class="ai-input" id="ai-input" placeholder="Tanya sesuatu... 💬✨" onkeydown="if(event.key==='Enter')sendChat()" inputmode="text"> <button class="ai-send" onclick="sendChat()">➤</button> </div>
+  </div><!-- Chart.js CDN --><!-- ═══ PAGE 3: PENGATURAN ═══ -->
+  <div class="page" id="page-settings" style="flex-direction:column; align-items:center; justify-content:flex-start; padding: 40px 20px 80px;">
+    <div style="width:min(520px,96vw)"> <!-- Back header -->
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:32px;"> <button onclick="goBackToDashboard()" style="width:40px;height:40px;border-radius:12px;border:1.5px solid rgba(184,213,218,0.6);background:rgba(255,255,255,0.8);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" onmouseover="this.style.background='rgba(193,213,145,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.8)'">‹</button>
+        <div>
+          <h1 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--basil)">Pengaturan</h1>
+          <p style="font-size:0.82rem;color:var(--text-light)">Sesuaikan NutriBin sesuai preferensimu</p>
         </div>
-        <div class="theme-opt" id="theme-dark" onclick="setTheme('dark')">
-          <div class="theme-preview dark-preview">
-            <div class="tp-bar"></div><div class="tp-card"></div><div class="tp-card"></div>
+      </div> <!-- TEMA -->
+      <div class="settings-card">
+        <div class="settings-section-title">🎨 Tema Tampilan</div>
+        <p class="settings-desc">Pilih tampilan yang nyaman untuk kamu</p>
+        <div class="theme-options">
+          <div class="theme-opt active" id="theme-light" onclick="setTheme('light')">
+            <div class="theme-preview light-preview">
+              <div class="tp-bar"></div>
+              <div class="tp-card"></div>
+              <div class="tp-card"></div>
+            </div> <span>☀️ Terang</span>
+            <div class="theme-check" id="check-light">✓</div>
           </div>
-          <span>🌙 Gelap</span>
-          <div class="theme-check" id="check-dark" style="display:none">✓</div>
+          <div class="theme-opt" id="theme-dark" onclick="setTheme('dark')">
+            <div class="theme-preview dark-preview">
+              <div class="tp-bar"></div>
+              <div class="tp-card"></div>
+              <div class="tp-card"></div>
+            </div> <span>🌙 Gelap</span>
+            <div class="theme-check" id="check-dark" style="display:none">✓</div>
+          </div>
         </div>
+      </div> <!-- LAPORAN MASALAH -->
+      <div class="settings-card">
+        <div class="settings-section-title">🐛 Laporan Masalah</div>
+        <p class="settings-desc">Temukan bug atau error? Laporkan ke developer.</p> <textarea class="settings-textarea" id="report-text" placeholder="Ceritakan masalah yang kamu alami... Contoh: tombol X tidak berfungsi saat halaman pertama dibuka"></textarea> <button class="settings-btn primary" onclick="sendReport()">📧 Kirim Laporan via Gmail</button>
+      </div> <!-- KOTAK SARAN -->
+      <div class="settings-card">
+        <div class="settings-section-title">💡 Kotak Saran</div>
+        <p class="settings-desc">Punya ide atau saran untuk NutriBin? Kami senang mendengarnya!</p> <textarea class="settings-textarea" id="saran-text" placeholder="Tulis saranmu di sini... Contoh: tambahkan fitur notifikasi ketika pupuk sudah siap 🌱"></textarea> <button class="settings-btn secondary" onclick="sendSaran()">✉️ Kirim Saran via Gmail</button>
+      </div> <!-- PUSAT BANTUAN -->
+      <div class="settings-card">
+        <div class="settings-section-title">❓ Pusat Bantuan</div>
+        <p class="settings-desc">Pertanyaan umum seputar NutriBin</p>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">🌡️ Berapa suhu ideal untuk pengomposan?<span class="faq-arrow">›</span></div>
+          <div class="faq-a">Suhu ideal pengomposan adalah <b>45–65°C</b>. Di suhu ini, bakteri termofil bekerja paling aktif untuk menguraikan bahan organik. Jika suhu di bawah 40°C, proses akan melambat.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">💧 Kelembaban berapa yang disarankan?<span class="faq-arrow">›</span></div>
+          <div class="faq-a">Kelembaban optimal adalah <b>50–70%</b>. Terlalu kering akan memperlambat proses dekomposisi, terlalu basah menyebabkan bau tidak sedap dan kondisi anaerobik.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">🔄 Seberapa sering perlu diaduk?<span class="faq-arrow">›</span></div>
+          <div class="faq-a">Disarankan pengadukan setiap <b>2–3 hari sekali</b>. Pengadukan memastikan oksigen masuk ke seluruh tumpukan dan mempercepat proses pengomposan secara merata.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">📅 Berapa lama pupuk kompos siap?<span class="faq-arrow">›</span></div>
+          <div class="faq-a">Dengan kondisi optimal (suhu 55°C, kelembaban 60%), pupuk kompos bisa siap dalam <b>2–4 minggu</b>. Tanda siap: berwarna coklat gelap, berbau tanah, tidak panas lagi.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">⚙️ Bagaimana cara reset alat?<span class="faq-arrow">›</span></div>
+          <div class="faq-a">Tekan dan tahan tombol reset di ESP32 selama <b>5 detik</b> sampai LED berkedip 3 kali. Alat akan restart dan menghubungkan ulang ke WiFi secara otomatis.</div>
+        </div>
+        <div style="margin-top:16px;padding:14px;background:rgba(158,192,235,0.15);border-radius:12px;font-size:0.82rem;color:var(--text-mid);text-align:center;"> Masih butuh bantuan? 📬 Hubungi developer di<br> <b style="color:var(--basil)">itsandika.tech@gmail.com</b> </div>
       </div>
     </div>
-
-    <!-- LAPORAN MASALAH -->
-    <div class="settings-card">
-      <div class="settings-section-title">🐛 Laporan Masalah</div>
-      <p class="settings-desc">Temukan bug atau error? Laporkan ke developer.</p>
-      <textarea class="settings-textarea" id="report-text" placeholder="Ceritakan masalah yang kamu alami... Contoh: tombol X tidak berfungsi saat halaman pertama dibuka"></textarea>
-      <button class="settings-btn primary" onclick="sendReport()">📧 Kirim Laporan via Gmail</button>
-    </div>
-
-    <!-- KOTAK SARAN -->
-    <div class="settings-card">
-      <div class="settings-section-title">💡 Kotak Saran</div>
-      <p class="settings-desc">Punya ide atau saran untuk NutriBin? Kami senang mendengarnya!</p>
-      <textarea class="settings-textarea" id="saran-text" placeholder="Tulis saranmu di sini... Contoh: tambahkan fitur notifikasi ketika pupuk sudah siap 🌱"></textarea>
-      <button class="settings-btn secondary" onclick="sendSaran()">✉️ Kirim Saran via Gmail</button>
-    </div>
-
-    <!-- PUSAT BANTUAN -->
-    <div class="settings-card">
-      <div class="settings-section-title">❓ Pusat Bantuan</div>
-      <p class="settings-desc">Pertanyaan umum seputar NutriBin</p>
-
-      <div class="faq-item" onclick="toggleFaq(this)">
-        <div class="faq-q">🌡️ Berapa suhu ideal untuk pengomposan?<span class="faq-arrow">›</span></div>
-        <div class="faq-a">Suhu ideal pengomposan adalah <b>45–65°C</b>. Di suhu ini, bakteri termofil bekerja paling aktif untuk menguraikan bahan organik. Jika suhu di bawah 40°C, proses akan melambat.</div>
-      </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
-        <div class="faq-q">💧 Kelembaban berapa yang disarankan?<span class="faq-arrow">›</span></div>
-        <div class="faq-a">Kelembaban optimal adalah <b>50–70%</b>. Terlalu kering akan memperlambat proses dekomposisi, terlalu basah menyebabkan bau tidak sedap dan kondisi anaerobik.</div>
-      </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
-        <div class="faq-q">🔄 Seberapa sering perlu diaduk?<span class="faq-arrow">›</span></div>
-        <div class="faq-a">Disarankan pengadukan setiap <b>2–3 hari sekali</b>. Pengadukan memastikan oksigen masuk ke seluruh tumpukan dan mempercepat proses pengomposan secara merata.</div>
-      </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
-        <div class="faq-q">📅 Berapa lama pupuk kompos siap?<span class="faq-arrow">›</span></div>
-        <div class="faq-a">Dengan kondisi optimal (suhu 55°C, kelembaban 60%), pupuk kompos bisa siap dalam <b>2–4 minggu</b>. Tanda siap: berwarna coklat gelap, berbau tanah, tidak panas lagi.</div>
-      </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
-        <div class="faq-q">⚙️ Bagaimana cara reset alat?<span class="faq-arrow">›</span></div>
-        <div class="faq-a">Tekan dan tahan tombol reset di ESP32 selama <b>5 detik</b> sampai LED berkedip 3 kali. Alat akan restart dan menghubungkan ulang ke WiFi secara otomatis.</div>
-      </div>
-
-      <div style="margin-top:16px;padding:14px;background:rgba(158,192,235,0.15);border-radius:12px;font-size:0.82rem;color:var(--text-mid);text-align:center;">
-        Masih butuh bantuan? 📬 Hubungi developer di<br>
-        <b style="color:var(--basil)">itsandika.tech@gmail.com</b>
-      </div>
-    </div>
-
   </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-
-<script>
-/* ════════════════════════════════════
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script>
+    /* ════════════════════════════════════
    HAMBURGER MENU
 ════════════════════════════════════ */
-function toggleHamburger() {
-  document.getElementById('hamburger-btn').classList.toggle('open');
-  document.getElementById('hamburger-menu').classList.toggle('open');
-}
-
-function closeHamburger() {
-  document.getElementById('hamburger-btn').classList.remove('open');
-  document.getElementById('hamburger-menu').classList.remove('open');
-}
-
-function hamburgerGoHome() {
-  closeHamburger();
-  logout();
-}
-
-function hamburgerGoSettings() {
-  closeHamburger();
-  document.getElementById('page-dashboard').classList.remove('active');
-  document.getElementById('page-settings').classList.add('active');
-  document.getElementById('ai-fab').style.display = 'none';
-  document.getElementById('hamburger-btn').style.display = 'none';
-}
-
-function goBackToDashboard() {
-  document.getElementById('page-settings').classList.remove('active');
-  document.getElementById('page-dashboard').classList.add('active');
-  document.getElementById('ai-fab').style.display = 'flex';
-  document.getElementById('hamburger-btn').style.display = 'flex';
-}
-
-// Close menu when clicking outside
-document.addEventListener('click', function(e) {
-  const btn  = document.getElementById('hamburger-btn');
-  const menu = document.getElementById('hamburger-menu');
-  if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
-    closeHamburger();
-  }
-});
-
-/* ════════════════════════════════════
-   THEME
-════════════════════════════════════ */
-function setTheme(mode) {
-  if (mode === 'dark') {
-    document.body.classList.add('dark');
-    document.getElementById('theme-light').classList.remove('active');
-    document.getElementById('theme-dark').classList.add('active');
-    document.getElementById('check-light').style.display = 'none';
-    document.getElementById('check-dark').style.display = 'flex';
-  } else {
-    document.body.classList.remove('dark');
-    document.getElementById('theme-dark').classList.remove('active');
-    document.getElementById('theme-light').classList.add('active');
-    document.getElementById('check-dark').style.display = 'none';
-    document.getElementById('check-light').style.display = 'flex';
-  }
-  showToast(mode === 'dark' ? '🌙 Tema Gelap aktif' : '☀️ Tema Terang aktif');
-}
-
-/* ════════════════════════════════════
-   SETTINGS ACTIONS
-════════════════════════════════════ */
-function sendReport() {
-  const txt = document.getElementById('report-text').value.trim();
-  if (!txt) { showToast('⚠️ Tulis laporan masalahmu dulu!'); return; }
-  const subject = encodeURIComponent('🐛 Laporan Masalah NutriBin');
-  const body    = encodeURIComponent('Halo Developer,\n\nSaya ingin melaporkan masalah berikut:\n\n' + txt + '\n\nTerima kasih.');
-  window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
-  document.getElementById('report-text').value = '';
-  showToast('✅ Membuka Gmail untuk laporan...');
-}
-
-function sendSaran() {
-  const txt = document.getElementById('saran-text').value.trim();
-  if (!txt) { showToast('⚠️ Tulis saranmu dulu!'); return; }
-  const subject = encodeURIComponent('💡 Kotak Saran NutriBin');
-  const body    = encodeURIComponent('Halo Developer,\n\nSaya punya saran untuk NutriBin:\n\n' + txt + '\n\nTerima kasih.');
-  window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
-  document.getElementById('saran-text').value = '';
-  showToast('✅ Membuka Gmail untuk saran...');
-}
-
-function toggleFaq(el) {
-  el.classList.toggle('open');
-}
-
-/* ════════════════════════════════════
-   STATE
-════════════════════════════════════ */
-let currentRole = null;
-let mixerOn = true, mixerAuto = true;
-let liquidOn = false, liquidAuto = true;
-const MAKER_PASS = 'nutribin123';
-
-/* Simulated live sensor data */
-const sensorData = {
-  temp: 34, humid: 72, weight: 1.8,
-  history: {
-    labels: ['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00'],
-    temps:  [29,30,32,33,34,35,36,35,34,33,34,34],
-    humids: [68,70,71,72,74,73,72,71,72,73,72,72]
-  }
-};
-
-/* ════════════════════════════════════
-   LOGIN
-════════════════════════════════════ */
-function selectRole(role) {
-  currentRole = role;
-  document.getElementById('btn-maker').classList.remove('selected');
-  document.getElementById('btn-user').classList.remove('selected');
-  document.getElementById('btn-' + role).classList.add('selected');
-  document.getElementById('pw-group').style.display = role === 'maker' ? 'block' : 'none';
-  document.getElementById('err-msg').style.display = 'none';
-}
-
-function doLogin() {
-  if (!currentRole) { showToast('Pilih peran dulu!'); return; }
-  if (currentRole === 'maker') {
-    const pw = document.getElementById('pw-input').value;
-    if (pw !== MAKER_PASS) {
-      document.getElementById('err-msg').style.display = 'block';
-      return;
+    function toggleHamburger() {
+      document.getElementById('hamburger-btn').classList.toggle('open');
+      document.getElementById('hamburger-menu').classList.toggle('open');
     }
-  }
-  openDashboard(currentRole);
-}
 
-function openDashboard(role) {
-  document.getElementById('page-login').classList.remove('active');
-  document.getElementById('page-dashboard').classList.add('active');
-  document.getElementById('ai-fab').style.display = 'flex';
-  document.getElementById('hamburger-btn').style.display = 'flex';
+    function closeHamburger() {
+      document.getElementById('hamburger-btn').classList.remove('open');
+      document.getElementById('hamburger-menu').classList.remove('open');
+    }
 
-  // Role badge
-  const dot = document.getElementById('sb-role-dot');
-  const name = document.getElementById('sb-role-name');
-  dot.className = 'sb-role-dot ' + role;
-  name.textContent = role === 'maker' ? '🔧 Maker' : '👤 User';
+    function hamburgerGoHome() {
+      closeHamburger();
+      logout();
+    }
 
-  if (role === 'maker') {
-    document.getElementById('dash-title').textContent = 'Dashboard Maker';
-    document.getElementById('dash-sub').textContent = 'Kontrol penuh atas NutriBin anda';
-    document.getElementById('maker-controls').style.display = 'grid';
-    document.getElementById('user-info-row').style.display = 'none';
-    document.getElementById('sb-maker-label').style.display = 'block';
-    document.getElementById('sb-mixer-nav').style.display = 'flex';
-    document.getElementById('sb-liquid-nav').style.display = 'flex';
-  } else {
-    document.getElementById('dash-title').textContent = 'Dashboard User';
-    document.getElementById('dash-sub').textContent = 'Pantau kondisi kompos anda';
-    document.getElementById('maker-controls').style.display = 'none';
-    document.getElementById('user-info-row').style.display = 'grid';
-  }
+    function hamburgerGoSettings() {
+      closeHamburger();
+      document.getElementById('page-dashboard').classList.remove('active');
+      document.getElementById('page-settings').classList.add('active');
+      document.getElementById('ai-fab').style.display = 'none';
+      document.getElementById('hamburger-btn').style.display = 'none';
+    }
 
-  initChart();
-  startSimulation();
-}
+    function goBackToDashboard() {
+      document.getElementById('page-settings').classList.remove('active');
+      document.getElementById('page-dashboard').classList.add('active');
+      document.getElementById('ai-fab').style.display = 'flex';
+      document.getElementById('hamburger-btn').style.display = 'flex';
+    }
 
-function logout() {
-  document.getElementById('page-dashboard').classList.remove('active');
-  document.getElementById('page-settings').classList.remove('active');
-  document.getElementById('page-login').classList.add('active');
-  document.getElementById('ai-fab').style.display = 'none';
-  document.getElementById('hamburger-btn').style.display = 'none';
-  document.getElementById('ai-chat-popup').classList.remove('open');
-  document.getElementById('ai-fab').classList.remove('chat-open');
-  document.getElementById('pw-input').value = '';
-  document.getElementById('btn-maker').classList.remove('selected');
-  document.getElementById('btn-user').classList.remove('selected');
-  document.getElementById('pw-group').style.display = 'none';
-  currentRole = null;
-}
-
-/* ════════════════════════════════════
-   CHART
-════════════════════════════════════ */
-let lineChart = null;
-
-function initChart() {
-  if (lineChart) { lineChart.destroy(); }
-  const ctx = document.getElementById('lineChart').getContext('2d');
-  lineChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: sensorData.history.labels,
-      datasets: [
-        {
-          label: 'Suhu (°C)',
-          data: sensorData.history.temps,
-          borderColor: '#F1B8D9', backgroundColor: 'rgba(241,184,217,0.12)',
-          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#F1B8D9',
-          borderWidth: 2.5, fill: true
-        },
-        {
-          label: 'Kelembaban (%)',
-          data: sensorData.history.humids,
-          borderColor: '#9EC0EB', backgroundColor: 'rgba(158,192,235,0.12)',
-          tension: 0.4, pointRadius: 4, pointBackgroundColor: '#9EC0EB',
-          borderWidth: 2.5, fill: true
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { labels: { color: '#538376', font: { family: 'DM Sans', size: 12 } } }
-      },
-      scales: {
-        x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } },
-        y: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } }
+    document.addEventListener('click', function(e) {
+      const btn = document.getElementById('hamburger-btn');
+      const menu = document.getElementById('hamburger-menu');
+      if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+        closeHamburger();
       }
-    }
-  });
-}
+    });
 
-/* ════════════════════════════════════
-   FIREBASE — DATA REAL ESP32
-════════════════════════════════════ */
-const FIREBASE_URL = "https://nutribin-2804-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json";
-
-let lastHeartbeat = null;
-let lastHeartbeatTime = 0;
-
-async function fetchFirebase() {
-  try {
-    const res = await fetch(FIREBASE_URL);
-    if (!res.ok) throw new Error('HTTP error');
-    const data = await res.json();
-
-    // CEK HEARTBEAT — kalau heartbeat ga berubah lebih dari 10 detik → OFFLINE
-    const currentHB = data.heartbeat ?? null;
-    const now = Date.now();
-
-    if (currentHB !== null) {
-      if (currentHB !== lastHeartbeat) {
-        // Heartbeat berubah → ESP32 masih hidup
-        lastHeartbeat = currentHB;
-        lastHeartbeatTime = now;
-        setConnectionStatus(true);
+    /* ════════════════════════════════════
+       THEME
+    ════════════════════════════════════ */
+    function setTheme(mode) {
+      if (mode === 'dark') {
+        document.body.classList.add('dark');
+        document.getElementById('theme-light').classList.remove('active');
+        document.getElementById('theme-dark').classList.add('active');
+        document.getElementById('check-light').style.display = 'none';
+        document.getElementById('check-dark').style.display = 'flex';
       } else {
-        // Heartbeat sama → cek sudah berapa lama
-        if (now - lastHeartbeatTime > 10000) {
-          setConnectionStatus(false);
-          return;
-        } else {
-          setConnectionStatus(true);
-        }
+        document.body.classList.remove('dark');
+        document.getElementById('theme-dark').classList.remove('active');
+        document.getElementById('theme-light').classList.add('active');
+        document.getElementById('check-dark').style.display = 'none';
+        document.getElementById('check-light').style.display = 'flex';
       }
-    } else {
-      // Belum ada heartbeat field → pakai timeout 10 detik
-      if (lastHeartbeatTime === 0) lastHeartbeatTime = now;
-      if (now - lastHeartbeatTime > 10000) {
-        setConnectionStatus(false);
+      showToast(mode === 'dark' ? '🌙 Tema Gelap aktif' : '☀️ Tema Terang aktif');
+    }
+
+    /* ════════════════════════════════════
+       SETTINGS ACTIONS
+    ════════════════════════════════════ */
+    function sendReport() {
+      const txt = document.getElementById('report-text').value.trim();
+      if (!txt) {
+        showToast('⚠️ Tulis laporan masalahmu dulu!');
         return;
       }
+      const subject = encodeURIComponent('🐛 Laporan Masalah NutriBin');
+      const body = encodeURIComponent('Halo Developer,\n\nSaya ingin melaporkan masalah berikut:\n\n' + txt + '\n\nTerima kasih.');
+      window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
+      document.getElementById('report-text').value = '';
+      showToast('✅ Membuka Gmail untuk laporan...');
     }
 
-    if (data.suhu !== undefined)        sensorData.temp   = +parseFloat(data.suhu).toFixed(1);
-    if (data.kelembaban !== undefined)   sensorData.humid  = +parseFloat(data.kelembaban).toFixed(1);
-    if (data.berat !== undefined)        sensorData.weight = +(parseFloat(data.berat) / 1000).toFixed(2);
-
-    document.getElementById('val-temp').innerHTML   = sensorData.temp + '<span class="stat-unit"> °C</span>';
-    document.getElementById('val-humid').innerHTML  = sensorData.humid + '<span class="stat-unit"> %</span>';
-    document.getElementById('val-weight').innerHTML = sensorData.weight + '<span class="stat-unit"> kg</span>';
-
-    // Update grafik
-    if (lineChart) {
-      const now2 = new Date();
-      const label = now2.getHours().toString().padStart(2,'0') + ':' + now2.getMinutes().toString().padStart(2,'0');
-      sensorData.history.labels.push(label); sensorData.history.labels.shift();
-      sensorData.history.temps.push(sensorData.temp); sensorData.history.temps.shift();
-      sensorData.history.humids.push(sensorData.humid); sensorData.history.humids.shift();
-      lineChart.data.labels = sensorData.history.labels;
-      lineChart.data.datasets[0].data = sensorData.history.temps;
-      lineChart.data.datasets[1].data = sensorData.history.humids;
-      lineChart.update('none');
-    }
-
-  } catch (err) {
-    setConnectionStatus(false);
-  }
-}
-
-function setConnectionStatus(online) {
-  const banner = document.getElementById('status-banner');
-  if (!banner) return;
-
-  if (online) {
-    banner.style.background = 'rgba(193,213,145,0.25)';
-    banner.style.borderColor = 'rgba(83,131,118,0.4)';
-    banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#538376;font-weight:600">🟢 ESP32 Online — Data realtime aktif</span>';
-  } else {
-    // Reset semua ke 0
-    sensorData.temp = 0; sensorData.humid = 0; sensorData.weight = 0;
-    document.getElementById('val-temp').innerHTML   = '0<span class="stat-unit"> °C</span>';
-    document.getElementById('val-humid').innerHTML  = '0<span class="stat-unit"> %</span>';
-    document.getElementById('val-weight').innerHTML = '0.00<span class="stat-unit"> kg</span>';
-    banner.style.background = 'rgba(241,184,217,0.2)';
-    banner.style.borderColor = 'rgba(192,83,106,0.4)';
-    banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#c0536a;font-weight:600">🔴 ESP32 Offline — Pastikan alat menyala & terhubung WiFi</span>';
-  }
-}
-
-function startSimulation() {
-  fetchFirebase();
-  setInterval(fetchFirebase, 3000);
-}
-
-/* ════════════════════════════════════
-   MAKER CONTROLS
-════════════════════════════════════ */
-function setMixerMode(mode) {
-  mixerAuto = mode === 'auto';
-  document.getElementById('mixer-auto-btn').classList.toggle('active', mixerAuto);
-  document.getElementById('mixer-manual-btn').classList.toggle('active', !mixerAuto);
-  document.getElementById('mixer-slider-wrap').style.display = mixerAuto ? 'none' : 'block';
-  showToast('Pengaduk: mode ' + (mixerAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
-}
-
-async function toggleMixer() {
-  // SAFETY: cek pompa sedang ON
-  if (!mixerOn && liquidOn) {
-    showWarning('⚠️ BAHAYA! Pompa sedang aktif.<br>Matikan pompa dulu sebelum menyalakan pengaduk!');
-    return;
-  }
-
-  mixerOn = !mixerOn;
-  const btn = document.getElementById('mixer-toggle-btn');
-  const st  = document.getElementById('mixer-ctrl-status');
-  const sv  = document.getElementById('val-mixer-state');
-  const bm  = document.getElementById('badge-mixer');
-  btn.className = 'action-btn ' + (mixerOn ? 'stop' : 'start');
-  btn.textContent = mixerOn ? '⏸ Hentikan Pengaduk' : '▶ Jalankan Pengaduk';
-  st.className    = 'ctrl-status ' + (mixerOn ? 'on' : 'off');
-  st.textContent  = mixerOn ? 'ON' : 'OFF';
-  sv.textContent  = mixerOn ? 'ON' : 'OFF';
-  bm.className    = 'stat-badge ' + (mixerOn ? 'badge-on' : 'badge-off');
-  bm.textContent  = mixerOn ? '⚡ Aktif' : '⛔ Berhenti';
-  document.getElementById('mixer-status-display').textContent = mixerOn ? 'ON' : 'OFF';
-
-  updateSafetyLock();
-
-  try {
-    await fetch('https://nutribin-2804-default-rtdb.asia-southeast1.firebasedatabase.app/kontrol.json', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ motor: mixerOn ? 1 : 0, pompa: 0 })
-    });
-    showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
-  } catch(e) {
-    showToast('⚠️ Gagal kirim perintah ke ESP32');
-  }
-}
-
-function setLiquidMode(mode) {
-  liquidAuto = mode === 'auto';
-  document.getElementById('liquid-auto-btn').classList.toggle('active', liquidAuto);
-  document.getElementById('liquid-manual-btn').classList.toggle('active', !liquidAuto);
-  document.getElementById('liquid-slider-wrap').style.display = liquidAuto ? 'none' : 'block';
-  showToast('Cairan pupuk: mode ' + (liquidAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
-}
-
-async function toggleLiquid() {
-  // SAFETY: cek apakah pengaduk sedang ON
-  if (!liquidOn && mixerOn) {
-    showWarning('⚠️ BAHAYA! Pengaduk sedang aktif. Matikan pengaduk dulu sebelum menyalakan pompa!');
-    return;
-  }
-
-  liquidOn = !liquidOn;
-  const btn = document.getElementById('liquid-toggle-btn');
-  const st  = document.getElementById('liquid-ctrl-status');
-  btn.className = 'action-btn ' + (liquidOn ? 'stop' : 'start');
-  btn.textContent = liquidOn ? '⏸ Hentikan Cairan' : '▶ Jalankan Cairan';
-  st.className    = 'ctrl-status ' + (liquidOn ? 'on' : 'off');
-  st.textContent  = liquidOn ? 'ON' : 'OFF';
-
-  // Update tampilan tombol pengaduk
-  updateSafetyLock();
-
-  // Kirim perintah pompa ke Firebase → ESP32 baca
-  try {
-    await fetch('https://nutribin-2804-default-rtdb.asia-southeast1.firebasedatabase.app/kontrol.json', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ motor: 0, pompa: liquidOn ? 1 : 0 })
-    });
-    showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ✓' : 'dihentikan ✗'));
-  } catch(e) {
-    showToast('⚠️ Gagal kirim perintah ke ESP32');
-  }
-}
-
-/* ════════════════════════════════════
-   SAFETY LOCK — mencegah motor + pompa jalan bersamaan
-════════════════════════════════════ */
-function updateSafetyLock() {
-  const mixerBtn   = document.getElementById('mixer-toggle-btn');
-  const liquidBtn  = document.getElementById('liquid-toggle-btn');
-
-  if (mixerOn && !liquidOn) {
-    // Pengaduk ON → disable tombol pompa
-    liquidBtn.disabled = true;
-    liquidBtn.style.opacity = '0.4';
-    liquidBtn.style.cursor = 'not-allowed';
-    liquidBtn.textContent = '🔒 Pengaduk Aktif';
-  } else if (liquidOn && !mixerOn) {
-    // Pompa ON → disable tombol pengaduk
-    mixerBtn.disabled = true;
-    mixerBtn.style.opacity = '0.4';
-    mixerBtn.style.cursor = 'not-allowed';
-    mixerBtn.textContent = '🔒 Pompa Aktif';
-  } else {
-    // Semua OFF → enable semua
-    liquidBtn.disabled = false;
-    liquidBtn.style.opacity = '1';
-    liquidBtn.style.cursor = 'pointer';
-    liquidBtn.textContent = liquidOn ? '⏸ Hentikan Cairan' : '▶ Jalankan Cairan';
-
-    mixerBtn.disabled = false;
-    mixerBtn.style.opacity = '1';
-    mixerBtn.style.cursor = 'pointer';
-    mixerBtn.textContent = mixerOn ? '⏸ Hentikan Pengaduk' : '▶ Jalankan Pengaduk';
-  }
-}
-
-function showWarning(msg) {
-  // Hapus warning lama kalau ada
-  const old = document.getElementById('safety-warning');
-  if (old) old.remove();
-
-  const warn = document.createElement('div');
-  warn.id = 'safety-warning';
-  warn.style.cssText = `
-    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.8);
-    background:#fff; border-radius:20px; padding:28px 32px; z-index:9999;
-    box-shadow:0 20px 60px rgba(0,0,0,0.2), 0 0 0 3px rgba(212,112,154,0.3);
-    text-align:center; max-width:320px; width:90vw;
-    animation: warnIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
-  `;
-
-  warn.innerHTML = `
-    <style>
-      @keyframes warnIn { from{transform:translate(-50%,-50%) scale(0.8);opacity:0} to{transform:translate(-50%,-50%) scale(1);opacity:1} }
-    </style>
-    <div style="font-size:3rem;margin-bottom:12px">⚠️</div>
-    <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:#c0536a;margin-bottom:10px">Peringatan Keamanan!</div>
-    <div style="font-size:0.88rem;color:#5A7A6E;line-height:1.6;margin-bottom:20px">${msg}</div>
-    <div style="font-size:0.78rem;color:#8AADA0;margin-bottom:16px">Motor dan pompa tidak boleh berjalan bersamaan untuk mencegah kerusakan alat.</div>
-    <button onclick="document.getElementById('safety-warning').remove()" style="
-      background:linear-gradient(135deg,#d4709a,#e8a0c0);color:#fff;border:none;
-      padding:11px 28px;border-radius:12px;font-size:0.9rem;font-weight:600;cursor:pointer;
-      font-family:'DM Sans',sans-serif;box-shadow:0 4px 14px rgba(212,112,154,0.3);
-    ">Mengerti</button>
-  `;
-
-  // Backdrop
-  const backdrop = document.createElement('div');
-  backdrop.id = 'safety-backdrop';
-  backdrop.style.cssText = `
-    position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998;
-    background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);
-  `;
-  backdrop.onclick = () => { warn.remove(); backdrop.remove(); };
-
-  document.body.appendChild(backdrop);
-  document.body.appendChild(warn);
-
-  // Auto close after 5 detik
-  setTimeout(() => { warn.remove(); backdrop.remove(); }, 5000);
-}
-
-/* ════════════════════════════════════
-   AI CHAT
-════════════════════════════════════ */
-function toggleChat() {
-  const popup = document.getElementById('ai-chat-popup');
-  const fab   = document.getElementById('ai-fab');
-  popup.classList.toggle('open');
-  fab.classList.toggle('chat-open');
-}
-
-function askChip(el) {
-  document.getElementById('ai-input').value = el.textContent;
-  document.getElementById('ai-suggestions').style.display = 'none';
-  sendChat();
-}
-
-async function sendChat() {
-  const inp = document.getElementById('ai-input');
-  const q = inp.value.trim();
-  if (!q) return;
-  inp.value = '';
-
-  appendMsg('user-msg', q);
-
-  const loading = appendMsg('loading', '⏳ NutriBot sedang berpikir...');
-
-  const systemPrompt = `Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.
-Data sensor saat ini:
-- Suhu: ${sensorData.temp}°C
-- Kelembaban: ${sensorData.humid}%
-- Berat sampah: ${sensorData.weight} kg
-- Status pengaduk: ${mixerOn ? 'ON (Otomatis)' : 'OFF'}
-
-ATURAN FORMAT JAWABAN (WAJIB DIIKUTI):
-- Jika jawabanmu punya lebih dari satu poin, SELALU tulis dalam format bernomor atau berpeluru per baris baru.
-- Format nomor: "1. teks" lalu baris baru "2. teks" dst.
-- Format peluru: "• teks" lalu baris baru "• teks" dst.
-- Gunakan emoji yang relevan di awal setiap poin untuk membuat lebih menarik.
-- Pisahkan setiap poin dengan baris baru (\n).
-- Boleh menggunakan simbol seperti ✅ ❌ ⚠️ 📌 🌡️ 💧 ⚖️ 🔄 ✨ ➤ → dll.
-- Jangan tulis semua jawaban dalam satu paragraf panjang jika bisa dipisah per poin.
-- Jawab dalam Bahasa Indonesia, ramah dan informatif.
-- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system: systemPrompt,
-        messages:[{role:'user',content:q}]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.map(c=>c.text||'').join('') || 'Maaf, ada gangguan. Coba lagi ya!';
-    loading.remove();
-    appendMsg('bot', text);
-  } catch(e) {
-    loading.remove();
-    appendMsg('bot', '⚠️ Tidak bisa terhubung. Periksa koneksi internet.');
-  }
-}
-
-function formatBotText(text) {
-  // Split by newlines and render each line
-  const lines = text.split('\n');
-  const container = document.createDocumentFragment();
-  lines.forEach((line, i) => {
-    const trimmed = line.trimStart();
-    if (trimmed === '') {
-      if (i > 0 && i < lines.length - 1) {
-        container.appendChild(document.createElement('br'));
+    function sendSaran() {
+      const txt = document.getElementById('saran-text').value.trim();
+      if (!txt) {
+        showToast('⚠️ Tulis saranmu dulu!');
+        return;
       }
-      return;
+      const subject = encodeURIComponent('💡 Kotak Saran NutriBin');
+      const body = encodeURIComponent('Halo Developer,\n\nSaya punya saran untuk NutriBin:\n\n' + txt + '\n\nTerima kasih.');
+      window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
+      document.getElementById('saran-text').value = '';
+      showToast('✅ Membuka Gmail untuk saran...');
     }
-    const span = document.createElement('span');
-    span.style.display = 'block';
-    // Add slight indent for numbered/bulleted lines
-    if (/^(\d+\.|[•\-\*➤→✅❌⚠️📌])/.test(trimmed)) {
-      span.style.paddingLeft = '2px';
-      span.style.marginTop = i === 0 ? '0' : '5px';
+
+    function toggleFaq(el) {
+      el.classList.toggle('open');
     }
-    span.textContent = line;
-    container.appendChild(span);
-  });
-  return container;
-}
 
-function appendMsg(type, text) {
-  const msgs = document.getElementById('ai-msgs');
-  const d = document.createElement('div');
-  d.className = 'msg ' + type;
-  if (type === 'bot') {
-    d.appendChild(formatBotText(text));
-  } else {
-    d.textContent = text;
-  }
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
-  return d;
-}
+    /* ════════════════════════════════════
+       STATE
+    ════════════════════════════════════ */
+    let currentRole = null;
+    let mixerOn = true,
+      mixerAuto = true;
+    let liquidOn = false,
+      liquidAuto = true;
+    const MAKER_PASS = 'nutribin123';
 
-/* ════════════════════════════════════
-   TOAST
-════════════════════════════════════ */
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-</script>
+    const MAX_POINTS = 24;
+    const sensorData = {
+      temp: 34,
+      humid: 72,
+      weight: 1.8,
+      history: {
+        labels: Array.from({
+          length: MAX_POINTS
+        }, () => ''),
+        temps: Array.from({
+          length: MAX_POINTS
+        }, () => 34),
+        humids: Array.from({
+          length: MAX_POINTS
+        }, () => 72)
+      }
+    };
+
+    /* ════════════════════════════════════
+       LOGIN
+    ════════════════════════════════════ */
+    function selectRole(role) {
+      currentRole = role;
+      document.getElementById('btn-maker').classList.remove('selected');
+      document.getElementById('btn-user').classList.remove('selected');
+      document.getElementById('btn-' + role).classList.add('selected');
+      document.getElementById('pw-group').style.display = role === 'maker' ? 'block' : 'none';
+      document.getElementById('err-msg').style.display = 'none';
+    }
+
+    function doLogin() {
+      if (!currentRole) {
+        showToast('Pilih peran dulu!');
+        return;
+      }
+      if (currentRole === 'maker') {
+        const pw = document.getElementById('pw-input').value;
+        if (pw !== MAKER_PASS) {
+          document.getElementById('err-msg').style.display = 'block';
+          return;
+        }
+      }
+      openDashboard(currentRole);
+    }
+
+    function openDashboard(role) {
+      document.getElementById('page-login').classList.remove('active');
+      document.getElementById('page-dashboard').classList.add('active');
+      document.getElementById('ai-fab').style.display = 'flex';
+      document.getElementById('hamburger-btn').style.display = 'flex';
+
+      const dot = document.getElementById('sb-role-dot');
+      const name = document.getElementById('sb-role-name');
+      dot.className = 'sb-role-dot ' + role;
+      name.textContent = role === 'maker' ? '🔧 Maker' : '👤 User';
+
+      if (role === 'maker') {
+        document.getElementById('dash-title').textContent = 'Dashboard Maker';
+        document.getElementById('dash-sub').textContent = 'Kontrol penuh atas NutriBin anda';
+        document.getElementById('maker-controls').style.display = 'grid';
+        document.getElementById('user-info-row').style.display = 'none';
+        document.getElementById('sb-maker-label').style.display = 'block';
+        document.getElementById('sb-mixer-nav').style.display = 'flex';
+        document.getElementById('sb-liquid-nav').style.display = 'flex';
+      } else {
+        document.getElementById('dash-title').textContent = 'Dashboard User';
+        document.getElementById('dash-sub').textContent = 'Pantau kondisi kompos anda';
+        document.getElementById('maker-controls').style.display = 'none';
+        document.getElementById('user-info-row').style.display = 'grid';
+      }
+
+      initChart();
+      startSimulation();
+    }
+
+    function logout() {
+      document.getElementById('page-dashboard').classList.remove('active');
+      document.getElementById('page-settings').classList.remove('active');
+      document.getElementById('page-login').classList.add('active');
+      document.getElementById('ai-fab').style.display = 'none';
+      document.getElementById('hamburger-btn').style.display = 'none';
+      document.getElementById('ai-chat-popup').classList.remove('open');
+      document.getElementById('ai-fab').classList.remove('chat-open');
+      document.getElementById('pw-input').value = '';
+      document.getElementById('btn-maker').classList.remove('selected');
+      document.getElementById('btn-user').classList.remove('selected');
+      document.getElementById('pw-group').style.display = 'none';
+      currentRole = null;
+    }
+
+    /* ════════════════════════════════════
+       CHART
+    ════════════════════════════════════ */
+    let lineChart = null;
+
+    function initChart() {
+      if (lineChart) {
+        lineChart.destroy();
+      }
+      const ctx = document.getElementById('lineChart').getContext('2d');
+      lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: sensorData.history.labels,
+          datasets: [{
+              label: 'Suhu (°C)',
+              data: sensorData.history.temps,
+              borderColor: '#F1B8D9',
+              backgroundColor: 'rgba(241,184,217,0.12)',
+              tension: 0.4,
+              pointRadius: 2,
+              pointBackgroundColor: '#F1B8D9',
+              borderWidth: 2.5,
+              fill: true
+            },
+            {
+              label: 'Kelembaban (%)',
+              data: sensorData.history.humids,
+              borderColor: '#9EC0EB',
+              backgroundColor: 'rgba(158,192,235,0.12)',
+              tension: 0.4,
+              pointRadius: 2,
+              pointBackgroundColor: '#9EC0EB',
+              borderWidth: 2.5,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#538376',
+                font: {
+                  family: 'DM Sans',
+                  size: 12
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(184,213,218,0.25)'
+              },
+              ticks: {
+                color: '#8AADA0',
+                font: {
+                  size: 10
+                },
+                maxTicksLimit: 6,
+                autoSkip: true
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(184,213,218,0.25)'
+              },
+              ticks: {
+                color: '#8AADA0',
+                font: {
+                  size: 11
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    /* ════════════════════════════════════
+       FIREBASE — DATA REAL ESP32
+    ════════════════════════════════════ */
+    const FIREBASE_URL = "https://nutribin-2804-default-rtdb.asia-southeast1.firebasedatabase.app/sensor.json";
+    const KONTROL_URL = "https://nutribin-2804-default-rtdb.asia-southeast1.firebasedatabase.app/kontrol.json";
+
+    let lastHeartbeat = null;
+    let lastHeartbeatTime = 0;
+
+    async function fetchFirebase() {
+      try {
+        const res = await fetch(FIREBASE_URL);
+        if (!res.ok) throw new Error('HTTP error');
+        const data = await res.json();
+
+        const currentHB = data.heartbeat ?? null;
+        const now = Date.now();
+
+        if (currentHB !== null) {
+          if (currentHB !== lastHeartbeat) {
+            lastHeartbeat = currentHB;
+            lastHeartbeatTime = now;
+            setConnectionStatus(true);
+          } else {
+            if (now - lastHeartbeatTime > 10000) {
+              setConnectionStatus(false);
+              return;
+            } else {
+              setConnectionStatus(true);
+            }
+          }
+        } else {
+          if (lastHeartbeatTime === 0) lastHeartbeatTime = now;
+          if (now - lastHeartbeatTime > 10000) {
+            setConnectionStatus(false);
+            return;
+          }
+        }
+
+        if (data.suhu !== undefined) sensorData.temp = +parseFloat(data.suhu).toFixed(1);
+        if (data.kelembaban !== undefined) sensorData.humid = +parseFloat(data.kelembaban).toFixed(1);
+        if (data.berat !== undefined) sensorData.weight = Math.round(parseFloat(data.berat) / 1000);
+
+        document.getElementById('val-temp').innerHTML = sensorData.temp + '<span class="stat-unit"> °C</span>';
+        document.getElementById('val-humid').innerHTML = sensorData.humid + '<span class="stat-unit"> %</span>';
+        document.getElementById('val-weight').innerHTML = sensorData.weight + '<span class="stat-unit"> kg</span>';
+
+        if (lineChart) {
+          const now2 = new Date();
+          const label = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0') + ':' + now2.getSeconds().toString().padStart(2, '0');
+          sensorData.history.labels.push(label);
+          sensorData.history.labels.shift();
+          sensorData.history.temps.push(sensorData.temp);
+          sensorData.history.temps.shift();
+          sensorData.history.humids.push(sensorData.humid);
+          sensorData.history.humids.shift();
+          lineChart.data.labels = sensorData.history.labels;
+          lineChart.data.datasets[0].data = sensorData.history.temps;
+          lineChart.data.datasets[1].data = sensorData.history.humids;
+          lineChart.update('none');
+        }
+
+      } catch (err) {
+        setConnectionStatus(false);
+      }
+    }
+
+    function setConnectionStatus(online) {
+      const banner = document.getElementById('status-banner');
+      if (!banner) return;
+
+      if (online) {
+        banner.style.background = 'rgba(193,213,145,0.25)';
+        banner.style.borderColor = 'rgba(83,131,118,0.4)';
+        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#538376;font-weight:600">🟢 ESP32 Online — Data realtime aktif</span>';
+      } else {
+        sensorData.temp = 0;
+        sensorData.humid = 0;
+        sensorData.weight = 0;
+        document.getElementById('val-temp').innerHTML = '0<span class="stat-unit"> °C</span>';
+        document.getElementById('val-humid').innerHTML = '0<span class="stat-unit"> %</span>';
+        document.getElementById('val-weight').innerHTML = '0<span class="stat-unit"> kg</span>';
+        banner.style.background = 'rgba(241,184,217,0.2)';
+        banner.style.borderColor = 'rgba(192,83,106,0.4)';
+        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#c0536a;font-weight:600">🔴 ESP32 Offline — Pastikan alat menyala & terhubung WiFi</span>';
+      }
+    }
+
+    function startSimulation() {
+      fetchFirebase();
+      setInterval(fetchFirebase, 2000);
+    }
+
+    /* ════════════════════════════════════
+       MAKER CONTROLS
+    ════════════════════════════════════ */
+    function setMixerMode(mode) {
+      mixerAuto = mode === 'auto';
+      document.getElementById('mixer-auto-btn').classList.toggle('active', mixerAuto);
+      document.getElementById('mixer-manual-btn').classList.toggle('active', !mixerAuto);
+      document.getElementById('mixer-slider-wrap').style.display = mixerAuto ? 'none' : 'block';
+      showToast('Pengaduk: mode ' + (mixerAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
+    }
+
+    async function toggleMixer() {
+      if (!mixerOn && liquidOn) {
+        showWarning('⚠️ BAHAYA! Pompa sedang aktif.<br>Matikan pompa dulu sebelum menyalakan pengaduk!');
+        return;
+      }
+
+      mixerOn = !mixerOn;
+      const btn = document.getElementById('mixer-toggle-btn');
+      const st = document.getElementById('mixer-ctrl-status');
+      const sv = document.getElementById('val-mixer-state');
+      const bm = document.getElementById('badge-mixer');
+      btn.className = 'action-btn ' + (mixerOn ? 'stop' : 'start');
+      btn.textContent = mixerOn ? '⏸ Hentikan Pengaduk' : '▶ Jalankan Pengaduk';
+      st.className = 'ctrl-status ' + (mixerOn ? 'on' : 'off');
+      st.textContent = mixerOn ? 'ON' : 'OFF';
+      sv.textContent = mixerOn ? 'ON' : 'OFF';
+      bm.className = 'stat-badge ' + (mixerOn ? 'badge-on' : 'badge-off');
+      bm.textContent = mixerOn ? '⚡ Aktif' : '⛔ Berhenti';
+      document.getElementById('mixer-status-display').textContent = mixerOn ? 'ON' : 'OFF';
+
+      updateSafetyLock();
+
+      try {
+        await fetch(KONTROL_URL, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            motor: mixerOn ? 1 : 0,
+            pompa: 0
+          })
+        });
+        showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
+      } catch (e) {
+        showToast('⚠️ Gagal kirim perintah ke ESP32');
+      }
+    }
+
+    function setLiquidMode(mode) {
+      liquidAuto = mode === 'auto';
+      document.getElementById('liquid-auto-btn').classList.toggle('active', liquidAuto);
+      document.getElementById('liquid-manual-btn').classList.toggle('active', !liquidAuto);
+      document.getElementById('liquid-slider-wrap').style.display = liquidAuto ? 'none' : 'block';
+      showToast('Cairan pupuk: mode ' + (liquidAuto ? 'Otomatis' : 'Manual') + ' diaktifkan');
+    }
+
+    async function toggleLiquid() {
+      if (!liquidOn && mixerOn) {
+        showWarning('⚠️ BAHAYA! Pengaduk sedang aktif. Matikan pengaduk dulu sebelum menyalakan pompa!');
+        return;
+      }
+
+      liquidOn = !liquidOn;
+      const btn = document.getElementById('liquid-toggle-btn');
+      const st = document.getElementById('liquid-ctrl-status');
+      btn.className = 'action-btn ' + (liquidOn ? 'stop' : 'start');
+      btn.textContent = liquidOn ? '⏸ Hentikan Cairan' : '▶ Jalankan Cairan';
+      st.className = 'ctrl-status ' + (liquidOn ? 'on' : 'off');
+      st.textContent = liquidOn ? 'ON' : 'OFF';
+
+      updateSafetyLock();
+
+      try {
+        await fetch(KONTROL_URL, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            motor: 0,
+            pompa: liquidOn ? 1 : 0
+          })
+        });
+        showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ✓' : 'dihentikan ✗'));
+      } catch (e) {
+        showToast('⚠️ Gagal kirim perintah ke ESP32');
+      }
+    }
+
+    /* ════════════════════════════════════
+       SAFETY LOCK
+    ════════════════════════════════════ */
+    function updateSafetyLock() {
+      const mixerBtn = document.getElementById('mixer-toggle-btn');
+      const liquidBtn = document.getElementById('liquid-toggle-btn');
+
+      if (mixerOn && !liquidOn) {
+        liquidBtn.disabled = true;
+        liquidBtn.style.opacity = '0.4';
+        liquidBtn.style.cursor = 'not-allowed';
+        liquidBtn.textContent = '🔒 Pengaduk Aktif';
+      } else if (liquidOn && !mixerOn) {
+        mixerBtn.disabled = true;
+        mixerBtn.style.opacity = '0.4';
+        mixerBtn.style.cursor = 'not-allowed';
+        mixerBtn.textContent = '🔒 Pompa Aktif';
+      } else {
+        liquidBtn.disabled = false;
+        liquidBtn.style.opacity = '1';
+        liquidBtn.style.cursor = 'pointer';
+        liquidBtn.textContent = liquidOn ? '⏸ Hentikan Cairan' : '▶ Jalankan Cairan';
+
+        mixerBtn.disabled = false;
+        mixerBtn.style.opacity = '1';
+        mixerBtn.style.cursor = 'pointer';
+        mixerBtn.textContent = mixerOn ? '⏸ Hentikan Pengaduk' : '▶ Jalankan Pengaduk';
+      }
+    }
+
+    function showWarning(msg) {
+      const old = document.getElementById('safety-warning');
+      if (old) old.remove();
+      const oldBackdrop = document.getElementById('safety-backdrop');
+      if (oldBackdrop) oldBackdrop.remove();
+
+      const warn = document.createElement('div');
+      warn.id = 'safety-warning';
+      warn.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.8); background:#fff; border-radius:20px; padding:28px 32px; z-index:9999; box-shadow:0 20px 60px rgba(0,0,0,0.2), 0 0 0 3px rgba(212,112,154,0.3); text-align:center; max-width:320px; width:90vw;';
+
+      warn.innerHTML = '<div style="font-size:3rem;margin-bottom:12px">⚠️</div>' +
+        '<div style="font-family:\'Playfair Display\',serif;font-size:1.1rem;font-weight:700;color:#c0536a;margin-bottom:10px">Peringatan Keamanan!</div>' +
+        '<div style="font-size:0.88rem;color:#5A7A6E;line-height:1.6;margin-bottom:20px">' + msg + '</div>' +
+        '<div style="font-size:0.78rem;color:#8AADA0;margin-bottom:16px">Motor dan pompa tidak boleh berjalan bersamaan untuk mencegah kerusakan alat.</div>' +
+        '<button onclick="document.getElementById(\'safety-warning\').remove();document.getElementById(\'safety-backdrop\').remove();" style="background:linear-gradient(135deg,#d4709a,#e8a0c0);color:#fff;border:none;padding:11px 28px;border-radius:12px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;box-shadow:0 4px 14px rgba(212,112,154,0.3);">Mengerti</button>';
+
+      const backdrop = document.createElement('div');
+      backdrop.id = 'safety-backdrop';
+      backdrop.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);';
+      backdrop.onclick = () => {
+        warn.remove();
+        backdrop.remove();
+      };
+
+      document.body.appendChild(backdrop);
+      document.body.appendChild(warn);
+
+      setTimeout(() => {
+        if (document.getElementById('safety-warning')) warn.remove();
+        if (document.getElementById('safety-backdrop')) backdrop.remove();
+      }, 5000);
+    }
+
+    /* ════════════════════════════════════
+       AI CHAT
+    ════════════════════════════════════ */
+    function toggleChat() {
+      const popup = document.getElementById('ai-chat-popup');
+      const fab = document.getElementById('ai-fab');
+      popup.classList.toggle('open');
+      fab.classList.toggle('chat-open');
+    }
+
+    function askChip(el) {
+      document.getElementById('ai-input').value = el.textContent;
+      document.getElementById('ai-suggestions').style.display = 'none';
+      sendChat();
+    }
+
+    async function sendChat() {
+      const inp = document.getElementById('ai-input');
+      const q = inp.value.trim();
+      if (!q) return;
+      inp.value = '';
+
+      appendMsg('user-msg', q);
+      const loading = appendMsg('loading', '⏳ NutriBot sedang berpikir...');
+
+      const systemPrompt = 'Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.\n' +
+        'Data sensor saat ini:\n' +
+        '- Suhu: ' + sensorData.temp + '°C\n' +
+        '- Kelembaban: ' + sensorData.humid + '%\n' +
+        '- Berat sampah: ' + sensorData.weight + ' kg\n' +
+        '- Status pengaduk: ' + (mixerOn ? 'ON (Otomatis)' : 'OFF') + '\n\n' +
+        'ATURAN FORMAT JAWABAN (WAJIB DIIKUTI):\n' +
+        '- Jika jawabanmu punya lebih dari satu poin, SELALU tulis dalam format bernomor atau berpeluru per baris baru.\n' +
+        '- Format nomor: "1. teks" lalu baris baru "2. teks" dst.\n' +
+        '- Format peluru: "• teks" lalu baris baru "• teks" dst.\n' +
+        '- Gunakan emoji yang relevan di awal setiap poin.\n' +
+        '- Pisahkan setiap poin dengan baris baru.\n' +
+        '- Jawab dalam Bahasa Indonesia, ramah dan informatif.\n' +
+        '- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.';
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            question: q,
+            sensorContext: systemPrompt
+          })
+        });
+        const data = await res.json();
+        const text = data.text || 'Maaf, ada gangguan. Coba lagi ya!';
+        loading.remove();
+        appendMsg('bot', text);
+      } catch (e) {
+        loading.remove();
+        appendMsg('bot', '⚠️ Tidak bisa terhubung. Periksa koneksi internet.');
+      }
+    }
+
+    function formatBotText(text) {
+      const lines = text.split('\n');
+      const container = document.createDocumentFragment();
+      lines.forEach((line, i) => {
+        const trimmed = line.trimStart();
+        if (trimmed === '') {
+          if (i > 0 && i < lines.length - 1) {
+            container.appendChild(document.createElement('br'));
+          }
+          return;
+        }
+        const span = document.createElement('span');
+        span.style.display = 'block';
+        if (/^(\d+\.|[•\-\*➤→✅❌⚠️📌])/.test(trimmed)) {
+          span.style.paddingLeft = '2px';
+          span.style.marginTop = i === 0 ? '0' : '5px';
+        }
+        span.textContent = line;
+        container.appendChild(span);
+      });
+      return container;
+    }
+
+    function appendMsg(type, text) {
+      const msgs = document.getElementById('ai-msgs');
+      const d = document.createElement('div');
+      d.className = 'msg ' + type;
+      if (type === 'bot') {
+        d.appendChild(formatBotText(text));
+      } else {
+        d.textContent = text;
+      }
+      msgs.appendChild(d);
+      msgs.scrollTop = msgs.scrollHeight;
+      return d;
+    }
+
+    /* ════════════════════════════════════
+       TOAST
+    ════════════════════════════════════ */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+  </script>
 </body>
+
 </html>
