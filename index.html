@@ -1614,7 +1614,7 @@
         <div class="stat-card weight">
           <div class="stat-icon">⚖️</div>
           <div class="stat-label">BERAT SAMPAH</div>
-          <div class="stat-value" id="val-weight">1.8<span class="stat-unit"> kg</span></div>
+          <div class="stat-value" id="val-weight" style="font-size:0.8rem;color:#c0536a;">Load cell gangguan</div>
           <div><span class="stat-badge badge-on">📦 Aktif</span></div>
         </div>
         <div class="stat-card mixer">
@@ -1624,44 +1624,19 @@
           <div><span class="stat-badge badge-on" id="badge-mixer">⚡ Otomatis</span></div>
         </div>
       </div> <!-- CHART ROW -->
-      <div class="chart-row">
-        <div class="card">
-          <div class="card-title">🌡️ Grafik Suhu (Real-time)</div> <canvas id="chartSuhu" height="180"></canvas>
+      <div class="chart-row" style="grid-template-columns:1fr 1fr;">
+      <div class="card">
+        <div class="card-title">🌡️ Grafik Suhu (Real-time)</div>
+        <canvas id="chartSuhu" height="180"></canvas>
       </div>
       <div class="card">
-        <div class="card-title">💧 Grafik Kelembaban (Real-time)</div> <canvas id="chartHumid" height="180"></canvas>
-        </div>
-        <div class="card">
-          <div class="card-title">⚖️ Kapasitas Tempat</div>
-          <div class="donut-wrap">
-            <div class="donut-ring"> <svg viewBox="0 0 100 100" width="130" height="130">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#E8F0EA" stroke-width="12" />
-                <circle cx="50" cy="50" r="40" fill="none" stroke="url(#donutGrad)" stroke-width="12" stroke-dasharray="150.8" stroke-dashoffset="60" stroke-linecap="round" />
-                <defs>
-                  <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#C1D591" />
-                    <stop offset="100%" stop-color="#538376" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div class="donut-center">
-                <div class="big-num">60%</div>
-                <div class="small-l">penuh</div>
-              </div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-size:0.78rem;color:var(--text-light)">1.8 kg / 3.0 kg</div>
-              <div style="font-size:0.72rem;color:var(--text-light);margin-top:3px;">Estimasi penuh: <b>4 hari</b></div>
-            </div>
-          </div>
-        </div>
+        <div class="card-title">💧 Grafik Kelembaban (Real-time)</div>
+        <canvas id="chartHumid" height="180"></canvas>
+      </div>
+    </div>
       </div> <!-- USER INFO ROW -->
       <div class="info-row" id="user-info-row">
-        <div class="info-card">
-          <div class="info-label">📅 PERKIRAAN PUPUK SIAP</div>
-          <div class="info-val">~12 hari</div>
-          <div class="info-meta">Berdasarkan suhu & kelembaban saat ini</div>
-        </div>
+
         <div class="info-card">
           <div class="info-label">🔄 STATUS PENGADUK OTOMATIS</div>
           <div class="info-val" id="mixer-status-display">ON</div>
@@ -1989,36 +1964,81 @@
     /* ════════════════════════════════════
        CHART
     ════════════════════════════════════ */
+    let lineChart = null;
 
     function initChart() {
-      if (window.chartSuhuObj) window.chartSuhuObj.destroy();
-      if (window.chartHumidObj) window.chartHumidObj.destroy();
-
-      const optBase = {
-        responsive: true,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 10 }, maxTicksLimit: 6, autoSkip: true } },
-          y: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } }
+      if (lineChart) {
+        lineChart.destroy();
+      }
+      const ctx = document.getElementById('lineChart').getContext('2d');
+      lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: sensorData.history.labels,
+          datasets: [{
+              label: 'Suhu (°C)',
+              data: sensorData.history.temps,
+              borderColor: '#F1B8D9',
+              backgroundColor: 'rgba(241,184,217,0.12)',
+              tension: 0.4,
+              pointRadius: 2,
+              pointBackgroundColor: '#F1B8D9',
+              borderWidth: 2.5,
+              fill: true
+            },
+            {
+              label: 'Kelembaban (%)',
+              data: sensorData.history.humids,
+              borderColor: '#9EC0EB',
+              backgroundColor: 'rgba(158,192,235,0.12)',
+              tension: 0.4,
+              pointRadius: 2,
+              pointBackgroundColor: '#9EC0EB',
+              borderWidth: 2.5,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#538376',
+                font: {
+                  family: 'DM Sans',
+                  size: 12
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(184,213,218,0.25)'
+              },
+              ticks: {
+                color: '#8AADA0',
+                font: {
+                  size: 10
+                },
+                maxTicksLimit: 6,
+                autoSkip: true
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(184,213,218,0.25)'
+              },
+              ticks: {
+                color: '#8AADA0',
+                font: {
+                  size: 11
+                }
+              }
+            }
+          }
         }
-      };
-
-      window.chartSuhuObj = new Chart(document.getElementById('chartSuhu').getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: sensorData.history.labels,
-          datasets: [{ label: 'Suhu (°C)', data: sensorData.history.temps, borderColor: '#F1B8D9', backgroundColor: 'rgba(241,184,217,0.15)', tension: 0.4, pointRadius: 2, pointBackgroundColor: '#F1B8D9', borderWidth: 2.5, fill: true }]
-        },
-        options: JSON.parse(JSON.stringify(optBase))
-      });
-
-      window.chartHumidObj = new Chart(document.getElementById('chartHumid').getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: sensorData.history.labels,
-          datasets: [{ label: 'Kelembaban (%)', data: sensorData.history.humids, borderColor: '#9EC0EB', backgroundColor: 'rgba(158,192,235,0.15)', tension: 0.4, pointRadius: 2, pointBackgroundColor: '#9EC0EB', borderWidth: 2.5, fill: true }]
-        },
-        options: JSON.parse(JSON.stringify(optBase))
       });
     }
 
@@ -2069,18 +2089,19 @@
         document.getElementById('val-humid').innerHTML = sensorData.humid + '<span class="stat-unit"> %</span>';
         document.getElementById('val-weight').innerHTML = sensorData.weight + '<span class="stat-unit"> kg</span>';
 
-        if (window.chartSuhuObj && window.chartHumidObj) {
+        if (lineChart) {
           const now2 = new Date();
           const label = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0') + ':' + now2.getSeconds().toString().padStart(2, '0');
-          sensorData.history.labels.push(label); sensorData.history.labels.shift();
-          sensorData.history.temps.push(sensorData.temp); sensorData.history.temps.shift();
-          sensorData.history.humids.push(sensorData.humid); sensorData.history.humids.shift();
-          window.chartSuhuObj.data.labels = sensorData.history.labels;
-          window.chartSuhuObj.data.datasets[0].data = sensorData.history.temps;
-          window.chartSuhuObj.update('none');
-          window.chartHumidObj.data.labels = sensorData.history.labels;
-          window.chartHumidObj.data.datasets[0].data = sensorData.history.humids;
-          window.chartHumidObj.update('none');
+          sensorData.history.labels.push(label);
+          sensorData.history.labels.shift();
+          sensorData.history.temps.push(sensorData.temp);
+          sensorData.history.temps.shift();
+          sensorData.history.humids.push(sensorData.humid);
+          sensorData.history.humids.shift();
+          lineChart.data.labels = sensorData.history.labels;
+          lineChart.data.datasets[0].data = sensorData.history.temps;
+          lineChart.data.datasets[1].data = sensorData.history.humids;
+          lineChart.update('none');
         }
 
       } catch (err) {
@@ -2293,7 +2314,7 @@
       appendMsg('user-msg', q);
       const loading = appendMsg('loading', '⏳ NutriBot sedang berpikir...');
 
-      const systemPrompt = 'Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.\n' +
+    const systemPrompt = 'Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.\n' +
         'Data sensor saat ini:\n' +
         '- Suhu: ' + sensorData.temp + '°C\n' +
         '- Kelembaban: ' + sensorData.humid + '%\n' +
@@ -2306,7 +2327,9 @@
         '- Gunakan emoji yang relevan di awal setiap poin.\n' +
         '- Pisahkan setiap poin dengan baris baru.\n' +
         '- Jawab dalam Bahasa Indonesia, ramah dan informatif.\n' +
-        '- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.';
+        '- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.\n' +
+        '- Jika ditanya siapa pencipta atau pembuat AI/NutriBot ini, jawab: NutriBot dibuat oleh Syafiqa Anindya Affandi sebagai pencipta AI ini.\n' +
+        '- Jika ditanya siapa pembuat NutriBin, jawab: NutriBin dibuat oleh Syafiqa Anindya Affandi (Ketua), Ghadiza Syahla, dan Zulfi Arnalom.';
 
       try {
         const res = await fetch('/api/chat', {
