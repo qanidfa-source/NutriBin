@@ -2336,7 +2336,7 @@
       appendMsg('user-msg', q);
       const loading = appendMsg('loading', '⏳ NutriBot sedang berpikir...');
 
-      const systemPrompt = 'Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.\n' +
+    const systemPrompt = 'Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.\n' +
         'Data sensor saat ini:\n' +
         '- Suhu: ' + sensorData.temp + '°C\n' +
         '- Kelembaban: ' + sensorData.humid + '%\n' +
@@ -2349,7 +2349,9 @@
         '- Gunakan emoji yang relevan di awal setiap poin.\n' +
         '- Pisahkan setiap poin dengan baris baru.\n' +
         '- Jawab dalam Bahasa Indonesia, ramah dan informatif.\n' +
-        '- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.';
+        '- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.\n' +
+        '- Jika ditanya siapa pencipta atau pembuat AI/NutriBot ini, jawab: NutriBot dibuat oleh Syafiqa Anindya Affandi sebagai pencipta AI ini.\n' +
+        '- Jika ditanya siapa pembuat NutriBin, jawab: NutriBin dibuat oleh Syafiqa Anindya Affandi (Ketua), Ghadiza Syahla, dan Zulfi Arnalom.';
 
       try {
         const res = await fetch('/api/chat', {
