@@ -1614,7 +1614,7 @@
         <div class="stat-card weight">
           <div class="stat-icon">⚖️</div>
           <div class="stat-label">BERAT SAMPAH</div>
-          <div class="stat-value" id="val-weight">1.8<span class="stat-unit"> kg</span></div>
+          <div class="stat-value" id="val-weight" style="font-size:0.8rem;color:#c0536a;">Load cell gangguan</div>
           <div><span class="stat-badge badge-on">📦 Aktif</span></div>
         </div>
         <div class="stat-card mixer">
@@ -1628,37 +1628,9 @@
         <div class="card">
           <div class="card-title">📈 Grafik Suhu & Kelembaban (Real-time)</div> <canvas id="lineChart" height="180"></canvas>
         </div>
-        <div class="card">
-          <div class="card-title">⚖️ Kapasitas Tempat</div>
-          <div class="donut-wrap">
-            <div class="donut-ring"> <svg viewBox="0 0 100 100" width="130" height="130">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#E8F0EA" stroke-width="12" />
-                <circle cx="50" cy="50" r="40" fill="none" stroke="url(#donutGrad)" stroke-width="12" stroke-dasharray="150.8" stroke-dashoffset="60" stroke-linecap="round" />
-                <defs>
-                  <linearGradient id="donutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#C1D591" />
-                    <stop offset="100%" stop-color="#538376" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div class="donut-center">
-                <div class="big-num">60%</div>
-                <div class="small-l">penuh</div>
-              </div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-size:0.78rem;color:var(--text-light)">1.8 kg / 3.0 kg</div>
-              <div style="font-size:0.72rem;color:var(--text-light);margin-top:3px;">Estimasi penuh: <b>4 hari</b></div>
-            </div>
-          </div>
-        </div>
       </div> <!-- USER INFO ROW -->
       <div class="info-row" id="user-info-row">
-        <div class="info-card">
-          <div class="info-label">📅 PERKIRAAN PUPUK SIAP</div>
-          <div class="info-val">~12 hari</div>
-          <div class="info-meta">Berdasarkan suhu & kelembaban saat ini</div>
-        </div>
+
         <div class="info-card">
           <div class="info-label">🔄 STATUS PENGADUK OTOMATIS</div>
           <div class="info-val" id="mixer-status-display">ON</div>
