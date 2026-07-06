@@ -1964,83 +1964,37 @@
     /* ════════════════════════════════════
        CHART
     ════════════════════════════════════ */
-    let lineChart = null;
+  function initChart() {
+  if (window.chartSuhuObj) window.chartSuhuObj.destroy();
+  if (window.chartHumidObj) window.chartHumidObj.destroy();
 
-    function initChart() {
-      if (lineChart) {
-        lineChart.destroy();
-      }
-      const ctx = document.getElementById('lineChart').getContext('2d');
-      lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: sensorData.history.labels,
-          datasets: [{
-              label: 'Suhu (°C)',
-              data: sensorData.history.temps,
-              borderColor: '#F1B8D9',
-              backgroundColor: 'rgba(241,184,217,0.12)',
-              tension: 0.4,
-              pointRadius: 2,
-              pointBackgroundColor: '#F1B8D9',
-              borderWidth: 2.5,
-              fill: true
-            },
-            {
-              label: 'Kelembaban (%)',
-              data: sensorData.history.humids,
-              borderColor: '#9EC0EB',
-              backgroundColor: 'rgba(158,192,235,0.12)',
-              tension: 0.4,
-              pointRadius: 2,
-              pointBackgroundColor: '#9EC0EB',
-              borderWidth: 2.5,
-              fill: true
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              labels: {
-                color: '#538376',
-                font: {
-                  family: 'DM Sans',
-                  size: 12
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: {
-                color: 'rgba(184,213,218,0.25)'
-              },
-              ticks: {
-                color: '#8AADA0',
-                font: {
-                  size: 10
-                },
-                maxTicksLimit: 6,
-                autoSkip: true
-              }
-            },
-            y: {
-              grid: {
-                color: 'rgba(184,213,218,0.25)'
-              },
-              ticks: {
-                color: '#8AADA0',
-                font: {
-                  size: 11
-                }
-              }
-            }
-          }
-        }
-      });
+  const optBase = {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 10 }, maxTicksLimit: 6, autoSkip: true } },
+      y: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } }
     }
+  };
+
+  window.chartSuhuObj = new Chart(document.getElementById('chartSuhu').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: sensorData.history.labels,
+      datasets: [{ label: 'Suhu (°C)', data: sensorData.history.temps, borderColor: '#F1B8D9', backgroundColor: 'rgba(241,184,217,0.15)', tension: 0.4, pointRadius: 2, pointBackgroundColor: '#F1B8D9', borderWidth: 2.5, fill: true }]
+    },
+    options: JSON.parse(JSON.stringify(optBase))
+  });
+
+  window.chartHumidObj = new Chart(document.getElementById('chartHumid').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: sensorData.history.labels,
+      datasets: [{ label: 'Kelembaban (%)', data: sensorData.history.humids, borderColor: '#9EC0EB', backgroundColor: 'rgba(158,192,235,0.15)', tension: 0.4, pointRadius: 2, pointBackgroundColor: '#9EC0EB', borderWidth: 2.5, fill: true }]
+    },
+    options: JSON.parse(JSON.stringify(optBase))
+  });
+}
 
     /* ════════════════════════════════════
        FIREBASE — DATA REAL ESP32
