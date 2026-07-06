@@ -1614,7 +1614,7 @@
         <div class="stat-card weight">
           <div class="stat-icon">⚖️</div>
           <div class="stat-label">BERAT SAMPAH</div>
-          <div class="stat-value" id="val-weight" style="font-size:0.8rem;color:#c0536a;">Load cell gangguan</div>
+          <div class="stat-value" id="val-weight">1.8<span class="stat-unit"> kg</span></div>
           <div><span class="stat-badge badge-on">📦 Aktif</span></div>
         </div>
         <div class="stat-card mixer">
@@ -1624,19 +1624,18 @@
           <div><span class="stat-badge badge-on" id="badge-mixer">⚡ Otomatis</span></div>
         </div>
       </div> <!-- CHART ROW -->
-      <div class="chart-row" style="grid-template-columns:1fr 1fr;">
-      <div class="card">
-        <div class="card-title">🌡️ Grafik Suhu (Real-time)</div>
-        <canvas id="chartSuhu" height="180"></canvas>
-      </div>
-      <div class="card">
-        <div class="card-title">💧 Grafik Kelembaban (Real-time)</div>
-        <canvas id="chartHumid" height="180"></canvas>
-      </div>
-    </div>
+      <div class="chart-row">
+        <div class="card">
+          <div class="card-title">📈 Grafik Suhu & Kelembaban (Real-time)</div> <canvas id="lineChart" height="180"></canvas>
+        </div>
+            <div style="text-align:center">
+              <div style="font-size:0.78rem;color:var(--text-light)">1.8 kg / 3.0 kg</div>
+              <div style="font-size:0.72rem;color:var(--text-light);margin-top:3px;">Estimasi penuh: <b>4 hari</b></div>
+            </div>
+          </div>
+        </div>
       </div> <!-- USER INFO ROW -->
       <div class="info-row" id="user-info-row">
-
         <div class="info-card">
           <div class="info-label">🔄 STATUS PENGADUK OTOMATIS</div>
           <div class="info-val" id="mixer-status-display">ON</div>
@@ -1964,37 +1963,83 @@
     /* ════════════════════════════════════
        CHART
     ════════════════════════════════════ */
-  function initChart() {
-  if (window.chartSuhuObj) window.chartSuhuObj.destroy();
-  if (window.chartHumidObj) window.chartHumidObj.destroy();
+    let lineChart = null;
 
-  const optBase = {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 10 }, maxTicksLimit: 6, autoSkip: true } },
-      y: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } }
+    function initChart() {
+      if (lineChart) {
+        lineChart.destroy();
+      }
+      const ctx = document.getElementById('lineChart').getContext('2d');
+      lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: sensorData.history.labels,
+          datasets: [{
+              label: 'Suhu (°C)',
+              data: sensorData.history.temps,
+              borderColor: '#F1B8D9',
+              backgroundColor: 'rgba(241,184,217,0.12)',
+              tension: 0.4,
+              pointRadius: 2,
+              pointBackgroundColor: '#F1B8D9',
+              borderWidth: 2.5,
+              fill: true
+            },
+            {
+              label: 'Kelembaban (%)',
+              data: sensorData.history.humids,
+              borderColor: '#9EC0EB',
+              backgroundColor: 'rgba(158,192,235,0.12)',
+              tension: 0.4,
+              pointRadius: 2,
+              pointBackgroundColor: '#9EC0EB',
+              borderWidth: 2.5,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#538376',
+                font: {
+                  family: 'DM Sans',
+                  size: 12
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(184,213,218,0.25)'
+              },
+              ticks: {
+                color: '#8AADA0',
+                font: {
+                  size: 10
+                },
+                maxTicksLimit: 6,
+                autoSkip: true
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(184,213,218,0.25)'
+              },
+              ticks: {
+                color: '#8AADA0',
+                font: {
+                  size: 11
+                }
+              }
+            }
+          }
+        }
+      });
     }
-  };
-
-  window.chartSuhuObj = new Chart(document.getElementById('chartSuhu').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: sensorData.history.labels,
-      datasets: [{ label: 'Suhu (°C)', data: sensorData.history.temps, borderColor: '#F1B8D9', backgroundColor: 'rgba(241,184,217,0.15)', tension: 0.4, pointRadius: 2, pointBackgroundColor: '#F1B8D9', borderWidth: 2.5, fill: true }]
-    },
-    options: JSON.parse(JSON.stringify(optBase))
-  });
-
-  window.chartHumidObj = new Chart(document.getElementById('chartHumid').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: sensorData.history.labels,
-      datasets: [{ label: 'Kelembaban (%)', data: sensorData.history.humids, borderColor: '#9EC0EB', backgroundColor: 'rgba(158,192,235,0.15)', tension: 0.4, pointRadius: 2, pointBackgroundColor: '#9EC0EB', borderWidth: 2.5, fill: true }]
-    },
-    options: JSON.parse(JSON.stringify(optBase))
-  });
-}
 
     /* ════════════════════════════════════
        FIREBASE — DATA REAL ESP32
@@ -2043,22 +2088,20 @@
         document.getElementById('val-humid').innerHTML = sensorData.humid + '<span class="stat-unit"> %</span>';
         document.getElementById('val-weight').innerHTML = sensorData.weight + '<span class="stat-unit"> kg</span>';
 
-if (window.chartSuhuObj && window.chartHumidObj) {
-  const now2 = new Date();
-  const label = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0') + ':' + now2.getSeconds().toString().padStart(2, '0');
-  sensorData.history.labels.push(label);
-  sensorData.history.labels.shift();
-  sensorData.history.temps.push(sensorData.temp);
-  sensorData.history.temps.shift();
-  sensorData.history.humids.push(sensorData.humid);
-  sensorData.history.humids.shift();
-  window.chartSuhuObj.data.labels = sensorData.history.labels;
-  window.chartSuhuObj.data.datasets[0].data = sensorData.history.temps;
-  window.chartSuhuObj.update('none');
-  window.chartHumidObj.data.labels = sensorData.history.labels;
-  window.chartHumidObj.data.datasets[0].data = sensorData.history.humids;
-  window.chartHumidObj.update('none');
-}
+        if (lineChart) {
+          const now2 = new Date();
+          const label = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0') + ':' + now2.getSeconds().toString().padStart(2, '0');
+          sensorData.history.labels.push(label);
+          sensorData.history.labels.shift();
+          sensorData.history.temps.push(sensorData.temp);
+          sensorData.history.temps.shift();
+          sensorData.history.humids.push(sensorData.humid);
+          sensorData.history.humids.shift();
+          lineChart.data.labels = sensorData.history.labels;
+          lineChart.data.datasets[0].data = sensorData.history.temps;
+          lineChart.data.datasets[1].data = sensorData.history.humids;
+          lineChart.update('none');
+        }
 
       } catch (err) {
         setConnectionStatus(false);
