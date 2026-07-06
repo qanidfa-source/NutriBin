@@ -1964,37 +1964,84 @@
     /* ════════════════════════════════════
        CHART
     ════════════════════════════════════ */
-  function initChart() {
-  if (window.chartSuhuObj) window.chartSuhuObj.destroy();
-  if (window.chartHumidObj) window.chartHumidObj.destroy();
+    let lineChart = null;
 
-  const optBase = {
-    responsive: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 10 }, maxTicksLimit: 6, autoSkip: true } },
-      y: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 11 } } }
+    function initChart() {
+      if (lineChart) {
+        lineChart.destroy();
+      }
+      const ctx = document.getElementById('lineChart').getContext('2d');
+      lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: sensorData.history.labels,
+          datasets: [{
+              label: 'Suhu (°C)',
+              data: sensorData.history.temps,
+              borderColor: '#F1B8D9',
+              backgroundColor: 'rgba(241,184,217,0.12)',
+              tension: 0.4,
+              pointRadius: 2,
+              pointBackgroundColor: '#F1B8D9',
+              borderWidth: 2.5,
+              fill: true
+            },
+            {
+              label: 'Kelembaban (%)',
+              data: sensorData.history.humids,
+              borderColor: '#9EC0EB',
+              backgroundColor: 'rgba(158,192,235,0.12)',
+              tension: 0.4,
+              pointRadius: 2,
+              pointBackgroundColor: '#9EC0EB',
+              borderWidth: 2.5,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#538376',
+                font: {
+                  family: 'DM Sans',
+                  size: 12
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(184,213,218,0.25)'
+              },
+              ticks: {
+                color: '#8AADA0',
+                font: {
+                  size: 10
+                },
+                maxTicksLimit: 6,
+                autoSkip: true
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(184,213,218,0.25)'
+              },
+              ticks: {
+                color: '#8AADA0',
+                font: {
+                  size: 11
+                }
+              }
+            }
+          }
+        }
+      });
     }
-  };
 
-  window.chartSuhuObj = new Chart(document.getElementById('chartSuhu').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: sensorData.history.labels,
-      datasets: [{ label: 'Suhu (°C)', data: sensorData.history.temps, borderColor: '#F1B8D9', backgroundColor: 'rgba(241,184,217,0.15)', tension: 0.4, pointRadius: 2, pointBackgroundColor: '#F1B8D9', borderWidth: 2.5, fill: true }]
-    },
-    options: JSON.parse(JSON.stringify(optBase))
-  });
-
-  window.chartHumidObj = new Chart(document.getElementById('chartHumid').getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: sensorData.history.labels,
-      datasets: [{ label: 'Kelembaban (%)', data: sensorData.history.humids, borderColor: '#9EC0EB', backgroundColor: 'rgba(158,192,235,0.15)', tension: 0.4, pointRadius: 2, pointBackgroundColor: '#9EC0EB', borderWidth: 2.5, fill: true }]
-    },
-    options: JSON.parse(JSON.stringify(optBase))
-  });
-}
     /* ════════════════════════════════════
        FIREBASE — DATA REAL ESP32
     ════════════════════════════════════ */
@@ -2042,12 +2089,15 @@
         document.getElementById('val-humid').innerHTML = sensorData.humid + '<span class="stat-unit"> %</span>';
         document.getElementById('val-weight').innerHTML = sensorData.weight + '<span class="stat-unit"> kg</span>';
 
-        if (window.chartSuhuObj && window.chartHumidObj) {
+if (window.chartSuhuObj && window.chartHumidObj) {
   const now2 = new Date();
-  const label = now2.getHours().toString().padStart(2,'0') + ':' + now2.getMinutes().toString().padStart(2,'0') + ':' + now2.getSeconds().toString().padStart(2,'0');
-  sensorData.history.labels.push(label); sensorData.history.labels.shift();
-  sensorData.history.temps.push(sensorData.temp); sensorData.history.temps.shift();
-  sensorData.history.humids.push(sensorData.humid); sensorData.history.humids.shift();
+  const label = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0') + ':' + now2.getSeconds().toString().padStart(2, '0');
+  sensorData.history.labels.push(label);
+  sensorData.history.labels.shift();
+  sensorData.history.temps.push(sensorData.temp);
+  sensorData.history.temps.shift();
+  sensorData.history.humids.push(sensorData.humid);
+  sensorData.history.humids.shift();
   window.chartSuhuObj.data.labels = sensorData.history.labels;
   window.chartSuhuObj.data.datasets[0].data = sensorData.history.temps;
   window.chartSuhuObj.update('none');
@@ -2055,6 +2105,38 @@
   window.chartHumidObj.data.datasets[0].data = sensorData.history.humids;
   window.chartHumidObj.update('none');
 }
+
+      } catch (err) {
+        setConnectionStatus(false);
+      }
+    }
+
+    function setConnectionStatus(online) {
+      const banner = document.getElementById('status-banner');
+      if (!banner) return;
+
+      if (online) {
+        banner.style.background = 'rgba(193,213,145,0.25)';
+        banner.style.borderColor = 'rgba(83,131,118,0.4)';
+        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#538376;font-weight:600">🟢 ESP32 Online — Data realtime aktif</span>';
+      } else {
+        sensorData.temp = 0;
+        sensorData.humid = 0;
+        sensorData.weight = 0;
+        document.getElementById('val-temp').innerHTML = '0<span class="stat-unit"> °C</span>';
+        document.getElementById('val-humid').innerHTML = '0<span class="stat-unit"> %</span>';
+        document.getElementById('val-weight').innerHTML = '0<span class="stat-unit"> kg</span>';
+        banner.style.background = 'rgba(241,184,217,0.2)';
+        banner.style.borderColor = 'rgba(192,83,106,0.4)';
+        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#c0536a;font-weight:600">🔴 ESP32 Offline — Pastikan alat menyala & terhubung WiFi</span>';
+      }
+    }
+
+    function startSimulation() {
+      fetchFirebase();
+      setInterval(fetchFirebase, 2000);
+    }
+
     /* ════════════════════════════════════
        MAKER CONTROLS
     ════════════════════════════════════ */
