@@ -997,8 +997,30 @@
       border-bottom-left-radius: 4px;
     }
 
-    .msg.bot span {
+    .msg.bot .bot-line {
       line-height: 1.6;
+    }
+
+    .msg.bot .bot-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+    }
+
+    .msg.bot .bot-marker {
+      flex-shrink: 0;
+      min-width: 15px;
+      font-weight: 700;
+      color: var(--basil);
+    }
+
+    .msg.bot .bot-text {
+      flex: 1;
+    }
+
+    .msg.bot strong {
+      color: var(--basil);
+      font-weight: 700;
     }
 
     .msg.user-msg {
@@ -1698,7 +1720,7 @@
       </div>
     </div>
     <div class="ai-msgs" id="ai-msgs">
-      <div class="msg bot">Halo! Saya NutriBot Saya bisa membantu menjawab pertanyaan tentang kompos dan kondisi NutriBin kamu.</div>
+      <div class="msg bot">Halo! Saya NutriBot, asisten kompos pintar kamu. Ada yang bisa dibantu soal kondisi NutriBin atau proses komposnya?</div>
     </div>
     <div class="ai-suggestions" id="ai-suggestions"> <span class="ai-chip" onclick="askChip(this)">Berapa hari pupuk siap?</span> <span class="ai-chip" onclick="askChip(this)">Suhu ideal kompos?</span> <span class="ai-chip" onclick="askChip(this)">Tips mempercepat kompos</span> </div>
     <div class="ai-input-row"> <input class="ai-input" id="ai-input" placeholder="Tanya sesuatu... " onkeydown="if(event.key==='Enter')sendChat()" inputmode="text"> <button class="ai-send" onclick="sendChat()"></button> </div>
@@ -1967,12 +1989,39 @@
     /* ════════════════════════════════════
        CHART
     ════════════════════════════════════ */
+  // Recomputes a tight y-axis range around the visible data so small
+  // real-world fluctuations (e.g. 33.8°C -> 34.2°C) actually show up as
+  // visible movement instead of looking like a flat line.
+  function computeAxisRange(values, minSpan) {
+    const valid = values.filter(v => typeof v === 'number' && !isNaN(v));
+    if (!valid.length) return { min: undefined, max: undefined };
+
+    let min = Math.min(...valid);
+    let max = Math.max(...valid);
+    const span = max - min;
+
+    if (span < minSpan) {
+      // Data barely moves: center a fixed-width window around it so the
+      // line still has room to visibly rise and fall.
+      const mid = (max + min) / 2;
+      min = mid - minSpan / 2;
+      max = mid + minSpan / 2;
+    } else {
+      // Data already moves a lot: add breathing room above/below.
+      const pad = span * 0.3;
+      min -= pad;
+      max += pad;
+    }
+    return { min, max };
+  }
+
   function initChart() {
   if (window.chartSuhuObj) window.chartSuhuObj.destroy();
   if (window.chartHumidObj) window.chartHumidObj.destroy();
 
   const optBase = {
     responsive: true,
+    animation: { duration: 400, easing: 'easeOutQuad' },
     plugins: { legend: { display: false } },
     scales: {
       x: { grid: { color: 'rgba(184,213,218,0.25)' }, ticks: { color: '#8AADA0', font: { size: 10 }, maxTicksLimit: 6, autoSkip: true } },
@@ -2006,6 +2055,7 @@
 
     let lastHeartbeat = null;
     let lastHeartbeatTime = 0;
+    let hasConfirmedFirstReading = false;
 
     async function fetchFirebase() {
       try {
@@ -2017,7 +2067,14 @@
         const now = Date.now();
 
         if (currentHB !== null) {
-          if (currentHB !== lastHeartbeat) {
+          if (!hasConfirmedFirstReading) {
+            // First reading ever: just record baseline, don't claim online yet.
+            // The stored heartbeat could be a stale value left over from
+            // the last time the device was actually connected.
+            lastHeartbeat = currentHB;
+            lastHeartbeatTime = now;
+            hasConfirmedFirstReading = true;
+          } else if (currentHB !== lastHeartbeat) {
             lastHeartbeat = currentHB;
             lastHeartbeatTime = now;
             setConnectionStatus(true);
@@ -2025,8 +2082,6 @@
             if (now - lastHeartbeatTime > 10000) {
               setConnectionStatus(false);
               return;
-            } else {
-              setConnectionStatus(true);
             }
           }
         } else {
@@ -2051,12 +2106,23 @@
   sensorData.history.labels.push(label); sensorData.history.labels.shift();
   sensorData.history.temps.push(sensorData.temp); sensorData.history.temps.shift();
   sensorData.history.humids.push(sensorData.humid); sensorData.history.humids.shift();
+
+  // Zoom the y-axis tightly around the visible data so real ups and
+  // downs are actually visible instead of looking like a flat line.
+  const tempRange = computeAxisRange(sensorData.history.temps, 3);   // min window: 3°C
+  const humidRange = computeAxisRange(sensorData.history.humids, 8); // min window: 8%
+
   window.chartSuhuObj.data.labels = sensorData.history.labels;
   window.chartSuhuObj.data.datasets[0].data = sensorData.history.temps;
-  window.chartSuhuObj.update('none');
+  window.chartSuhuObj.options.scales.y.min = tempRange.min;
+  window.chartSuhuObj.options.scales.y.max = tempRange.max;
+  window.chartSuhuObj.update();
+
   window.chartHumidObj.data.labels = sensorData.history.labels;
   window.chartHumidObj.data.datasets[0].data = sensorData.history.humids;
-  window.chartHumidObj.update('none');
+  window.chartHumidObj.options.scales.y.min = humidRange.min;
+  window.chartHumidObj.options.scales.y.max = humidRange.max;
+  window.chartHumidObj.update();
 }
 
       } catch (err) {
@@ -2267,7 +2333,7 @@
       inp.value = '';
 
       appendMsg('user-msg', q);
-      const loading = appendMsg('loading', ' NutriBot sedang berpikir...');
+      const loading = appendMsg('loading', 'NutriBot sedang berpikir...');
 
     const systemPrompt = 'Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.\n' +
         'Data sensor saat ini:\n' +
@@ -2276,11 +2342,13 @@
         '- Berat sampah: ' + sensorData.weight + ' kg\n' +
         '- Status pengaduk: ' + (mixerOn ? 'ON (Otomatis)' : 'OFF') + '\n\n' +
         'ATURAN FORMAT JAWABAN (WAJIB DIIKUTI):\n' +
-        '- Jika jawabanmu punya lebih dari satu poin, SELALU tulis dalam format bernomor atau berpeluru per baris baru.\n' +
-        '- Format nomor: "1. teks" lalu baris baru "2. teks" dst.\n' +
-        '- Format peluru: "• teks" lalu baris baru "• teks" dst.\n' +
-        '- Pisahkan setiap poin dengan baris baru.\n' +
-        '- Jawab dalam Bahasa Indonesia, ramah dan informatif.\n' +
+        '- Tulis jawaban singkat dan langsung ke inti, tidak bertele-tele.\n' +
+        '- Jika ada lebih dari satu poin, tulis dalam format bernomor ("1. teks") atau berpeluru ("- teks"), satu poin per baris baru. Jangan campur kedua format dalam satu jawaban.\n' +
+        '- Jika jawabannya cukup satu-dua kalimat saja, tidak perlu dipaksakan jadi list.\n' +
+        '- Gunakan **teks** hanya untuk menandai istilah atau angka penting, jangan berlebihan.\n' +
+        '- Jangan gunakan emoji, tanda pagar (#), atau simbol dekoratif lain.\n' +
+        '- Jangan mulai jawaban dengan sapaan atau kalimat pembuka yang itu-itu saja (contoh: hindari selalu mulai dengan "Halo!" atau "Tentu,"). Langsung jawab pertanyaannya.\n' +
+        '- Jawab dalam Bahasa Indonesia, natural dan informatif, sesuaikan dengan data sensor di atas.\n' +
         '- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.\n' +
         '- Jika ditanya siapa pencipta atau pembuat AI/NutriBot ini, jawab: NutriBot dibuat oleh Syafiqa Anindya Affandi sebagai pencipta AI ini.\n' +
         '- Jika ditanya siapa pembuat NutriBin, jawab: NutriBin dibuat oleh Syafiqa Anindya Affandi (Ketua), Ghadiza Syahla, dan Zulfi Arnalom.';
@@ -2306,26 +2374,55 @@
       }
     }
 
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    // Turns **bold** markdown into real <strong> tags, safely (HTML is
+    // escaped first so the model's text can never inject markup).
+    function renderInline(str) {
+      const escaped = escapeHtml(str);
+      return escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    }
+
     function formatBotText(text) {
-      const lines = text.split('\n');
       const container = document.createDocumentFragment();
-      lines.forEach((line, i) => {
-        const trimmed = line.trimStart();
-        if (trimmed === '') {
-          if (i > 0 && i < lines.length - 1) {
-            container.appendChild(document.createElement('br'));
-          }
-          return;
+
+      const lines = text
+        .split('\n')
+        .map(l => l.trim())
+        .filter(l => l.length > 0); // drop blank lines entirely; spacing is handled via CSS
+
+      lines.forEach((rawLine, i) => {
+        // Strip stray markdown headers/leftover symbols the model might add
+        const line = rawLine.replace(/^#{1,6}\s*/, '');
+
+        const listMatch = line.match(/^(\d+\.|[-•*])\s+(.*)$/);
+        const row = document.createElement('div');
+        row.className = 'bot-line';
+        if (i > 0) row.style.marginTop = '6px';
+
+        if (listMatch) {
+          row.classList.add('bot-item');
+          const isNumbered = /^\d+\.$/.test(listMatch[1]);
+          const marker = document.createElement('span');
+          marker.className = 'bot-marker';
+          marker.textContent = isNumbered ? listMatch[1] : '•';
+          const content = document.createElement('span');
+          content.className = 'bot-text';
+          content.innerHTML = renderInline(listMatch[2]);
+          row.appendChild(marker);
+          row.appendChild(content);
+        } else {
+          row.innerHTML = renderInline(line);
         }
-        const span = document.createElement('span');
-        span.style.display = 'block';
-        if (/^(\d+\.|[•\-\*→])/.test(trimmed)) {
-          span.style.paddingLeft = '2px';
-          span.style.marginTop = i === 0 ? '0' : '5px';
-        }
-        span.textContent = line;
-        container.appendChild(span);
+
+        container.appendChild(row);
       });
+
       return container;
     }
 
