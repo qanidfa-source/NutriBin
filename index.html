@@ -46,7 +46,7 @@
       display: flex;
     }
 
-    /* ═══════════════════════════════════════     PAGE 1 – LOGIN  ═══════════════════════════════════════ */
+    /* ═══════════════════════════════════════ PAGE 1 – LOGIN ═══════════════════════════════════════ */
     #page-login {
       flex-direction: column;
       align-items: center;
@@ -277,7 +277,7 @@
       display: none;
     }
 
-    /* ═══════════════════════════════════════     PAGE 2 – DASHBOARD  ═══════════════════════════════════════ */
+    /* ═══════════════════════════════════════ PAGE 2 – DASHBOARD ═══════════════════════════════════════ */
     #page-dashboard {
       flex-direction: column;
       background: var(--cream);
@@ -815,7 +815,7 @@
       margin-top: 4px;
     }
 
-    /* ═══════════════════════════════════════     AI CHAT BUBBLE  ═══════════════════════════════════════ */
+    /* ═══════════════════════════════════════ AI CHAT BUBBLE ═══════════════════════════════════════ */
     .ai-fab {
       position: fixed;
       bottom: 32px;
@@ -1563,7 +1563,7 @@
     </div>
     <div class="hmenu-divider"></div>
     <div class="hmenu-item settings" onclick="hamburgerGoSettings()">
-      <div class="hmenu-icon" style="background:rgba(241,184,217,0.4)">⚙️</div> <span>Pengaturan</span>
+      <div class="hmenu-icon" style="background:rgba(241,184,217,0.4)"></div> <span>Pengaturan</span>
     </div>
   </div><!-- ═══ PAGE 1: LOGIN ═══ -->
   <div class="page active" id="page-login">
@@ -1571,7 +1571,7 @@
       <div class="login-logo"> </div>
       <h1 class="login-title">NutriBin</h1>
       <p class="login-sub">Smart Compost Monitoring System</p>
-      <div class="role-btn-group"> <button class="role-btn maker" id="btn-maker" onclick="selectRole('maker')"> <span class="role-icon">🔧</span> <span>Maker</span> </button> <button class="role-btn user" id="btn-user" onclick="selectRole('user')"> <span class="role-icon">👤</span> <span>User</span> </button> </div>
+      <div class="role-btn-group"> <button class="role-btn maker" id="btn-maker" onclick="selectRole('maker')"> <span class="role-icon"></span> <span>Maker</span> </button> <button class="role-btn user" id="btn-user" onclick="selectRole('user')"> <span class="role-icon"></span> <span>User</span> </button> </div>
       <div class="pw-group" id="pw-group" style="display:none"> <label class="pw-label"> Password Maker</label> <input type="password" class="pw-input" id="pw-input" placeholder="Masukan password..." onkeydown="if(event.key==='Enter')doLogin()">
         <div class="err-msg" id="err-msg"> Password salah. Coba lagi.</div>
       </div> <button class="login-btn" onclick="doLogin()">Masuk Dashboard →</button>
@@ -1582,7 +1582,7 @@
       <div class="sb-logo">
         <div class="sb-logo-icon"> </div> <span class="sb-logo-text">NutriBin</span>
       </div>
-      <div class="sb-back-btn" onclick="logout()">‹ Ganti Akun</div> <span class="sb-section-label">Monitor</span> <a class="sb-nav-item active"><span class="sb-nav-icon">📊</span> Dashboard</a> <a class="sb-nav-item"><span class="sb-nav-icon">🌡️</span> Suhu & Kelembaban</a> <a class="sb-nav-item"><span class="sb-nav-icon">⚖️</span> Berat Sampah</a> <a class="sb-nav-item"><span class="sb-nav-icon">📈</span> Grafik Histori</a> <span class="sb-section-label" id="sb-maker-label" style="display:none">Kontrol</span> <a class="sb-nav-item" id="sb-mixer-nav" style="display:none"><span class="sb-nav-icon">🔄</span> Pengaduk</a> <a class="sb-nav-item" id="sb-liquid-nav" style="display:none"><span class="sb-nav-icon">💧</span> Cairan Pupuk</a>
+      <div class="sb-back-btn" onclick="logout()">‹ Ganti Akun</div> <span class="sb-section-label">Monitor</span> <a class="sb-nav-item active"><span class="sb-nav-icon"></span> Dashboard</a> <a class="sb-nav-item"><span class="sb-nav-icon"></span> Suhu & Kelembaban</a> <a class="sb-nav-item"><span class="sb-nav-icon"></span> Berat Sampah</a> <a class="sb-nav-item"><span class="sb-nav-icon"></span> Grafik Histori</a> <span class="sb-section-label" id="sb-maker-label" style="display:none">Kontrol</span> <a class="sb-nav-item" id="sb-mixer-nav" style="display:none"><span class="sb-nav-icon"></span> Pengaduk</a> <a class="sb-nav-item" id="sb-liquid-nav" style="display:none"><span class="sb-nav-icon"></span> Cairan Pupuk</a>
       <div class="sb-role-badge">
         <div class="sb-role-dot" id="sb-role-dot"></div>
         <div>
@@ -1597,7 +1597,7 @@
         <h1 id="dash-title">Dashboard</h1>
         <p id="dash-sub">Monitoring real-time NutriBin anda</p>
       </div> <!-- STATUS BANNER -->
-      <div id="status-banner" style="      display:flex; align-items:center; gap:10px;      padding:12px 16px; border-radius:14px; margin-bottom:18px;      background:rgba(184,213,218,0.2); backdrop-filter:blur(10px);      border:1.5px solid rgba(184,213,218,0.5);      font-size:0.85rem; font-weight:500; color:var(--text-mid);      box-shadow:0 2px 12px var(--shadow); transition: all 0.4s ease;    "> <span style="font-size:1.1rem">📡</span> <span style="color:var(--text-mid)">⏳ Menghubungkan ke ESP32...</span> </div> <!-- STAT CARDS -->
+      <div id="status-banner" style=" display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:14px; margin-bottom:18px; background:rgba(184,213,218,0.2); backdrop-filter:blur(10px); border:1.5px solid rgba(184,213,218,0.5); font-size:0.85rem; font-weight:500; color:var(--text-mid); box-shadow:0 2px 12px var(--shadow); transition: all 0.4s ease; "> <span style="font-size:1.1rem"></span> <span style="color:var(--text-mid)">⏳ Menghubungkan ke ESP32...</span> </div> <!-- STAT CARDS -->
       <div class="stats-grid">
         <div class="stat-card temp">
           <div class="stat-icon"> </div>
@@ -1609,19 +1609,19 @@
           <div class="stat-icon"> </div>
           <div class="stat-label">KELEMBABAN</div>
           <div class="stat-value" id="val-humid">72<span class="stat-unit"> %</span></div>
-          <div><span class="stat-badge badge-on">✓ Optimal</span></div>
+          <div><span class="stat-badge badge-on"> Optimal</span></div>
         </div>
         <div class="stat-card weight">
           <div class="stat-icon"> </div>
           <div class="stat-label">BERAT SAMPAH</div>
           <div class="stat-value" id="val-weight">1.8<span class="stat-unit"> kg</span></div>
-          <div><span class="stat-badge badge-on">  Aktif</span></div>
+          <div><span class="stat-badge badge-on"> Aktif</span></div>
         </div>
         <div class="stat-card mixer">
           <div class="stat-icon"> </div>
           <div class="stat-label">PENGADUK</div>
           <div class="stat-value" id="val-mixer-state" style="font-size:1.3rem;">ON</div>
-          <div><span class="stat-badge badge-on" id="badge-mixer">  Otomatis</span></div>
+          <div><span class="stat-badge badge-on" id="badge-mixer"> Otomatis</span></div>
         </div>
      </div>
 
@@ -1659,7 +1659,7 @@
           <div class="ctrl-header">
             <div class="ctrl-title"> Cairan Pupuk</div> <span class="ctrl-status off" id="liquid-ctrl-status">OFF</span>
           </div>
-          <div class="toggle-row"> <button class="mode-btn auto active" id="liquid-auto-btn" onclick="setLiquidMode('auto')">⚙️ Otomatis</button> <button class="mode-btn manual" id="liquid-manual-btn" onclick="setLiquidMode('manual')"> Manual</button> </div>
+          <div class="toggle-row"> <button class="mode-btn auto active" id="liquid-auto-btn" onclick="setLiquidMode('auto')"> Otomatis</button> <button class="mode-btn manual" id="liquid-manual-btn" onclick="setLiquidMode('manual')"> Manual</button> </div>
           <div class="slider-wrap" id="liquid-slider-wrap" style="display:none">
             <div class="slider-label"><span>Volume</span><span id="liquid-vol-val">40%</span></div> <input type="range" min="0" max="100" value="40" oninput="document.getElementById('liquid-vol-val').textContent=this.value+'%'">
           </div> <button class="action-btn start" id="liquid-toggle-btn" onclick="toggleLiquid()">▶ Jalankan Cairan</button>
@@ -1697,10 +1697,10 @@
       </div>
     </div>
     <div class="ai-msgs" id="ai-msgs">
-      <div class="msg bot">Halo! Saya NutriBot 🌱 Saya bisa membantu menjawab pertanyaan tentang kompos dan kondisi NutriBin kamu.</div>
+      <div class="msg bot">Halo! Saya NutriBot Saya bisa membantu menjawab pertanyaan tentang kompos dan kondisi NutriBin kamu.</div>
     </div>
     <div class="ai-suggestions" id="ai-suggestions"> <span class="ai-chip" onclick="askChip(this)">Berapa hari pupuk siap?</span> <span class="ai-chip" onclick="askChip(this)">Suhu ideal kompos?</span> <span class="ai-chip" onclick="askChip(this)">Tips mempercepat kompos</span> </div>
-    <div class="ai-input-row"> <input class="ai-input" id="ai-input" placeholder="Tanya sesuatu... " onkeydown="if(event.key==='Enter')sendChat()" inputmode="text"> <button class="ai-send" onclick="sendChat()">➤</button> </div>
+    <div class="ai-input-row"> <input class="ai-input" id="ai-input" placeholder="Tanya sesuatu... " onkeydown="if(event.key==='Enter')sendChat()" inputmode="text"> <button class="ai-send" onclick="sendChat()"></button> </div>
   </div><!-- Chart.js CDN --><!-- ═══ PAGE 3: PENGATURAN ═══ -->
   <div class="page" id="page-settings" style="flex-direction:column; align-items:center; justify-content:flex-start; padding: 40px 20px 80px;">
     <div style="width:min(520px,96vw)"> <!-- Back header -->
@@ -1720,7 +1720,7 @@
               <div class="tp-card"></div>
               <div class="tp-card"></div>
             </div> <span> Terang</span>
-            <div class="theme-check" id="check-light">✓</div>
+            <div class="theme-check" id="check-light"></div>
           </div>
           <div class="theme-opt" id="theme-dark" onclick="setTheme('dark')">
             <div class="theme-preview dark-preview">
@@ -1728,17 +1728,17 @@
               <div class="tp-card"></div>
               <div class="tp-card"></div>
             </div> <span> Gelap</span>
-            <div class="theme-check" id="check-dark" style="display:none">✓</div>
+            <div class="theme-check" id="check-dark" style="display:none"></div>
           </div>
         </div>
       </div> <!-- LAPORAN MASALAH -->
       <div class="settings-card">
-        <div class="settings-section-title">🐛 Laporan Masalah</div>
-        <p class="settings-desc">Temukan bug atau error? Laporkan ke developer.</p> <textarea class="settings-textarea" id="report-text" placeholder="Ceritakan masalah yang kamu alami... Contoh: tombol X tidak berfungsi saat halaman pertama dibuka"></textarea> <button class="settings-btn primary" onclick="sendReport()">📧 Kirim Laporan via Gmail</button>
+        <div class="settings-section-title"> Laporan Masalah</div>
+        <p class="settings-desc">Temukan bug atau error? Laporkan ke developer.</p> <textarea class="settings-textarea" id="report-text" placeholder="Ceritakan masalah yang kamu alami... Contoh: tombol X tidak berfungsi saat halaman pertama dibuka"></textarea> <button class="settings-btn primary" onclick="sendReport()"> Kirim Laporan via Gmail</button>
       </div> <!-- KOTAK SARAN -->
       <div class="settings-card">
         <div class="settings-section-title"> Kotak Saran</div>
-        <p class="settings-desc">Punya ide atau saran untuk NutriBin? Kami senang mendengarnya!</p> <textarea class="settings-textarea" id="saran-text" placeholder="Tulis saranmu di sini... Contoh: tambahkan fitur notifikasi ketika pupuk sudah siap 🌱"></textarea> <button class="settings-btn secondary" onclick="sendSaran()">✉️ Kirim Saran via Gmail</button>
+        <p class="settings-desc">Punya ide atau saran untuk NutriBin? Kami senang mendengarnya!</p> <textarea class="settings-textarea" id="saran-text" placeholder="Tulis saranmu di sini... Contoh: tambahkan fitur notifikasi ketika pupuk sudah siap "></textarea> <button class="settings-btn secondary" onclick="sendSaran()"> Kirim Saran via Gmail</button>
       </div> <!-- PUSAT BANTUAN -->
       <div class="settings-card">
         <div class="settings-section-title"> Pusat Bantuan</div>
@@ -1927,7 +1927,7 @@
       const dot = document.getElementById('sb-role-dot');
       const name = document.getElementById('sb-role-name');
       dot.className = 'sb-role-dot ' + role;
-      name.textContent = role === 'maker' ? '🔧 Maker' : ' User';
+      name.textContent = role === 'maker' ? ' Maker' : ' User';
 
       if (role === 'maker') {
         document.getElementById('dash-title').textContent = 'Dashboard Maker';
@@ -2070,7 +2070,7 @@
       if (online) {
         banner.style.background = 'rgba(193,213,145,0.25)';
         banner.style.borderColor = 'rgba(83,131,118,0.4)';
-        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#538376;font-weight:600"> ESP32 Online — Data realtime aktif</span>';
+        banner.innerHTML = '<span style="font-size:1.1rem"></span><span style="color:#538376;font-weight:600"> ESP32 Online — Data realtime aktif</span>';
       } else {
         sensorData.temp = 0;
         sensorData.humid = 0;
@@ -2080,7 +2080,7 @@
         document.getElementById('val-weight').innerHTML = '0<span class="stat-unit"> kg</span>';
         banner.style.background = 'rgba(241,184,217,0.2)';
         banner.style.borderColor = 'rgba(192,83,106,0.4)';
-        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#c0536a;font-weight:600"> ESP32 Offline — Pastikan alat menyala & terhubung WiFi</span>';
+        banner.innerHTML = '<span style="font-size:1.1rem"></span><span style="color:#c0536a;font-weight:600"> ESP32 Offline — Pastikan alat menyala & terhubung WiFi</span>';
       }
     }
 
@@ -2102,7 +2102,7 @@
 
     async function toggleMixer() {
       if (!mixerOn && liquidOn) {
-        showWarning('⚠️ BAHAYA! Pompa sedang aktif.<br>Matikan pompa dulu sebelum menyalakan pengaduk!');
+        showWarning(' BAHAYA! Pompa sedang aktif.<br>Matikan pompa dulu sebelum menyalakan pengaduk!');
         return;
       }
 
@@ -2133,7 +2133,7 @@
             pompa: 0
           })
         });
-        showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
+        showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ' : 'dimatikan '));
       } catch (e) {
         showToast('! Gagal kirim perintah ke ESP32');
       }
@@ -2174,7 +2174,7 @@
             pompa: liquidOn ? 1 : 0
           })
         });
-        showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ✓' : 'dihentikan ✗'));
+        showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ' : 'dihentikan '));
       } catch (e) {
         showToast(' Gagal kirim perintah ke ESP32');
       }
@@ -2278,7 +2278,6 @@
         '- Jika jawabanmu punya lebih dari satu poin, SELALU tulis dalam format bernomor atau berpeluru per baris baru.\n' +
         '- Format nomor: "1. teks" lalu baris baru "2. teks" dst.\n' +
         '- Format peluru: "• teks" lalu baris baru "• teks" dst.\n' +
-        '- Gunakan emoji yang relevan di awal setiap poin.\n' +
         '- Pisahkan setiap poin dengan baris baru.\n' +
         '- Jawab dalam Bahasa Indonesia, ramah dan informatif.\n' +
         '- Jika ditanya kapan pupuk siap: estimasi berdasarkan suhu (>30°C lebih cepat), kelembaban optimal 60-80%, berat sampah saat ini. Estimasi 7-21 hari.\n' +
@@ -2319,7 +2318,7 @@
         }
         const span = document.createElement('span');
         span.style.display = 'block';
-        if (/^(\d+\.|[•\-\*➤→])/.test(trimmed)) {
+        if (/^(\d+\.|[•\-\*→])/.test(trimmed)) {
           span.style.paddingLeft = '2px';
           span.style.marginTop = i === 0 ? '0' : '5px';
         }
