@@ -1559,7 +1559,7 @@
   <div class="hamburger-menu" id="hamburger-menu">
     <div class="hmenu-label">Menu</div>
     <div class="hmenu-item home" onclick="hamburgerGoHome()">
-      <div class="hmenu-icon">🏠</div> <span>Home</span>
+      <div class="hmenu-icon"> </div> <span>Home</span>
     </div>
     <div class="hmenu-divider"></div>
     <div class="hmenu-item settings" onclick="hamburgerGoSettings()">
@@ -1568,19 +1568,19 @@
   </div><!-- ═══ PAGE 1: LOGIN ═══ -->
   <div class="page active" id="page-login">
     <div class="login-card">
-      <div class="login-logo">🌱</div>
+      <div class="login-logo"> </div>
       <h1 class="login-title">NutriBin</h1>
       <p class="login-sub">Smart Compost Monitoring System</p>
       <div class="role-btn-group"> <button class="role-btn maker" id="btn-maker" onclick="selectRole('maker')"> <span class="role-icon">🔧</span> <span>Maker</span> </button> <button class="role-btn user" id="btn-user" onclick="selectRole('user')"> <span class="role-icon">👤</span> <span>User</span> </button> </div>
-      <div class="pw-group" id="pw-group" style="display:none"> <label class="pw-label">🔒 Password Maker</label> <input type="password" class="pw-input" id="pw-input" placeholder="Masukan password..." onkeydown="if(event.key==='Enter')doLogin()">
-        <div class="err-msg" id="err-msg">⚠️ Password salah. Coba lagi.</div>
+      <div class="pw-group" id="pw-group" style="display:none"> <label class="pw-label"> Password Maker</label> <input type="password" class="pw-input" id="pw-input" placeholder="Masukan password..." onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="err-msg" id="err-msg"> Password salah. Coba lagi.</div>
       </div> <button class="login-btn" onclick="doLogin()">Masuk Dashboard →</button>
     </div>
   </div><!-- ═══ PAGE 2: DASHBOARD ═══ -->
   <div class="page" id="page-dashboard" style="flex-direction:row"> <!-- SIDEBAR -->
     <nav class="sidebar" id="sidebar">
       <div class="sb-logo">
-        <div class="sb-logo-icon">🌱</div> <span class="sb-logo-text">NutriBin</span>
+        <div class="sb-logo-icon"> </div> <span class="sb-logo-text">NutriBin</span>
       </div>
       <div class="sb-back-btn" onclick="logout()">‹ Ganti Akun</div> <span class="sb-section-label">Monitor</span> <a class="sb-nav-item active"><span class="sb-nav-icon">📊</span> Dashboard</a> <a class="sb-nav-item"><span class="sb-nav-icon">🌡️</span> Suhu & Kelembaban</a> <a class="sb-nav-item"><span class="sb-nav-icon">⚖️</span> Berat Sampah</a> <a class="sb-nav-item"><span class="sb-nav-icon">📈</span> Grafik Histori</a> <span class="sb-section-label" id="sb-maker-label" style="display:none">Kontrol</span> <a class="sb-nav-item" id="sb-mixer-nav" style="display:none"><span class="sb-nav-icon">🔄</span> Pengaduk</a> <a class="sb-nav-item" id="sb-liquid-nav" style="display:none"><span class="sb-nav-icon">💧</span> Cairan Pupuk</a>
       <div class="sb-role-badge">
@@ -1600,39 +1600,39 @@
       <div id="status-banner" style="      display:flex; align-items:center; gap:10px;      padding:12px 16px; border-radius:14px; margin-bottom:18px;      background:rgba(184,213,218,0.2); backdrop-filter:blur(10px);      border:1.5px solid rgba(184,213,218,0.5);      font-size:0.85rem; font-weight:500; color:var(--text-mid);      box-shadow:0 2px 12px var(--shadow); transition: all 0.4s ease;    "> <span style="font-size:1.1rem">📡</span> <span style="color:var(--text-mid)">⏳ Menghubungkan ke ESP32...</span> </div> <!-- STAT CARDS -->
       <div class="stats-grid">
         <div class="stat-card temp">
-          <div class="stat-icon">🌡️</div>
+          <div class="stat-icon"> </div>
           <div class="stat-label">SUHU</div>
           <div class="stat-value" id="val-temp">34<span class="stat-unit"> °C</span></div>
           <div><span class="stat-badge badge-on">↑ Normal</span></div>
         </div>
         <div class="stat-card humid">
-          <div class="stat-icon">💧</div>
+          <div class="stat-icon"> </div>
           <div class="stat-label">KELEMBABAN</div>
           <div class="stat-value" id="val-humid">72<span class="stat-unit"> %</span></div>
           <div><span class="stat-badge badge-on">✓ Optimal</span></div>
         </div>
         <div class="stat-card weight">
-          <div class="stat-icon">⚖️</div>
+          <div class="stat-icon"> </div>
           <div class="stat-label">BERAT SAMPAH</div>
           <div class="stat-value" id="val-weight">1.8<span class="stat-unit"> kg</span></div>
-          <div><span class="stat-badge badge-on">📦 Aktif</span></div>
+          <div><span class="stat-badge badge-on">  Aktif</span></div>
         </div>
         <div class="stat-card mixer">
-          <div class="stat-icon">🔄</div>
+          <div class="stat-icon"> </div>
           <div class="stat-label">PENGADUK</div>
           <div class="stat-value" id="val-mixer-state" style="font-size:1.3rem;">ON</div>
-          <div><span class="stat-badge badge-on" id="badge-mixer">⚡ Otomatis</span></div>
+          <div><span class="stat-badge badge-on" id="badge-mixer">  Otomatis</span></div>
         </div>
      </div>
 
       <!-- CHART ROW -->
       <div class="chart-row">
         <div class="card">
-          <div class="card-title">🌡️ Grafik Suhu (Real-time)</div>
+          <div class="card-title"> Grafik Suhu (Real-time)</div>
           <canvas id="chartSuhu" height="180"></canvas>
         </div>
         <div class="card">
-          <div class="card-title">💧 Grafik Kelembaban (Real-time)</div>
+          <div class="card-title"> Grafik Kelembaban (Real-time)</div>
           <canvas id="chartHumid" height="180"></canvas>
         </div>
       </div>
@@ -1640,7 +1640,7 @@
       <!-- USER INFO ROW -->
       <div class="info-row" id="user-info-row">
         <div class="info-card">
-          <div class="info-label">🔄 STATUS PENGADUK OTOMATIS</div>
+          <div class="info-label"> STATUS PENGADUK OTOMATIS</div>
           <div class="info-val" id="mixer-status-display">ON</div>
           <div class="info-meta">Mode: <b>Otomatis</b> • Interval: 6 jam</div>
         </div>
@@ -1648,18 +1648,18 @@
       <div class="controls-row" id="maker-controls" style="display:none"> <!-- Mixer control -->
         <div class="control-card">
           <div class="ctrl-header">
-            <div class="ctrl-title">🔄 Pengaduk Kompos</div> <span class="ctrl-status on" id="mixer-ctrl-status">ON</span>
+            <div class="ctrl-title"> Pengaduk Kompos</div> <span class="ctrl-status on" id="mixer-ctrl-status">ON</span>
           </div>
-          <div class="toggle-row"> <button class="mode-btn auto active" id="mixer-auto-btn" onclick="setMixerMode('auto')">⚙️ Otomatis</button> <button class="mode-btn manual" id="mixer-manual-btn" onclick="setMixerMode('manual')">✋ Manual</button> </div>
+          <div class="toggle-row"> <button class="mode-btn auto active" id="mixer-auto-btn" onclick="setMixerMode('auto')"> Otomatis</button> <button class="mode-btn manual" id="mixer-manual-btn" onclick="setMixerMode('manual')"> Manual</button> </div>
           <div class="slider-wrap" id="mixer-slider-wrap" style="display:none">
             <div class="slider-label"><span>Kecepatan</span><span id="mixer-speed-val">60%</span></div> <input type="range" min="0" max="100" value="60" oninput="document.getElementById('mixer-speed-val').textContent=this.value+'%'">
           </div> <button class="action-btn start" id="mixer-toggle-btn" onclick="toggleMixer()">⏸ Hentikan Pengaduk</button>
         </div> <!-- Liquid control -->
         <div class="control-card">
           <div class="ctrl-header">
-            <div class="ctrl-title">💧 Cairan Pupuk</div> <span class="ctrl-status off" id="liquid-ctrl-status">OFF</span>
+            <div class="ctrl-title"> Cairan Pupuk</div> <span class="ctrl-status off" id="liquid-ctrl-status">OFF</span>
           </div>
-          <div class="toggle-row"> <button class="mode-btn auto active" id="liquid-auto-btn" onclick="setLiquidMode('auto')">⚙️ Otomatis</button> <button class="mode-btn manual" id="liquid-manual-btn" onclick="setLiquidMode('manual')">✋ Manual</button> </div>
+          <div class="toggle-row"> <button class="mode-btn auto active" id="liquid-auto-btn" onclick="setLiquidMode('auto')">⚙️ Otomatis</button> <button class="mode-btn manual" id="liquid-manual-btn" onclick="setLiquidMode('manual')"> Manual</button> </div>
           <div class="slider-wrap" id="liquid-slider-wrap" style="display:none">
             <div class="slider-label"><span>Volume</span><span id="liquid-vol-val">40%</span></div> <input type="range" min="0" max="100" value="40" oninput="document.getElementById('liquid-vol-val').textContent=this.value+'%'">
           </div> <button class="action-btn start" id="liquid-toggle-btn" onclick="toggleLiquid()">▶ Jalankan Cairan</button>
@@ -1690,7 +1690,7 @@
   </button>
   <div class="ai-chat-popup" id="ai-chat-popup">
     <div class="ai-header">
-      <div class="ai-avatar">🌿</div>
+      <div class="ai-avatar"> </div>
       <div>
         <div class="ai-name">NutriBot</div>
         <div class="ai-sub">Asisten Kompos Pintar</div>
@@ -1700,7 +1700,7 @@
       <div class="msg bot">Halo! Saya NutriBot 🌱 Saya bisa membantu menjawab pertanyaan tentang kompos dan kondisi NutriBin kamu.</div>
     </div>
     <div class="ai-suggestions" id="ai-suggestions"> <span class="ai-chip" onclick="askChip(this)">Berapa hari pupuk siap?</span> <span class="ai-chip" onclick="askChip(this)">Suhu ideal kompos?</span> <span class="ai-chip" onclick="askChip(this)">Tips mempercepat kompos</span> </div>
-    <div class="ai-input-row"> <input class="ai-input" id="ai-input" placeholder="Tanya sesuatu... 💬✨" onkeydown="if(event.key==='Enter')sendChat()" inputmode="text"> <button class="ai-send" onclick="sendChat()">➤</button> </div>
+    <div class="ai-input-row"> <input class="ai-input" id="ai-input" placeholder="Tanya sesuatu... " onkeydown="if(event.key==='Enter')sendChat()" inputmode="text"> <button class="ai-send" onclick="sendChat()">➤</button> </div>
   </div><!-- Chart.js CDN --><!-- ═══ PAGE 3: PENGATURAN ═══ -->
   <div class="page" id="page-settings" style="flex-direction:column; align-items:center; justify-content:flex-start; padding: 40px 20px 80px;">
     <div style="width:min(520px,96vw)"> <!-- Back header -->
@@ -1711,7 +1711,7 @@
         </div>
       </div> <!-- TEMA -->
       <div class="settings-card">
-        <div class="settings-section-title">🎨 Tema Tampilan</div>
+        <div class="settings-section-title"> Tema Tampilan</div>
         <p class="settings-desc">Pilih tampilan yang nyaman untuk kamu</p>
         <div class="theme-options">
           <div class="theme-opt active" id="theme-light" onclick="setTheme('light')">
@@ -1719,7 +1719,7 @@
               <div class="tp-bar"></div>
               <div class="tp-card"></div>
               <div class="tp-card"></div>
-            </div> <span>☀️ Terang</span>
+            </div> <span> Terang</span>
             <div class="theme-check" id="check-light">✓</div>
           </div>
           <div class="theme-opt" id="theme-dark" onclick="setTheme('dark')">
@@ -1727,7 +1727,7 @@
               <div class="tp-bar"></div>
               <div class="tp-card"></div>
               <div class="tp-card"></div>
-            </div> <span>🌙 Gelap</span>
+            </div> <span> Gelap</span>
             <div class="theme-check" id="check-dark" style="display:none">✓</div>
           </div>
         </div>
@@ -1737,33 +1737,33 @@
         <p class="settings-desc">Temukan bug atau error? Laporkan ke developer.</p> <textarea class="settings-textarea" id="report-text" placeholder="Ceritakan masalah yang kamu alami... Contoh: tombol X tidak berfungsi saat halaman pertama dibuka"></textarea> <button class="settings-btn primary" onclick="sendReport()">📧 Kirim Laporan via Gmail</button>
       </div> <!-- KOTAK SARAN -->
       <div class="settings-card">
-        <div class="settings-section-title">💡 Kotak Saran</div>
+        <div class="settings-section-title"> Kotak Saran</div>
         <p class="settings-desc">Punya ide atau saran untuk NutriBin? Kami senang mendengarnya!</p> <textarea class="settings-textarea" id="saran-text" placeholder="Tulis saranmu di sini... Contoh: tambahkan fitur notifikasi ketika pupuk sudah siap 🌱"></textarea> <button class="settings-btn secondary" onclick="sendSaran()">✉️ Kirim Saran via Gmail</button>
       </div> <!-- PUSAT BANTUAN -->
       <div class="settings-card">
-        <div class="settings-section-title">❓ Pusat Bantuan</div>
+        <div class="settings-section-title"> Pusat Bantuan</div>
         <p class="settings-desc">Pertanyaan umum seputar NutriBin</p>
         <div class="faq-item" onclick="toggleFaq(this)">
-          <div class="faq-q">🌡️ Berapa suhu ideal untuk pengomposan?<span class="faq-arrow">›</span></div>
+          <div class="faq-q"> Berapa suhu ideal untuk pengomposan?<span class="faq-arrow">›</span></div>
           <div class="faq-a">Suhu ideal pengomposan adalah <b>45–65°C</b>. Di suhu ini, bakteri termofil bekerja paling aktif untuk menguraikan bahan organik. Jika suhu di bawah 40°C, proses akan melambat.</div>
         </div>
         <div class="faq-item" onclick="toggleFaq(this)">
-          <div class="faq-q">💧 Kelembaban berapa yang disarankan?<span class="faq-arrow">›</span></div>
+          <div class="faq-q"> Kelembaban berapa yang disarankan?<span class="faq-arrow">›</span></div>
           <div class="faq-a">Kelembaban optimal adalah <b>50–70%</b>. Terlalu kering akan memperlambat proses dekomposisi, terlalu basah menyebabkan bau tidak sedap dan kondisi anaerobik.</div>
         </div>
         <div class="faq-item" onclick="toggleFaq(this)">
-          <div class="faq-q">🔄 Seberapa sering perlu diaduk?<span class="faq-arrow">›</span></div>
+          <div class="faq-q"> Seberapa sering perlu diaduk?<span class="faq-arrow">›</span></div>
           <div class="faq-a">Disarankan pengadukan setiap <b>2–3 hari sekali</b>. Pengadukan memastikan oksigen masuk ke seluruh tumpukan dan mempercepat proses pengomposan secara merata.</div>
         </div>
         <div class="faq-item" onclick="toggleFaq(this)">
-          <div class="faq-q">📅 Berapa lama pupuk kompos siap?<span class="faq-arrow">›</span></div>
+          <div class="faq-q"> Berapa lama pupuk kompos siap?<span class="faq-arrow">›</span></div>
           <div class="faq-a">Dengan kondisi optimal (suhu 55°C, kelembaban 60%), pupuk kompos bisa siap dalam <b>2–4 minggu</b>. Tanda siap: berwarna coklat gelap, berbau tanah, tidak panas lagi.</div>
         </div>
         <div class="faq-item" onclick="toggleFaq(this)">
-          <div class="faq-q">⚙️ Bagaimana cara reset alat?<span class="faq-arrow">›</span></div>
+          <div class="faq-q"> Bagaimana cara reset alat?<span class="faq-arrow">›</span></div>
           <div class="faq-a">Tekan dan tahan tombol reset di ESP32 selama <b>5 detik</b> sampai LED berkedip 3 kali. Alat akan restart dan menghubungkan ulang ke WiFi secara otomatis.</div>
         </div>
-        <div style="margin-top:16px;padding:14px;background:rgba(158,192,235,0.15);border-radius:12px;font-size:0.82rem;color:var(--text-mid);text-align:center;"> Masih butuh bantuan? 📬 Hubungi developer di<br> <b style="color:var(--basil)">itsandika.tech@gmail.com</b> </div>
+        <div style="margin-top:16px;padding:14px;background:rgba(158,192,235,0.15);border-radius:12px;font-size:0.82rem;color:var(--text-mid);text-align:center;"> Masih butuh bantuan? Hubungi developer di<br> <b style="color:var(--basil)">itsandika.tech@gmail.com</b> </div>
       </div>
     </div>
   </div>
@@ -1827,7 +1827,7 @@
         document.getElementById('check-dark').style.display = 'none';
         document.getElementById('check-light').style.display = 'flex';
       }
-      showToast(mode === 'dark' ? '🌙 Tema Gelap aktif' : '☀️ Tema Terang aktif');
+      showToast(mode === 'dark' ? ' Tema Gelap aktif' : ' Tema Terang aktif');
     }
 
     /* ════════════════════════════════════
@@ -1836,27 +1836,27 @@
     function sendReport() {
       const txt = document.getElementById('report-text').value.trim();
       if (!txt) {
-        showToast('⚠️ Tulis laporan masalahmu dulu!');
+        showToast(' Tulis laporan masalahmu dulu!');
         return;
       }
-      const subject = encodeURIComponent('🐛 Laporan Masalah NutriBin');
+      const subject = encodeURIComponent(' Laporan Masalah NutriBin');
       const body = encodeURIComponent('Halo Developer,\n\nSaya ingin melaporkan masalah berikut:\n\n' + txt + '\n\nTerima kasih.');
       window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
       document.getElementById('report-text').value = '';
-      showToast('✅ Membuka Gmail untuk laporan...');
+      showToast(' Membuka Gmail untuk laporan...');
     }
 
     function sendSaran() {
       const txt = document.getElementById('saran-text').value.trim();
       if (!txt) {
-        showToast('⚠️ Tulis saranmu dulu!');
+        showToast(' Tulis saranmu dulu!');
         return;
       }
-      const subject = encodeURIComponent('💡 Kotak Saran NutriBin');
+      const subject = encodeURIComponent(' Kotak Saran NutriBin');
       const body = encodeURIComponent('Halo Developer,\n\nSaya punya saran untuk NutriBin:\n\n' + txt + '\n\nTerima kasih.');
       window.open('mailto:itsandika.tech@gmail.com?subject=' + subject + '&body=' + body);
       document.getElementById('saran-text').value = '';
-      showToast('✅ Membuka Gmail untuk saran...');
+      showToast(' Membuka Gmail untuk saran...');
     }
 
     function toggleFaq(el) {
@@ -1927,7 +1927,7 @@
       const dot = document.getElementById('sb-role-dot');
       const name = document.getElementById('sb-role-name');
       dot.className = 'sb-role-dot ' + role;
-      name.textContent = role === 'maker' ? '🔧 Maker' : '👤 User';
+      name.textContent = role === 'maker' ? '🔧 Maker' : ' User';
 
       if (role === 'maker') {
         document.getElementById('dash-title').textContent = 'Dashboard Maker';
@@ -2070,7 +2070,7 @@
       if (online) {
         banner.style.background = 'rgba(193,213,145,0.25)';
         banner.style.borderColor = 'rgba(83,131,118,0.4)';
-        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#538376;font-weight:600">🟢 ESP32 Online — Data realtime aktif</span>';
+        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#538376;font-weight:600"> ESP32 Online — Data realtime aktif</span>';
       } else {
         sensorData.temp = 0;
         sensorData.humid = 0;
@@ -2080,7 +2080,7 @@
         document.getElementById('val-weight').innerHTML = '0<span class="stat-unit"> kg</span>';
         banner.style.background = 'rgba(241,184,217,0.2)';
         banner.style.borderColor = 'rgba(192,83,106,0.4)';
-        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#c0536a;font-weight:600">🔴 ESP32 Offline — Pastikan alat menyala & terhubung WiFi</span>';
+        banner.innerHTML = '<span style="font-size:1.1rem">📡</span><span style="color:#c0536a;font-weight:600"> ESP32 Offline — Pastikan alat menyala & terhubung WiFi</span>';
       }
     }
 
@@ -2117,7 +2117,7 @@
       st.textContent = mixerOn ? 'ON' : 'OFF';
       sv.textContent = mixerOn ? 'ON' : 'OFF';
       bm.className = 'stat-badge ' + (mixerOn ? 'badge-on' : 'badge-off');
-      bm.textContent = mixerOn ? '⚡ Aktif' : '⛔ Berhenti';
+      bm.textContent = mixerOn ? ' Aktif' : ' Berhenti';
       document.getElementById('mixer-status-display').textContent = mixerOn ? 'ON' : 'OFF';
 
       updateSafetyLock();
@@ -2135,7 +2135,7 @@
         });
         showToast('Pengaduk ' + (mixerOn ? 'dinyalakan ✓' : 'dimatikan ✗'));
       } catch (e) {
-        showToast('⚠️ Gagal kirim perintah ke ESP32');
+        showToast('! Gagal kirim perintah ke ESP32');
       }
     }
 
@@ -2149,7 +2149,7 @@
 
     async function toggleLiquid() {
       if (!liquidOn && mixerOn) {
-        showWarning('⚠️ BAHAYA! Pengaduk sedang aktif. Matikan pengaduk dulu sebelum menyalakan pompa!');
+        showWarning(' BAHAYA! Pengaduk sedang aktif. Matikan pengaduk dulu sebelum menyalakan pompa!');
         return;
       }
 
@@ -2176,7 +2176,7 @@
         });
         showToast('Cairan pupuk ' + (liquidOn ? 'mengalir ✓' : 'dihentikan ✗'));
       } catch (e) {
-        showToast('⚠️ Gagal kirim perintah ke ESP32');
+        showToast(' Gagal kirim perintah ke ESP32');
       }
     }
 
@@ -2191,12 +2191,12 @@
         liquidBtn.disabled = true;
         liquidBtn.style.opacity = '0.4';
         liquidBtn.style.cursor = 'not-allowed';
-        liquidBtn.textContent = '🔒 Pengaduk Aktif';
+        liquidBtn.textContent = ' Pengaduk Aktif';
       } else if (liquidOn && !mixerOn) {
         mixerBtn.disabled = true;
         mixerBtn.style.opacity = '0.4';
         mixerBtn.style.cursor = 'not-allowed';
-        mixerBtn.textContent = '🔒 Pompa Aktif';
+        mixerBtn.textContent = ' Pompa Aktif';
       } else {
         liquidBtn.disabled = false;
         liquidBtn.style.opacity = '1';
@@ -2220,7 +2220,7 @@
       warn.id = 'safety-warning';
       warn.style.cssText = 'position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.8); background:#fff; border-radius:20px; padding:28px 32px; z-index:9999; box-shadow:0 20px 60px rgba(0,0,0,0.2), 0 0 0 3px rgba(212,112,154,0.3); text-align:center; max-width:320px; width:90vw;';
 
-      warn.innerHTML = '<div style="font-size:3rem;margin-bottom:12px">⚠️</div>' +
+      warn.innerHTML = '<div style="font-size:3rem;margin-bottom:12px"> </div>' +
         '<div style="font-family:\'Playfair Display\',serif;font-size:1.1rem;font-weight:700;color:#c0536a;margin-bottom:10px">Peringatan Keamanan!</div>' +
         '<div style="font-size:0.88rem;color:#5A7A6E;line-height:1.6;margin-bottom:20px">' + msg + '</div>' +
         '<div style="font-size:0.78rem;color:#8AADA0;margin-bottom:16px">Motor dan pompa tidak boleh berjalan bersamaan untuk mencegah kerusakan alat.</div>' +
@@ -2266,7 +2266,7 @@
       inp.value = '';
 
       appendMsg('user-msg', q);
-      const loading = appendMsg('loading', '⏳ NutriBot sedang berpikir...');
+      const loading = appendMsg('loading', ' NutriBot sedang berpikir...');
 
     const systemPrompt = 'Kamu adalah NutriBot, asisten AI khusus untuk sistem kompos pintar NutriBin.\n' +
         'Data sensor saat ini:\n' +
@@ -2302,7 +2302,7 @@
         appendMsg('bot', text);
       } catch (e) {
         loading.remove();
-        appendMsg('bot', '⚠️ Tidak bisa terhubung. Periksa koneksi internet.');
+        appendMsg('bot', 'Tidak bisa terhubung. Periksa koneksi internet.');
       }
     }
 
@@ -2319,7 +2319,7 @@
         }
         const span = document.createElement('span');
         span.style.display = 'block';
-        if (/^(\d+\.|[•\-\*➤→✅❌⚠️📌])/.test(trimmed)) {
+        if (/^(\d+\.|[•\-\*➤→])/.test(trimmed)) {
           span.style.paddingLeft = '2px';
           span.style.marginTop = i === 0 ? '0' : '5px';
         }
